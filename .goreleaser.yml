@@ -1,0 +1,30 @@
+builds:
+  - binary: cwc
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
+release:
+  prerelease: auto
+
+universal_binaries:
+  - replace: true
+
+brews:
+  -
+    name: cwc
+    homepage: https://github.com/amirghedira/comwork-cli
+    tap:
+      owner: amirghedira
+      name: homebrew-cwc
+    commit_author:
+      name: amirghedira
+      email: amirghedira06@gmail.com
+
+checksum:
+  name_template: 'checksums.txt'
