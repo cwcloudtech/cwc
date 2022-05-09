@@ -17,7 +17,7 @@ universal_binaries:
 
 brews:
   -
-    name: cwc
+    name: cwc-cli
     homepage: https://github.com/amirghedira/cwc-cli
     tap:
       owner: amirghedira
