@@ -17,11 +17,11 @@ universal_binaries:
 
 brews:
   -
-    name: cwc-cli
+    name: cwc
     homepage: https://github.com/amirghedira/cwc-cli
     tap:
       owner: amirghedira
-      name: cwc-cli
+      name: homebrew-cwc-cli
     commit_author:
       name: amirghedira
       email: amirghedira06@gmail.com
