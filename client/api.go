@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -18,7 +19,6 @@ type ErrorResponse struct {
 
 type UpdateProjectRequest struct {
 	Status        string `json:"status"`
-	Instance_type string `json:"type"`
 }
 
 type LoginBody struct {
@@ -46,7 +46,9 @@ type Project struct {
 	Ip_address    string `json:"ip_address"`
 }
 
-func NewClient(region string) *Client {
+func NewClient() *Client {
+	region:= GetDefaultRegion()
+	fmt.Printf(region)
 	return &Client{
 		region:     region,
 		httpClient: &http.Client{},
@@ -106,12 +108,11 @@ func (c *Client) AddProject(project_name string, instance_size string, environme
 	return created_project, nil
 }
 
-func (c *Client) UpdateProject(id string, status string, instance_type string) error {
+func (c *Client) UpdateProject(id string, status string) error {
 	buf := bytes.Buffer{}
 
 	updateProjectRequest := &UpdateProjectRequest{
 		Status:        status,
-		Instance_type: instance_type,
 	}
 	err := json.NewEncoder(&buf).Encode(updateProjectRequest)
 	if err != nil {
@@ -243,16 +244,59 @@ func getUserToken() (string, error) {
 	dirname, err := os.UserHomeDir()
 
 	if err != nil {
-		fmt.Printf("cwc: access denied, please login\n")
-		return "", err
+		_err := errors.New("cwc: access denied, please login")
+		return "", _err
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/credentials")
 	if err != nil {
-		fmt.Printf("cwc: access denied, please login\n")
-		return "", err
+		_err := errors.New("cwc: access denied, please login")
+		return "", _err
 	}
 
 	file_content := string(content)
 	return strings.TrimSpace(strings.Split(file_content, "=")[1]), nil
+}
+
+
+func GetDefaultRegion() string {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+
+		return "fr-par-1"
+	}
+
+	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
+	if err != nil {
+		return "fr-par-1"
+	}
+
+	file_content := string(content)
+	return strings.TrimSpace(strings.Split(file_content, "=")[1])
+}
+
+
+func SetDefaultRegion(region string) {
+	dirname, err := os.UserHomeDir()
+
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
+		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	f, err := os.Create(dirname + "/.cwc/config")
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	_, err = f.WriteString("region = " + region)
+	if err != nil {
+		log.Fatal(err)
+
+	}
 }

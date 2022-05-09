@@ -34,12 +34,17 @@ func main(){
 	updateCmd := flag.NewFlagSet("update",flag.ExitOnError)
 	updateId:= updateCmd.String("id", "" ,"Target instance ID")
 	updateStatus:= updateCmd.String("status", "" ,"Instance status (poweroff, poweron, reboot)")
-	updateSize:= updateCmd.String("type", "" ,"The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
-
 
 	loginCmd := flag.NewFlagSet("delete",flag.ExitOnError)
 	loginEmail:= loginCmd.String("u", "" ,"Account email")
 	loginPassword:= loginCmd.String("p", "" ,"Account password")
+
+
+
+	configureCmd := flag.NewFlagSet("configure",flag.ExitOnError)
+	configureRegionCmd:= configureCmd.Bool("region", false ,"Configure the default region")
+
+
 
 	if len(os.Args)<2 {
 		fmt.Println("usage: cwc <command> [parameters]")
@@ -60,10 +65,12 @@ func main(){
 	case "delete":
 		handlers.HandleDelete(deleteCmd,deleteById)
 	case "update":
-		handlers.HandleUpdate(updateCmd,updateId,updateStatus,updateSize)
+		handlers.HandleUpdate(updateCmd,updateId,updateStatus)
 
 	case "login":
 		handlers.HandleLogin(loginCmd,loginEmail,loginPassword)
+	case "configure":
+		handlers.HandleConfigure(configureCmd,configureRegionCmd)
 	case "help":
 		handlers.HandleHelp(helpCmd)
 	default : 
