@@ -20,6 +20,10 @@ func HandleHelp(helpCmd *flag.FlagSet){
 	fmt.Printf("  delete an existing instance\n\n")
 	fmt.Printf("- update \n")
 	fmt.Printf("  update a particular instance state\n\n")
+	fmt.Printf("- configure \n")
+	fmt.Printf("  configure your default settings\n\n")
+
+
 }
 
 func HandleGet(getCmd *flag.FlagSet,all *bool, id *string ){
