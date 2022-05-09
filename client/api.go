@@ -48,7 +48,6 @@ type Project struct {
 
 func NewClient() *Client {
 	region:= GetDefaultRegion()
-	fmt.Printf(region)
 	return &Client{
 		region:     region,
 		httpClient: &http.Client{},
