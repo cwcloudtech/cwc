@@ -11,30 +11,63 @@ import (
 
 
 func main(){
+
+
+	helpCmd := flag.NewFlagSet("help",flag.ExitOnError)
+
 	getCmd := flag.NewFlagSet("get",flag.ExitOnError)
 	getAll:= getCmd.Bool("all",false,"Get all instances")
 	getById:= getCmd.String("id", "" ,"Get instance by ID")
 
 
-	addCmd := flag.NewFlagSet("add",flag.ExitOnError)
-	addProjectName:= addCmd.String("name", "" ,"The Project name")
-	addEmail:= addCmd.String("email", "" ,"The email address associeted to the project")
-	addEnvironment:= addCmd.String("env", "" ,"The environment of the project")
-	addInstanceType:= addCmd.String("instance_type", "" ,"The instance size")
+ 	createCmd := flag.NewFlagSet("create",flag.ExitOnError)
+	addProjectName:= createCmd.String("name", "" ,"The Project name")
+	addEmail:= createCmd.String("email", "" ,"The email address associeted to the project")
+	addEnvironment:= createCmd.String("env", "" ,"The environment of the project (code, wpaas)")
+	addInstanceType:= createCmd.String("instance_type", "" ,"The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
 
+
+	deleteCmd := flag.NewFlagSet("delete",flag.ExitOnError)
+	deleteById:= deleteCmd.String("id", "" ,"Target instance ID")
+
+
+	updateCmd := flag.NewFlagSet("update",flag.ExitOnError)
+	updateId:= updateCmd.String("id", "" ,"Target instance ID")
+	updateStatus:= updateCmd.String("status", "" ,"Instance status (poweroff, poweron, reboot)")
+	updateSize:= updateCmd.String("type", "" ,"The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
+
+
+	loginCmd := flag.NewFlagSet("delete",flag.ExitOnError)
+	loginEmail:= loginCmd.String("u", "" ,"Account email")
+	loginPassword:= loginCmd.String("p", "" ,"Account password")
 
 	if len(os.Args)<2 {
-		fmt.Println("Expected get or add sub command")
+		fmt.Println("usage: cwc <command> [parameters]")
+		fmt.Printf("To see help text, you can run:\n\n")
+		// fmt.Println("cwc help")
+		fmt.Printf("cwc <command> help\n\n")
+		fmt.Println("cwc: error: the following arguments are required: command")
 		os.Exit(1)
+		return
 	}
 
 	switch os.Args[1]{
 
 	case "get":
 		handlers.HandleGet(getCmd,getAll,getById)
-	case "add":
-		handlers.HandleAdd(addCmd,addProjectName,addEmail,addEnvironment,addInstanceType)
-	default: 
+	case "create":
+		handlers.HandleAdd(createCmd,addProjectName,addEmail,addEnvironment,addInstanceType)
+	case "delete":
+		handlers.HandleDelete(deleteCmd,deleteById)
+	case "update":
+		handlers.HandleUpdate(updateCmd,updateId,updateStatus,updateSize)
+
+	case "login":
+		handlers.HandleLogin(loginCmd,loginEmail,loginPassword)
+	case "help":
+		handlers.HandleHelp(helpCmd)
+	default : 
+		fmt.Printf("cwc: command not found")
 	}
 
 
