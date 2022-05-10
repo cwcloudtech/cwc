@@ -18,7 +18,7 @@ universal_binaries:
 brews:
   -
     name: cwc
-    homepage: https://github.com/amirghedira/cwc
+    homepage: https://gitlab.comwork.io/oss/cwc
     tap:
       owner: amirghedira
       name: homebrew-cwc
