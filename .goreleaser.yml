@@ -40,7 +40,7 @@ dockers:
 
 brews:
   -
-    name: cwc
+    name: cwc-cli
     homepage: https://gitlab.comwork.io/oss/cwc/cwc-cli
     tap:
       owner: oss/cwc
