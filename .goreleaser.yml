@@ -48,7 +48,6 @@ brews:
     commit_author:
       name: amirghedira
       email: amirghedira06@gmail.com
-
   - 
     url_template: "http://gitlab.comwork.io/oss/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 checksum:
