@@ -43,7 +43,7 @@ brews:
     name: cwc
     homepage: https://gitlab.comwork.io/oss/cwc/cwc-cli
     tap:
-      owner: cwc
+      owner: oss/cwc
       name: homebrew-cwc
     commit_author:
       name: amirghedira
