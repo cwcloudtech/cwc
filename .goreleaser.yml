@@ -12,8 +12,31 @@ builds:
 release:
   prerelease: auto
 
+gitlab_urls:
+  api: https://gitlab.comwork.io/api/v4
+  download: https://gitlab.comwork.io
+  # set to true if you use a self-signed certificate
+  skip_tls_verify: true
+  # set to true if you want to upload to the Package Registry rather than attachments
+  # Only works with GitLab 13.5+
+  use_package_registry: false
+
+
 universal_binaries:
   - replace: true
+  
+dockers:
+- image_templates: ["rg.fr-par.scw.cloud/comworkio/cwc:{{ .Version }}"]
+  dockerfile: Dockerfile
+  build_flag_templates:
+  - --label=org.opencontainers.image.title={{ .ProjectName }}
+  - --label=org.opencontainers.image.description={{ .ProjectName }}
+  - --label=org.opencontainers.image.url=https://gitlab.comwork.io/oss/cwc
+  - --label=org.opencontainers.image.source=https://gitlab.comwork.io/oss/cwc
+  - --label=org.opencontainers.image.version={{ .Version }}
+  - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+  - --label=org.opencontainers.image.revision={{ .FullCommit }}
+  - --label=org.opencontainers.image.licenses=MIT
 
 brews:
   -
@@ -25,6 +48,7 @@ brews:
     commit_author:
       name: amirghedira
       email: amirghedira06@gmail.com
-
+  - 
+    url_template: "http://gitlab.comwork.io/oss/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 checksum:
   name_template: 'checksums.txt'
