@@ -35,5 +35,10 @@ brews:
     commit_author:
       name: amirghedira
       email: amirghedira06@gmail.com
+  - 
+    url_template: "http://gitlab.comwork.io/oss/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
+
+  - 
+    folder: Formula
 checksum:
   name_template: 'checksums.txt'
