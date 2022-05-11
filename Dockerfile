@@ -1,3 +1,3 @@
 FROM scratch
-COPY example /usr/bin/example
-ENTRYPOINT ["/usr/bin/example"]
+COPY cwc /usr/bin/cwc
+ENTRYPOINT ["/usr/bin/cwc"]
