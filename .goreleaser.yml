@@ -8,7 +8,10 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=0
-      
+
+release:
+  prerelease: auto
+
 gitlab_urls:
   api: https://gitlab.comwork.io/api/v4/
   download: https://gitlab.comwork.io
@@ -21,7 +24,7 @@ gitlab_urls:
 
 universal_binaries:
   - replace: true
-
+  
 brews:
   -
     name: cwc
@@ -33,5 +36,7 @@ brews:
       name: amirghedira
       email: amirghedira06@gmail.com
 
+  - 
+    url_template: "http://gitlab.comwork.io/oss/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 checksum:
   name_template: 'checksums.txt'
