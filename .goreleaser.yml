@@ -26,7 +26,7 @@ universal_binaries:
   - replace: true
   
 dockers:
-- image_templates: ["registry.gitlab.comwork.io/oss/cwc:{{ .Version }}"]
+- image_templates: ["rg.fr-par.scw.cloud/comworkio/cwc:{{ .Version }}"]
   dockerfile: Dockerfile
   build_flag_templates:
   - --label=org.opencontainers.image.title={{ .ProjectName }}
