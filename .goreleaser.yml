@@ -1,8 +1,11 @@
+
+
 builds:
   - binary: cwc
     goos:
       - darwin
       - linux
+      - windows
     goarch:
       - amd64
       - arm64
@@ -51,6 +54,7 @@ brews:
       email: amirghedira06@gmail.com
   - 
     url_template: "http://gitlab.comwork.io/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
+
 
 checksum:
   name_template: 'checksums.txt'

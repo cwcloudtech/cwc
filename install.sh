@@ -31,9 +31,9 @@ set_global_vars() {
   INSTALLER_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
   INSTALLER_DIST_DIR="$INSTALLER_DIR/dist"
   INSTALLER_EXE="$INSTALLER_DIST_DIR/$EXE_NAME"
-  AWS_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2)
+  CWC_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2)
 
-  INSTALL_DIR="$ROOT_INSTALL_DIR/$AWS_EXE_VERSION"
+  INSTALL_DIR="$ROOT_INSTALL_DIR/$CWC_EXE_VERSION"
   INSTALL_DIR="$INSTALL_DIR"
   INSTALL_DIST_DIR="$INSTALL_DIR/dist"
   INSTALL_BIN_DIR="$INSTALL_DIR/bin"
