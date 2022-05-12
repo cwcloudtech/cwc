@@ -28,15 +28,15 @@ universal_binaries:
 brews:
   -
     name: cwc
-    homepage: https://gitlab.comwork.io/oss/cwc/cwc
+    homepage: https://gitlab.comwork.io/cwc/cwc
     tap:
-      owner: oss/cwc
+      owner: cwc
       name: homebrew-cwc
     commit_author:
       name: amirghedira
       email: amirghedira06@gmail.com
   - 
-    url_template: "http://gitlab.comwork.io/oss/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
+    url_template: "http://gitlab.comwork.io/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 
   - 
     folder: Formula
