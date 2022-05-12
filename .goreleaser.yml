@@ -27,8 +27,8 @@ universal_binaries:
 
 brews:
   -
-    name: cwc
-    homepage: https://gitlab.comwork.io/cwc/cwc
+    name: cwc-cli
+    homepage: https://gitlab.comwork.io/cwc/cwc-cli
     tap:
       owner: cwc
       name: homebrew-cwc
@@ -36,7 +36,7 @@ brews:
       name: amirghedira
       email: amirghedira06@gmail.com
   - 
-    url_template: "http://gitlab.comwork.io/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
+    url_template: "http://gitlab.comwork.io/cwc/cwc-cli/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 
 checksum:
   name_template: 'checksums.txt'
