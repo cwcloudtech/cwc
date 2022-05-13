@@ -19,7 +19,6 @@ archives:
     builds:
     - default
     format: tar.gz
-    meta: true
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     replacements:
       amd64: 64-bit
