@@ -33,15 +33,15 @@
     curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v1.1.2/downloads/cwc_1.1.2_windows_amd64.zip" -o "cwc_cli.zip"
 
     unzip cwc_cli.zip 
-    
-    sudo ./cwc_cli/install.sh
+    cd 
+    cwc.exe
 ##### Windows arm (64 bit)
 
     curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v1.1.2/downloads/cwc_1.1.2_windows_arm64.zip" -o "cwc_cli.zip"
 
     unzip cwc_cli.zip 
-    
-    sudo ./cwc_cli/install.sh
+    cd cwc_cli
+    cwc.exe
 
 ### Using homebrew
 
