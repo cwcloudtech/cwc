@@ -26,38 +26,27 @@ set_global_vars() {
   ROOT_INSTALL_DIR=${PARSED_INSTALL_DIR:-/usr/local/cwc}
   BIN_DIR=${PARSED_BIN_DIR:-/usr/local/bin}
   UPGRADE=${PARSED_UPGRADE:-no}
-
   EXE_NAME="cwc"
   INSTALLER_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
-  INSTALLER_DIST_DIR="$INSTALLER_DIR/dist"
-  INSTALLER_EXE="$INSTALLER_DIST_DIR/$EXE_NAME"
-  CWC_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2)
-
+  INSTALLER_EXE="$INSTALLER_DIR/$EXE_NAME"
+  CWC_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2 | sed -n 2p )
   INSTALL_DIR="$ROOT_INSTALL_DIR/$CWC_EXE_VERSION"
-  INSTALL_DIR="$INSTALL_DIR"
-  INSTALL_DIST_DIR="$INSTALL_DIR/dist"
-  INSTALL_BIN_DIR="$INSTALL_DIR/bin"
-  INSTALL_CWC_EXE="$INSTALL_BIN_DIR/$EXE_NAME"
-
-  CURRENT_INSTALL_DIR="$ROOT_INSTALL_DIR/v2/current"
-  CURRENT_CWC_EXE="$CURRENT_INSTALL_DIR/bin/$EXE_NAME"
-
+  CURRENT_INSTALL_DIR="$ROOT_INSTALL_DIR"
+  CURRENT_CWC_EXE="$CURRENT_INSTALL_DIR/$EXE_NAME"
   BIN_CWC_EXE="$BIN_DIR/$EXE_NAME"
 }
 
 create_install_dir() {
+
   mkdir -p "$INSTALL_DIR" || exit 1
   {
-    setup_install_dist &&
-    setup_install_bin &&
+    setup_install &&
     create_current_symlink
-  } || {
-    rm -rf "$INSTALL_DIR"
-    exit 1
-  }
+  } 
 }
 
 check_preexisting_install() {
+
   if [ -L "$CURRENT_INSTALL_DIR" ] && [ "$UPGRADE" = "no" ]
   then
     die "Found preexisting CWC CLI installation: $CURRENT_INSTALL_DIR. Please rerun install script with --update flag."
@@ -69,23 +58,25 @@ check_preexisting_install() {
   fi
 }
 
-setup_install_dist() {
-  cp -r "$INSTALLER_DIST_DIR" "$INSTALL_DIST_DIR"
+setup_install() {
+  cp -r "$INSTALLER_EXE" "$INSTALL_DIR"
 }
 
-setup_install_bin() {
-  mkdir -p "$INSTALL_BIN_DIR"
-  ln -s "../dist/$EXE_NAME" "$INSTALL_CWC_EXE"
-}
+
 
 create_current_symlink() {
-  ln -snf "$INSTALL_DIR" "$CURRENT_INSTALL_DIR"
+echo "==create_current_symlink==="
+echo "$INSTALL_DIR/$EXE_NAME" "$CURRENT_INSTALL_DIR"
+echo "===="
+  ln -snf "$INSTALL_DIR/$EXE_NAME" "$CURRENT_INSTALL_DIR"
 }
 
 create_bin_symlinks() {
   mkdir -p "$BIN_DIR"
+  echo "==create_bin_symlinks==="
+  echo "$CURRENT_CWC_EXE" "$BIN_CWC_EXE"
+echo "===="
   ln -sf "$CURRENT_CWC_EXE" "$BIN_CWC_EXE"
-  ln -sf "$CURRENT_CWC_COMPLETER_EXE" "$BIN_CWC_COMPLETER_EXE"
 }
 
 die() {
