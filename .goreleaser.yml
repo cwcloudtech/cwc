@@ -14,6 +14,26 @@ builds:
     ldflags:
       - -X main.Version={{.Version}}
 
+archives:
+  -
+    builds:
+    - default
+    format: tar.gz
+    meta: true
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    replacements:
+      amd64: 64-bit
+      386: 32-bit
+      darwin: macOS
+      linux: Tux
+    format_overrides:
+      - goos: windows
+        format: zip
+
+
+    files:
+      - install.sh
+      - README.md
 release:
   prerelease: auto
 
