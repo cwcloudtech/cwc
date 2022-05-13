@@ -1,14 +1,49 @@
+[1.1.2][version]
+
 # COMWORK CLOUD CLI (CWC cli)
 
-## Install
+## Installation
 ### Using Curl
-
-    curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v1.0.9/downloads/cwc_1.0.9_darwin_all.tar.gz" -o "cwc_cli.tar.gz"
+#### For Linux
+##### Linux x86 (64 bit)
+    [1] curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v[version]/downloads/cwc_[version]_linux_amd64.tar.gz" -o "cwc_cli.tar.gz"
     
     mkdir cwc_cli && tar -xf cwc_cli.tar.gz -C cwc_cli 
     
     sudo ./cwc_cli/install.sh
 
+##### Linux arm (64 bit)
+    curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v[version]/downloads/cwc_[version]_linux_arm64.tar.gz" -o "cwc_cli.tar.gz"
+    
+    mkdir cwc_cli && tar -xf cwc_cli.tar.gz -C cwc_cli 
+    
+    sudo ./cwc_cli/install.sh
+
+#### For MacOS
+##### MacOS x86/arm (64 bit)
+
+    curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v[version]/downloads/cwc_[version]_darwin_all.tar.gz" -o "cwc_cli.tar.gz"
+    
+    mkdir cwc_cli && tar -xf cwc_cli.tar.gz -C cwc_cli 
+    
+    sudo ./cwc_cli/install.sh
+
+
+#### For Windows
+##### Windows x86 (64 bit)
+
+    curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v[version]/downloads/cwc_[version]_windows_amd64.zip" -o "cwc_cli.zip"
+
+    unzip cwc_cli.zip 
+    
+    sudo ./cwc_cli/install.sh
+##### Windows arm (64 bit)
+
+    curl -L "https://gitlab.comwork.io/cwc/cwc/-/releases/v[version]/downloads/cwc_[version]_windows_arm64.zip" -o "cwc_cli.zip"
+
+    unzip cwc_cli.zip 
+    
+    sudo ./cwc_cli/install.sh
 
 ### Using homebrew
 
