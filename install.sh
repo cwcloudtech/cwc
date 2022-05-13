@@ -29,7 +29,7 @@ set_global_vars() {
   EXE_NAME="cwc"
   INSTALLER_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
   INSTALLER_EXE="$INSTALLER_DIR/$EXE_NAME"
-  CWC_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2 | sed -n 2p )
+  CWC_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2 )
   INSTALL_DIR="$ROOT_INSTALL_DIR/$CWC_EXE_VERSION"
   CURRENT_INSTALL_DIR="$ROOT_INSTALL_DIR"
   CURRENT_CWC_EXE="$CURRENT_INSTALL_DIR/$EXE_NAME"
