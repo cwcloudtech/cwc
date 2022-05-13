@@ -12,8 +12,7 @@ var Version = "dev"
 
 func main() {
 
-	fmt.Println("version " + Version)
-
+	
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	versionCmd := flag.NewFlagSet("version", flag.ExitOnError)
 
