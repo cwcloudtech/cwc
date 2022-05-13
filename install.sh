@@ -47,7 +47,7 @@ create_install_dir() {
 
 check_preexisting_install() {
 
-  if [ -L "$CURRENT_INSTALL_DIR" ] && [ "$UPGRADE" = "no" ]
+  if [ -d "$CURRENT_INSTALL_DIR" ] && [ "$UPGRADE" = "no" ]
   then
     die "Found preexisting CWC CLI installation: $CURRENT_INSTALL_DIR. Please rerun install script with --update flag."
   fi
@@ -65,17 +65,11 @@ setup_install() {
 
 
 create_current_symlink() {
-echo "==create_current_symlink==="
-echo "$INSTALL_DIR/$EXE_NAME" "$CURRENT_INSTALL_DIR"
-echo "===="
   ln -snf "$INSTALL_DIR/$EXE_NAME" "$CURRENT_INSTALL_DIR"
 }
 
 create_bin_symlinks() {
   mkdir -p "$BIN_DIR"
-  echo "==create_bin_symlinks==="
-  echo "$CURRENT_CWC_EXE" "$BIN_CWC_EXE"
-echo "===="
   ln -sf "$CURRENT_CWC_EXE" "$BIN_CWC_EXE"
 }
 
