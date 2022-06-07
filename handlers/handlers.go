@@ -160,6 +160,19 @@ func ValidateInstance(createCmd *flag.FlagSet, name *string, env *string) {
 		os.Exit(1)
 	}
 }
+
+func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *string, instance_type *string) {
+	attachCmd.Parse(os.Args[3:])
+	client := client.NewClient()
+	created_instance, err := client.AttachInstance(*project_id, *playbook, *instance_type)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tgitlab url\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
+
+}
 func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, env *string, instance_type *string) {
 	createCmd.Parse(os.Args[3:])
 	ValidateInstance(createCmd, name, env)

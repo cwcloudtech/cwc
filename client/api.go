@@ -41,6 +41,12 @@ type Environment struct {
 	Description string `json:"description"`
 }
 
+type AttachInstanceRequest struct {
+	ProjectId     int    `json:"project_id"`
+	Name          string `json:"name"`
+	Instance_type string `json:"type"`
+}
+
 type Instance struct {
 	Id            int    `json:"id"`
 	Name          string `json:"name"`
@@ -96,6 +102,29 @@ func (c *Client) GetInstance(instance_id string) (*Instance, error) {
 	return instance, nil
 }
 
+func (c *Client) AttachInstance(project_id int, playbook string, instance_size string) (*Instance, error) {
+	buf := bytes.Buffer{}
+	instance := AttachInstanceRequest{
+		Name:          playbook,
+		ProjectId:     project_id,
+		Instance_type: instance_size,
+	}
+
+	err := json.NewEncoder(&buf).Encode(instance)
+	if err != nil {
+		return nil, err
+	}
+	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/attach/%v", c.region, instance.ProjectId), "POST", buf)
+	if err != nil {
+		return nil, err
+	}
+	created_instance := &Instance{}
+	err = json.NewDecoder(respBody).Decode(created_instance)
+	if err != nil {
+		return nil, err
+	}
+	return created_instance, nil
+}
 func (c *Client) AddInstance(instance_name string, project_id int, instance_size string, environment string) (*Instance, error) {
 	buf := bytes.Buffer{}
 	instance := Instance{

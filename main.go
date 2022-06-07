@@ -26,6 +26,11 @@ func main() {
 	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the instance (code, wpaas)")
 	addInstanceType := createInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
 
+	attachInstanceCmd := flag.NewFlagSet("attach instance", flag.ExitOnError)
+	attachInstancePlaybook := attachInstanceCmd.String("name", "", "The playbook name you want to run")
+	attachInstanceProjectId := attachInstanceCmd.Int("project_id", 0, "The project id that you want to attach with the instance")
+	attachInstanceType := attachInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
+
 	deleteInstanceCmd := flag.NewFlagSet("delete instance", flag.ExitOnError)
 	deleteInstanceById := deleteInstanceCmd.String("id", "", "Target instance ID")
 
@@ -43,7 +48,7 @@ func main() {
 	AddProjectName := createProjectCmd.String("name", "", "The Project name")
 
 	DeleteInstanceCmd := flag.NewFlagSet("delete project", flag.ExitOnError)
-	DeleteInstanceById := DeleteInstanceCmd.String("id", "", "Target instance ID")
+	DeleteInstanceById := DeleteInstanceCmd.String("id", "", "Target project ID")
 
 	// environnment handlers
 
@@ -90,6 +95,11 @@ func main() {
 			handlers.HandleAddProject(createProjectCmd, AddProjectName)
 		case "instance":
 			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType)
+		}
+	case "attach":
+		switch os.Args[2] {
+		case "instance":
+			handlers.HandleAttachInstance(attachInstanceCmd, attachInstanceProjectId, attachInstancePlaybook, attachInstanceType)
 		}
 	case "delete":
 		switch os.Args[2] {
