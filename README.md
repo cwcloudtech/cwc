@@ -57,18 +57,41 @@
     cwc configure -region <default_region>
 
 ### Get instances Command
-    cwc get --all
+    cwc get instance --all
 
 ### Get instance by Id Command
-    cwc get -id <instanceId>
+    cwc get instance -id <instanceId>
 
 ### Create instance Command
 
-    cwc create -name <project_name> -env <environement> -instance_type <size> -email<email_address>
+    cwc create instance -name <project_name> -env <environement> -instance_type <size> -project_id <project-id>
     
-## Update instance status Command
-    cwc update -id <instanceId> -status <action>
+### Attach instance Command
 
-## Delete instance Command
-    cwc delete -id <instanceId>
+    cwc attach instance -name <playbook-name> -instance_type <size> -project_id <project-id>
+
+### Update instance status Command
+    cwc update instance -id <instanceId> -status <action>
+
+### Delete instance Command
+    cwc delete instance -id <instanceId>
     
+
+### Get projects Command
+    cwc get project --all
+
+### Get project by Id Command
+    cwc get project -id <instanceId>
+
+### Create project Command
+
+    cwc create project -name <project_name>
+
+### Delete project Command
+    cwc delete -id <projectId>
+
+### Get environments Command
+    cwc get environment --all
+
+### Get environment by Id Command
+    cwc get environment -id <environmentId>
