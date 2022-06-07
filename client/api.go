@@ -17,8 +17,8 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-type UpdateProjectRequest struct {
-	Status        string `json:"status"`
+type UpdateInstanceRequest struct {
+	Status string `json:"status"`
 }
 
 type LoginBody struct {
@@ -34,9 +34,9 @@ type Client struct {
 	httpClient *http.Client
 }
 
-type Project struct {
+type Instance struct {
 	Id            int    `json:"id"`
-	Name          string `json:"name"`
+	Name          string `json:"instance_name"`
 	Gitlab_url    string `json:"gitlab_project_url"`
 	Instance_type string `json:"type"`
 	Environment   string `json:"environment"`
@@ -46,16 +46,136 @@ type Project struct {
 	Ip_address    string `json:"ip_address"`
 }
 
+type Project struct {
+	Id        int        `json:"id"`
+	Name      string     `json:"name"`
+	Url       string     `json:"url"`
+	CreatedAt string     `json:"created_at"`
+	Region    string     `json:"region"`
+	Instances []Instance `json:"instances"`
+}
+
 func NewClient() *Client {
-	region:= GetDefaultRegion()
+	region := GetDefaultRegion()
 	return &Client{
 		region:     region,
 		httpClient: &http.Client{},
 	}
 }
 
-func (c *Client) GetAll() (*[]Project, error) {
+func (c *Client) GetAllInstances() (*[]Instance, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/instance/%s", c.region), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+	instances := []Instance{}
+	err = json.NewDecoder(body).Decode(&instances)
+
+	if err != nil {
+		return nil, err
+	}
+	return &instances, nil
+}
+
+func (c *Client) GetInstance(instance_id string) (*Instance, error) {
+	body, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.region, instance_id), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+	instance := &Instance{}
+	err = json.NewDecoder(body).Decode(instance)
+	if err != nil {
+		return nil, err
+	}
+	return instance, nil
+}
+
+func (c *Client) AddInstance(instance_name string, instance_size string, environment string, email string) (*Instance, error) {
+	buf := bytes.Buffer{}
+	instance := Instance{
+		Name:          instance_name,
+		Instance_type: instance_size,
+		Environment:   environment,
+		Email:         email,
+		Region:        c.region,
+	}
+
+	err := json.NewEncoder(&buf).Encode(instance)
+	if err != nil {
+		return nil, err
+	}
+	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/provision/%s", c.region, instance.Environment), "POST", buf)
+	if err != nil {
+		return nil, err
+	}
+	created_instance := &Instance{}
+	err = json.NewDecoder(respBody).Decode(created_instance)
+	if err != nil {
+		return nil, err
+	}
+	return created_instance, nil
+}
+
+func (c *Client) UpdateInstance(id string, status string) error {
+	buf := bytes.Buffer{}
+
+	UpdateInstanceRequest := &UpdateInstanceRequest{
+		Status: status,
+	}
+	err := json.NewEncoder(&buf).Encode(UpdateInstanceRequest)
+	if err != nil {
+		return err
+	}
+	_, err = c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.region, id), "PATCH", buf)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) DeleteInstance(instanceId string) error {
+	_, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.region, instanceId), "DELETE", bytes.Buffer{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) AddProject(project_name string) (*Project, error) {
+	buf := bytes.Buffer{}
+	project := Project{
+		Name:   project_name,
+		Region: c.region,
+	}
+
+	err := json.NewEncoder(&buf).Encode(project)
+	if err != nil {
+		return nil, err
+	}
+	respBody, err := c.httpRequest(fmt.Sprintf("/project/%s", c.region), "POST", buf)
+	if err != nil {
+		fmt.Printf(err.Error())
+		return nil, err
+	}
+	created_project := &Project{}
+	err = json.NewDecoder(respBody).Decode(created_project)
+	if err != nil {
+		fmt.Printf("hahah")
+		return nil, err
+	}
+	return created_project, nil
+}
+
+func (c *Client) DeleteProject(projectId string) error {
+	_, err := c.httpRequest(fmt.Sprintf("/project/%s/%s", c.region, projectId), "DELETE", bytes.Buffer{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) GetAllProjects() (*[]Project, error) {
+	body, err := c.httpRequest(fmt.Sprintf("/project/%s", c.region), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +189,7 @@ func (c *Client) GetAll() (*[]Project, error) {
 }
 
 func (c *Client) GetProject(project_id string) (*Project, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.region, project_id), "GET", bytes.Buffer{})
+	body, err := c.httpRequest(fmt.Sprintf("/project/%s/%s", c.region, project_id), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
@@ -80,58 +200,6 @@ func (c *Client) GetProject(project_id string) (*Project, error) {
 	}
 	return project, nil
 }
-
-func (c *Client) AddProject(project_name string, instance_size string, environment string, email string) (*Project, error) {
-	buf := bytes.Buffer{}
-	project := Project{
-		Name:          project_name,
-		Instance_type: instance_size,
-		Environment:   environment,
-		Email:         email,
-		Region:        c.region,
-	}
-
-	err := json.NewEncoder(&buf).Encode(project)
-	if err != nil {
-		return nil, err
-	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/provision/%s", c.region, project.Environment), "POST", buf)
-	if err != nil {
-		return nil, err
-	}
-	created_project := &Project{}
-	err = json.NewDecoder(respBody).Decode(created_project)
-	if err != nil {
-		return nil, err
-	}
-	return created_project, nil
-}
-
-func (c *Client) UpdateProject(id string, status string) error {
-	buf := bytes.Buffer{}
-
-	updateProjectRequest := &UpdateProjectRequest{
-		Status:        status,
-	}
-	err := json.NewEncoder(&buf).Encode(updateProjectRequest)
-	if err != nil {
-		return err
-	}
-	_, err = c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.region, id), "PATCH", buf)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *Client) DeleteProject(projectId string) error {
-	_, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.region, projectId), "DELETE", bytes.Buffer{})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (c *Client) UserLogin(email string, password string) error {
 	buf := bytes.Buffer{}
 
@@ -196,7 +264,7 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		respBody := new(bytes.Buffer)
 		_, err := respBody.ReadFrom(resp.Body)
 		if err != nil {
@@ -257,7 +325,6 @@ func getUserToken() (string, error) {
 	return strings.TrimSpace(strings.Split(file_content, "=")[1]), nil
 }
 
-
 func GetDefaultRegion() string {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
@@ -273,7 +340,6 @@ func GetDefaultRegion() string {
 	file_content := string(content)
 	return strings.TrimSpace(strings.Split(file_content, "=")[1])
 }
-
 
 func SetDefaultRegion(region string) {
 	dirname, err := os.UserHomeDir()

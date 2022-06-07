@@ -31,9 +31,9 @@ func HandleHelp(helpCmd *flag.FlagSet) {
 
 }
 
-func HandleGet(getCmd *flag.FlagSet, all *bool, id *string) {
+func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 
-	getCmd.Parse(os.Args[2:])
+	getCmd.Parse(os.Args[3:])
 	if !*all && *id == "" {
 		fmt.Println("id is required or specify --all to get all instances.")
 		getCmd.PrintDefaults()
@@ -42,7 +42,7 @@ func HandleGet(getCmd *flag.FlagSet, all *bool, id *string) {
 	client := client.NewClient()
 	if *all {
 
-		projects, err := client.GetAll()
+		instances, err := client.GetAllInstances()
 
 		if err != nil {
 			fmt.Printf("failed: %s\n", err)
@@ -50,8 +50,8 @@ func HandleGet(getCmd *flag.FlagSet, all *bool, id *string) {
 		}
 
 		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
-		for _, project := range *projects {
-			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", project.Id, project.Name, project.Status, project.Instance_type, project.Environment, project.Ip_address, project.Gitlab_url)
+		for _, instance := range *instances {
+			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Gitlab_url)
 
 		}
 
@@ -59,13 +59,13 @@ func HandleGet(getCmd *flag.FlagSet, all *bool, id *string) {
 	}
 
 	if *id != "" {
-		project, err := client.GetProject(*id)
+		instance, err := client.GetInstance(*id)
 		if err != nil {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
 		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", project.Id, project.Name, project.Status, project.Instance_type, project.Environment, project.Ip_address, project.Gitlab_url)
+		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Gitlab_url)
 
 		return
 	}
@@ -137,11 +137,79 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool) {
 
 }
 
-func HandleDelete(deleteCmd *flag.FlagSet, id *string) {
+func HandleDeleteInstance(deleteCmd *flag.FlagSet, id *string) {
 
-	deleteCmd.Parse(os.Args[2:])
+	deleteCmd.Parse(os.Args[3:])
 	if *id == "" {
 		fmt.Println("id is required to delete your instance")
+		deleteCmd.PrintDefaults()
+		os.Exit(1)
+	}
+	client := client.NewClient()
+
+	err := client.DeleteInstance(*id)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Instance %v successfully deleted\n", *id)
+}
+func ValidateInstance(createCmd *flag.FlagSet, name *string, env *string) {
+
+	if *name == "" || *env == "" {
+		createCmd.PrintDefaults()
+		os.Exit(1)
+	}
+}
+func HandleAddInstance(createCmd *flag.FlagSet, name *string, email *string, env *string, instance_type *string) {
+	createCmd.Parse(os.Args[3:])
+	ValidateInstance(createCmd, name, env)
+	client := client.NewClient()
+	created_instance, err := client.AddInstance(*name, *instance_type, *env, *email)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tgitlab url\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Gitlab_url)
+
+}
+
+func HandleUpdateInstance(updateCmd *flag.FlagSet, id *string, status *string) {
+	updateCmd.Parse(os.Args[3:])
+	if *id == "" || *status == "" {
+		fmt.Println("id and status are required")
+		updateCmd.PrintDefaults()
+		os.Exit(1)
+	}
+	client := client.NewClient()
+	err := client.UpdateInstance(*id, *status)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Project %v successfully updated\n", *id)
+
+}
+
+func HandleAddProject(createCmd *flag.FlagSet, name *string) {
+	createCmd.Parse(os.Args[3:])
+	client := client.NewClient()
+	created_project, err := client.AddProject(*name)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("ID\tname\tcreated_at\turl\n")
+	fmt.Printf("%v\t%v\t%v\t%v\n", created_project.Id, created_project.Name, created_project.CreatedAt, created_project.Url)
+
+}
+
+func HandleDeleteProject(deleteCmd *flag.FlagSet, id *string) {
+
+	deleteCmd.Parse(os.Args[3:])
+	if *id == "" {
+		fmt.Println("id is required to delete your project")
 		deleteCmd.PrintDefaults()
 		os.Exit(1)
 	}
@@ -152,44 +220,45 @@ func HandleDelete(deleteCmd *flag.FlagSet, id *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Project %v successfully deleted\n", *id)
+	fmt.Printf("project %v successfully deleted\n", *id)
 }
-func ValidateProject(createCmd *flag.FlagSet, name *string, env *string) {
+func HandleGetProject(getCmd *flag.FlagSet, all *bool, id *string) {
 
-	if *name == "" || *env == "" {
-		createCmd.PrintDefaults()
-		os.Exit(1)
-	}
-}
-func HandleAdd(createCmd *flag.FlagSet, name *string, email *string, env *string, instance_type *string) {
-	createCmd.Parse(os.Args[2:])
-	ValidateProject(createCmd, name, env)
-	client := client.NewClient()
-	created_project, err := client.AddProject(*name, *instance_type, *env, *email)
-	if err != nil {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tgitlab url\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_project.Id, created_project.Name, created_project.Status, created_project.Instance_type, created_project.Environment, created_project.Gitlab_url)
-
-}
-
-func HandleUpdate(updateCmd *flag.FlagSet, id *string, status *string) {
-	updateCmd.Parse(os.Args[2:])
-	if *id == "" || *status == "" {
-		fmt.Println("id and status are required")
-		updateCmd.PrintDefaults()
+	getCmd.Parse(os.Args[3:])
+	if !*all && *id == "" {
+		fmt.Println("id is required or specify --all to get all projects.")
+		getCmd.PrintDefaults()
 		os.Exit(1)
 	}
 	client := client.NewClient()
-	err := client.UpdateProject(*id, *status)
-	if err != nil {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("Project %v successfully updated\n", *id)
+	if *all {
 
+		projects, err := client.GetAllProjects()
+
+		if err != nil {
+			fmt.Printf("failed: %s\n", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("ID\tname\tcreated_at\turl\n")
+		for _, project := range *projects {
+			fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.Name, project.CreatedAt, project.Url)
+		}
+
+		return
+	}
+
+	if *id != "" {
+		project, err := client.GetProject(*id)
+		if err != nil {
+			fmt.Printf("failed: %s\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
+		fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.Name, project.CreatedAt, project.Url)
+
+		return
+	}
 }
 
 func stringInSlice(a string, list []string) bool {

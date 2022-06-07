@@ -12,31 +12,45 @@ var Version = "dev"
 
 func main() {
 
-	
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	versionCmd := flag.NewFlagSet("version", flag.ExitOnError)
 
-	getCmd := flag.NewFlagSet("get", flag.ExitOnError)
-	getAll := getCmd.Bool("all", false, "Get all instances")
-	getById := getCmd.String("id", "", "Get instance by ID")
+	// instance handlers
+	getInstanceCmd := flag.NewFlagSet("get instance", flag.ExitOnError)
+	getAllInstances := getInstanceCmd.Bool("all", false, "Get all instances")
+	getInstanceById := getInstanceCmd.String("id", "", "Get instance by ID")
 
-	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
-	addProjectName := createCmd.String("name", "", "The Project name")
-	addEmail := createCmd.String("email", "", "The email address associeted to the project")
-	addEnvironment := createCmd.String("env", "", "The environment of the project (code, wpaas)")
-	addInstanceType := createCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
+	createInstanceCmd := flag.NewFlagSet("create instance", flag.ExitOnError)
+	addInstanceName := createInstanceCmd.String("name", "", "The Project name")
+	addInstanceEmail := createInstanceCmd.String("email", "", "The email address associeted to the project")
+	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the project (code, wpaas)")
+	addInstanceType := createInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
 
-	deleteCmd := flag.NewFlagSet("delete", flag.ExitOnError)
-	deleteById := deleteCmd.String("id", "", "Target instance ID")
+	deleteInstanceCmd := flag.NewFlagSet("delete instance", flag.ExitOnError)
+	deleteInstanceById := deleteInstanceCmd.String("id", "", "Target instance ID")
 
-	updateCmd := flag.NewFlagSet("update", flag.ExitOnError)
-	updateId := updateCmd.String("id", "", "Target instance ID")
-	updateStatus := updateCmd.String("status", "", "Instance status (poweroff, poweron, reboot)")
+	updateInstanceCmd := flag.NewFlagSet("update instance", flag.ExitOnError)
+	updateInstanceId := updateInstanceCmd.String("id", "", "Target instance ID")
+	updateInstanceStatus := updateInstanceCmd.String("status", "", "Instance status (poweroff, poweron, reboot)")
 
+	// project handlers
+
+	GetProjectCmd := flag.NewFlagSet("get project", flag.ExitOnError)
+	getAllProjects := GetProjectCmd.Bool("all", false, "Get all projects")
+	GetProjectById := GetProjectCmd.String("id", "", "Get project by ID")
+
+	createProjectCmd := flag.NewFlagSet("create project", flag.ExitOnError)
+	AddProjectName := createProjectCmd.String("name", "", "The Project name")
+
+	DeleteInstanceCmd := flag.NewFlagSet("delete project", flag.ExitOnError)
+	DeleteInstanceById := DeleteInstanceCmd.String("id", "", "Target instance ID")
+
+	// login handlers
 	loginCmd := flag.NewFlagSet("delete", flag.ExitOnError)
 	loginEmail := loginCmd.String("u", "", "Account email")
 	loginPassword := loginCmd.String("p", "", "Account password")
 
+	// configuration handlers
 	configureCmd := flag.NewFlagSet("configure", flag.ExitOnError)
 	configureRegionCmd := configureCmd.Bool("region", false, "Configure the default region")
 
@@ -53,13 +67,33 @@ func main() {
 	switch os.Args[1] {
 
 	case "get":
-		handlers.HandleGet(getCmd, getAll, getById)
+		switch os.Args[2] {
+		case "project":
+			handlers.HandleGetProject(GetProjectCmd, getAllProjects, GetProjectById)
+		case "instance":
+			handlers.HandleGetInstance(getInstanceCmd, getAllInstances, getInstanceById)
+		}
+
 	case "create":
-		handlers.HandleAdd(createCmd, addProjectName, addEmail, addEnvironment, addInstanceType)
+
+		switch os.Args[2] {
+		case "project":
+			handlers.HandleAddProject(createProjectCmd, AddProjectName)
+		case "instance":
+			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceEmail, addInstanceEnvironment, addInstanceType)
+		}
 	case "delete":
-		handlers.HandleDelete(deleteCmd, deleteById)
+		switch os.Args[2] {
+		case "project":
+			handlers.HandleDeleteProject(DeleteInstanceCmd, DeleteInstanceById)
+		case "instance":
+			handlers.HandleDeleteInstance(deleteInstanceCmd, deleteInstanceById)
+		}
 	case "update":
-		handlers.HandleUpdate(updateCmd, updateId, updateStatus)
+		switch os.Args[2] {
+		case "instance":
+			handlers.HandleUpdateInstance(updateInstanceCmd, updateInstanceId, updateInstanceStatus)
+		}
 
 	case "login":
 		handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
