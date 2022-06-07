@@ -21,9 +21,9 @@ func main() {
 	getInstanceById := getInstanceCmd.String("id", "", "Get instance by ID")
 
 	createInstanceCmd := flag.NewFlagSet("create instance", flag.ExitOnError)
-	addInstanceName := createInstanceCmd.String("name", "", "The Project name")
-	addInstanceEmail := createInstanceCmd.String("email", "", "The email address associeted to the project")
-	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the project (code, wpaas)")
+	addInstanceName := createInstanceCmd.String("name", "", "The instance name")
+	addInstanceProjectId := createInstanceCmd.Int("project_id", 0, "The project id that you want to associete with the instance")
+	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the instance (code, wpaas)")
 	addInstanceType := createInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
 
 	deleteInstanceCmd := flag.NewFlagSet("delete instance", flag.ExitOnError)
@@ -80,7 +80,7 @@ func main() {
 		case "project":
 			handlers.HandleAddProject(createProjectCmd, AddProjectName)
 		case "instance":
-			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceEmail, addInstanceEnvironment, addInstanceType)
+			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType)
 		}
 	case "delete":
 		switch os.Args[2] {

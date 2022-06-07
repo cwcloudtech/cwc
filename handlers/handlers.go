@@ -51,7 +51,7 @@ func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 
 		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
 		for _, instance := range *instances {
-			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Gitlab_url)
+			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
 
 		}
 
@@ -65,7 +65,7 @@ func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 			os.Exit(1)
 		}
 		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Gitlab_url)
+		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
 
 		return
 	}
@@ -155,23 +155,23 @@ func HandleDeleteInstance(deleteCmd *flag.FlagSet, id *string) {
 	fmt.Printf("Instance %v successfully deleted\n", *id)
 }
 func ValidateInstance(createCmd *flag.FlagSet, name *string, env *string) {
-
+	fmt.Printf(*name)
 	if *name == "" || *env == "" {
 		createCmd.PrintDefaults()
 		os.Exit(1)
 	}
 }
-func HandleAddInstance(createCmd *flag.FlagSet, name *string, email *string, env *string, instance_type *string) {
+func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, env *string, instance_type *string) {
 	createCmd.Parse(os.Args[3:])
 	ValidateInstance(createCmd, name, env)
 	client := client.NewClient()
-	created_instance, err := client.AddInstance(*name, *instance_type, *env, *email)
+	created_instance, err := client.AddInstance(*name, *project_id, *instance_type, *env)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tgitlab url\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Gitlab_url)
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
 
 }
 

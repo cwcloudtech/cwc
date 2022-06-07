@@ -36,12 +36,11 @@ type Client struct {
 
 type Instance struct {
 	Id            int    `json:"id"`
-	Name          string `json:"instance_name"`
-	Gitlab_url    string `json:"gitlab_project_url"`
+	Name          string `json:"name"`
 	Instance_type string `json:"type"`
 	Environment   string `json:"environment"`
 	Status        string `json:"status"`
-	Email         string `json:"email"`
+	Project       int    `json:"project_id"`
 	Region        string `json:"region"`
 	Ip_address    string `json:"ip_address"`
 }
@@ -90,13 +89,13 @@ func (c *Client) GetInstance(instance_id string) (*Instance, error) {
 	return instance, nil
 }
 
-func (c *Client) AddInstance(instance_name string, instance_size string, environment string, email string) (*Instance, error) {
+func (c *Client) AddInstance(instance_name string, project_id int, instance_size string, environment string) (*Instance, error) {
 	buf := bytes.Buffer{}
 	instance := Instance{
 		Name:          instance_name,
 		Instance_type: instance_size,
 		Environment:   environment,
-		Email:         email,
+		Project:       project_id,
 		Region:        c.region,
 	}
 
