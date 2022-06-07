@@ -45,6 +45,12 @@ func main() {
 	DeleteInstanceCmd := flag.NewFlagSet("delete project", flag.ExitOnError)
 	DeleteInstanceById := DeleteInstanceCmd.String("id", "", "Target instance ID")
 
+	// environnment handlers
+
+	GetEnvCmd := flag.NewFlagSet("get environment", flag.ExitOnError)
+	getAllEnv := GetEnvCmd.Bool("all", false, "Get all environments")
+	getEnvById := GetEnvCmd.String("id", "", "Get environment by ID")
+
 	// login handlers
 	loginCmd := flag.NewFlagSet("delete", flag.ExitOnError)
 	loginEmail := loginCmd.String("u", "", "Account email")
@@ -72,6 +78,9 @@ func main() {
 			handlers.HandleGetProject(GetProjectCmd, getAllProjects, GetProjectById)
 		case "instance":
 			handlers.HandleGetInstance(getInstanceCmd, getAllInstances, getInstanceById)
+
+		case "environment":
+			handlers.HandleGetEnvironment(GetEnvCmd, getAllEnv, getEnvById)
 		}
 
 	case "create":

@@ -155,7 +155,6 @@ func HandleDeleteInstance(deleteCmd *flag.FlagSet, id *string) {
 	fmt.Printf("Instance %v successfully deleted\n", *id)
 }
 func ValidateInstance(createCmd *flag.FlagSet, name *string, env *string) {
-	fmt.Printf(*name)
 	if *name == "" || *env == "" {
 		createCmd.PrintDefaults()
 		os.Exit(1)
@@ -254,8 +253,47 @@ func HandleGetProject(getCmd *flag.FlagSet, all *bool, id *string) {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
+		fmt.Printf("ID\tname\tcreated_at\turl\n")
 		fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.Name, project.CreatedAt, project.Url)
+
+		return
+	}
+}
+
+func HandleGetEnvironment(getCmd *flag.FlagSet, all *bool, id *string) {
+
+	getCmd.Parse(os.Args[3:])
+	if !*all && *id == "" {
+		fmt.Println("id is required or specify --all to get all projects.")
+		getCmd.PrintDefaults()
+		os.Exit(1)
+	}
+	client := client.NewClient()
+	if *all {
+
+		environments, err := client.GetAllEnvironments()
+
+		if err != nil {
+			fmt.Printf("failed: %s\n", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("ID\tname\tpath\tdescription\n")
+		for _, environment := range *environments {
+			fmt.Printf("%v\t%v\t%v\t%v\n", environment.Id, environment.Name, environment.Path, environment.Description)
+		}
+
+		return
+	}
+
+	if *id != "" {
+		environment, err := client.GetEnvironment(*id)
+		if err != nil {
+			fmt.Printf("failed: %s\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("ID\tname\tpath\tdescription\n")
+		fmt.Printf("%v\t%v\t%v\t%v\n", environment.Id, environment.Name, environment.Path, environment.Description)
 
 		return
 	}
