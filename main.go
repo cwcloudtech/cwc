@@ -57,7 +57,7 @@ func main() {
 	getEnvById := GetEnvCmd.String("id", "", "Get environment by ID")
 
 	// login handlers
-	loginCmd := flag.NewFlagSet("delete", flag.ExitOnError)
+	loginCmd := flag.NewFlagSet("login", flag.ExitOnError)
 	loginEmail := loginCmd.String("u", "", "Account email")
 	loginPassword := loginCmd.String("p", "", "Account password")
 
