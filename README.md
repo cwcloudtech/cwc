@@ -88,7 +88,7 @@
     cwc create project -name <project_name>
 
 ### Delete project Command
-    cwc delete -id <projectId>
+    cwc delete project -id <projectId>
 
 ### Get environments Command
     cwc get environment --all
