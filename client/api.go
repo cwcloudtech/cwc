@@ -224,7 +224,7 @@ func (c *Client) GetAllProjects() (*[]Project, error) {
 }
 
 func (c *Client) GetAllEnvironments() (*[]Environment, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/environment"), "GET", bytes.Buffer{})
+	body, err := c.httpRequest(fmt.Sprintf("/environment/all"), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
