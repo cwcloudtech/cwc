@@ -84,17 +84,17 @@ func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 	}
 }
 
-func HandleLogin(loginCmd *flag.FlagSet, email *string, password *string) {
+func HandleLogin(loginCmd *flag.FlagSet, access_key *string, secret_key *string) {
 
 	loginCmd.Parse(os.Args[2:])
-	if *email == "" || *password == "" {
+	if *access_key == "" || *secret_key == "" {
 		fmt.Println("email and password are required to login")
 		loginCmd.PrintDefaults()
 		os.Exit(1)
 	}
 	client := client.NewClient()
 
-	err := client.UserLogin(*email, *password)
+	err := client.UserLogin(*access_key, *secret_key)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -102,10 +102,10 @@ func HandleLogin(loginCmd *flag.FlagSet, email *string, password *string) {
 	fmt.Printf("You are successfully logged in\n")
 }
 
-func HandleConfigure(configureCmd *flag.FlagSet, region *bool) {
+func HandleConfigure(configureCmd *flag.FlagSet, region *bool,endpoint *bool) {
 
 	configureCmd.Parse(os.Args[2:])
-	if !*region {
+	if !*region && !*endpoint {
 		fmt.Println("cwc: flag is missing")
 		configureCmd.PrintDefaults()
 		os.Exit(1)
@@ -115,35 +115,59 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool) {
 		fmt.Println("cwc configure <command> <subcommand> <value>")
 		fmt.Println("<command>: -region")
 		fmt.Println("<subcommand>: get / set")
+		fmt.Println("<command>: -endpoint")
+		fmt.Println("<subcommand>: get / set")
 		os.Exit(1)
 	}
 	subSubCommmand := os.Args[3]
 	switch subSubCommmand {
 
 	case "set":
-		region_value := os.Args[4]
-		if region_value == "" {
-			fmt.Println("cwc: region value is missing")
+		value := os.Args[4]
+		if value == "" {
+			fmt.Println("cwc: value is missing")
 			configureCmd.PrintDefaults()
 			os.Exit(1)
 		}
-		possible_regions := make([]string, 4)
-		possible_regions[0] = "fr-par-1"
-		possible_regions[1] = "fr-par-2"
-		possible_regions[2] = "nl-ams-1"
-		possible_regions[3] = "pl-waw-1"
+		if *region{
+		
+			possible_regions := make([]string, 9)
+			possible_regions[0] = "fr-par"
+			possible_regions[1] = "nl-ams"
+			possible_regions[2] = "pl-waw"
+			possible_regions[3] = "SBG5"
+			possible_regions[4] = "GRA11"
+			possible_regions[5] = "UK1"
+			possible_regions[6] = "DE1"
+			possible_regions[7] = "BHS5"
+			possible_regions[8] = "WAW1"
 
-		if !stringInSlice(region_value, possible_regions) {
-			fmt.Println("cwc: invalid region value")
-			os.Exit(1)
 
+	
+			if !stringInSlice(value, possible_regions) {
+				fmt.Println("cwc: invalid region value")
+				os.Exit(1)
+	
+			}
+	
+			client.SetDefaultRegion(value)
+			fmt.Printf("Default region = %v\n", value)
+		}
+		if *endpoint{
+			client.SetDefaultEndpoint(value)
+			fmt.Printf("Default endpoint = %v\n", value)
 		}
 
-		client.SetDefaultRegion(region_value)
-		fmt.Printf("Default region = %v\n", region_value)
 	case "get":
-		region := client.GetDefaultRegion()
-		fmt.Printf("Default region = %v\n", region)
+		if *region{
+			region := client.GetDefaultRegion()
+			fmt.Printf("Default region = %v\n", region)
+
+		}
+		if *endpoint{
+			endpoint := client.GetDefaultEndpoint()
+			fmt.Printf("Default endpoint = %v\n", endpoint)
+		}
 	default:
 		fmt.Printf("cwc: option not found")
 	}
@@ -217,10 +241,10 @@ func HandleUpdateInstance(updateCmd *flag.FlagSet, id *string, status *string) {
 
 }
 
-func HandleAddProject(createCmd *flag.FlagSet, name *string) {
+func HandleAddProject(createCmd *flag.FlagSet, name *string,host *string,token *string,git_username *string,namespace *string) {
 	createCmd.Parse(os.Args[3:])
 	client := client.NewClient()
-	created_project, err := client.AddProject(*name)
+	created_project, err := client.AddProject(*name,*host,*token,*git_username,*namespace)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

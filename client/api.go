@@ -63,8 +63,16 @@ type Project struct {
 	Name      string     `json:"name"`
 	Url       string     `json:"url"`
 	CreatedAt string     `json:"created_at"`
-	Region    string     `json:"region"`
 	Instances []Instance `json:"instances"`
+}
+
+type AddProjectBody struct {
+	Name      string     `json:"name"`
+	Host      string     `json:"host"`
+	Token      string     `json:"token"`
+	Namespace      string     `json:"namespace"`
+	GitUsername      string     `json:"git_username"`
+
 }
 
 func NewClient() *Client {
@@ -176,18 +184,21 @@ func (c *Client) DeleteInstance(instanceId string) error {
 	return nil
 }
 
-func (c *Client) AddProject(project_name string) (*Project, error) {
+func (c *Client) AddProject(project_name string,host string,token string,git_username string,namespace string) (*Project, error) {
 	buf := bytes.Buffer{}
-	project := Project{
+	project := AddProjectBody{
 		Name:   project_name,
-		Region: c.region,
+		Host: host,
+		Token: token,
+		GitUsername: git_username,
+		Namespace: namespace,
 	}
 
 	err := json.NewEncoder(&buf).Encode(project)
 	if err != nil {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/project/%s", c.region), "POST", buf)
+	respBody, err := c.httpRequest(fmt.Sprintf("/project"), "POST", buf)
 	if err != nil {
 		fmt.Printf(err.Error())
 		return nil, err
@@ -202,7 +213,7 @@ func (c *Client) AddProject(project_name string) (*Project, error) {
 }
 
 func (c *Client) DeleteProject(projectId string) error {
-	_, err := c.httpRequest(fmt.Sprintf("/project/%s/%s", c.region, projectId), "DELETE", bytes.Buffer{})
+	_, err := c.httpRequest(fmt.Sprintf("/project/%s", projectId), "DELETE", bytes.Buffer{})
 	if err != nil {
 		return err
 	}
@@ -210,14 +221,16 @@ func (c *Client) DeleteProject(projectId string) error {
 }
 
 func (c *Client) GetAllProjects() (*[]Project, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/project/%s", c.region), "GET", bytes.Buffer{})
+	body, err := c.httpRequest(fmt.Sprintf("/project"), "GET", bytes.Buffer{})
 	if err != nil {
+		fmt.Printf(err.Error())
 		return nil, err
 	}
 	projects := []Project{}
 	err = json.NewDecoder(body).Decode(&projects)
 
 	if err != nil {
+		fmt.Printf("errr")
 		return nil, err
 	}
 	return &projects, nil
@@ -262,49 +275,8 @@ func (c *Client) GetProject(project_id string) (*Project, error) {
 	}
 	return project, nil
 }
-func (c *Client) UserLogin(email string, password string) error {
-	buf := bytes.Buffer{}
-
-	loginBody := &LoginBody{
-		Email:    email,
-		Password: password,
-	}
-	err := json.NewEncoder(&buf).Encode(loginBody)
-	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("POST", c.requestPath("/auth/login"), &buf)
-	req.Header.Add("Content-Type", "application/json")
-
-	if err != nil {
-		return err
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	if resp.StatusCode != http.StatusOK {
-		respBody := new(bytes.Buffer)
-		_, err := respBody.ReadFrom(resp.Body)
-		if err != nil {
-			return fmt.Errorf("an error occured")
-		}
-		errorResponse := ErrorResponse{}
-		json.NewDecoder(respBody).Decode(&errorResponse)
-		return fmt.Errorf(errorResponse.Error)
-	}
-
-	if err != nil {
-		return err
-	}
-	reponseLogin := &ReponseLogin{}
-	err = json.NewDecoder(resp.Body).Decode(reponseLogin)
-	addUserToken(reponseLogin.Token)
-	if err != nil {
-		return err
-	}
+func (c *Client) UserLogin(access_key string, secret_key string) error {
+	addUserCredentials(access_key,secret_key)
 	return nil
 }
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.ReadCloser, err error) {
@@ -315,7 +287,7 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		return nil, err
 	}
 
-	req.Header.Set("X-User-Token", user_token)
+	req.Header.Set("X-Auth-Token", user_token)
 
 	if err != nil {
 		return nil, err
@@ -340,11 +312,11 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 }
 
 func (c *Client) requestPath(path string) string {
-	hostname := "https://cloud-api.comwork.io/v1"
+	hostname := GetDefaultEndpoint()
 	return fmt.Sprintf("%s%s", hostname, path)
 }
 
-func addUserToken(token string) {
+func addUserCredentials(access_key string, secret_key string) {
 	dirname, err := os.UserHomeDir()
 
 	if err != nil {
@@ -362,7 +334,14 @@ func addUserToken(token string) {
 		log.Fatal(err)
 
 	}
-	_, err = f.WriteString("access_token = " + token)
+	_, err = f.WriteString("cwc_access_key = " + access_key+"\n")
+
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	_, err = f.WriteString("cwc_secret_key = " + secret_key+"\n")
+
 	if err != nil {
 		log.Fatal(err)
 
@@ -384,26 +363,70 @@ func getUserToken() (string, error) {
 	}
 
 	file_content := string(content)
-	return strings.TrimSpace(strings.Split(file_content, "=")[1]), nil
+	secret_key := GetValueFromFile(file_content,"cwc_secret_key" )
+	return secret_key,err
 }
 
 func GetDefaultRegion() string {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
 
-		return "fr-par-1"
+		return "fr-par"
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
 	if err != nil {
-		return "fr-par-1"
+		return "fr-par"
 	}
 
 	file_content := string(content)
-	return strings.TrimSpace(strings.Split(file_content, "=")[1])
+	region := GetValueFromFile(file_content,"region")
+	return region
 }
 
 func SetDefaultRegion(region string) {
+	UpdateFileKeyValue("config","region",region)
+}
+
+func GetDefaultEndpoint() string {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+
+		return "None"
+	}
+
+	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
+	if err != nil {
+		return "None"
+	}
+
+	file_content := string(content)
+	endpoint := GetValueFromFile(file_content,"endpoint")
+	return endpoint
+}
+
+
+
+func SetDefaultEndpoint(endpoint string) {
+	UpdateFileKeyValue("config","endpoint",endpoint)
+}
+
+func GetValueFromFile(content_file string,key string) string {
+	lines := strings.Split(content_file, "\n")
+	var requested_line string
+	for i, line := range lines {
+			if strings.Contains(line, key+" =") {
+				requested_line = lines[i]
+			}
+	}
+	if requested_line ==""{
+		return ""
+	}
+	return strings.Split(requested_line, " = ")[1]
+}
+
+
+func UpdateFileKeyValue(filename string, key string, value string){
 	dirname, err := os.UserHomeDir()
 
 	if err != nil {
@@ -415,15 +438,42 @@ func SetDefaultRegion(region string) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		os.Create(dirname + "/.cwc/"+filename)
+	}else{
+		if _, err := os.Stat(dirname+"/.cwc/"+filename);os.IsNotExist(err) {
+			os.Create(dirname + "/.cwc/config")
+		  }
 	}
-	f, err := os.Create(dirname + "/.cwc/config")
-	if err != nil {
-		log.Fatal(err)
+	file_content, err := ioutil.ReadFile(dirname + "/.cwc/"+filename)
+	if GetValueFromFile(string(file_content),"endpoint")==""{
+		config_file, err := os.OpenFile(dirname + "/.cwc/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = config_file.WriteString(key+" = " + value+"\n")
+		if err != nil {
+			log.Fatal(err)
+	
+		}
+	}else{
+		SetValueToKeyInFile(filename,key,value)
+	}
 
+}
+func SetValueToKeyInFile(file string,key string,value string) {
+	dirname, err := os.UserHomeDir()
+	file_output, err := ioutil.ReadFile(dirname + "/.cwc/"+file)
+	file_content := string(file_output)
+	lines := strings.Split(file_content, "\n")
+	for i, line := range lines {
+			if strings.Contains(line, key+" =") {
+				lines[i] = key+" = "+value+"\n"
+			}
 	}
-	_, err = f.WriteString("region = " + region)
-	if err != nil {
-		log.Fatal(err)
+	output := strings.Join(lines, "\n")
+    err = ioutil.WriteFile(dirname + "/.cwc/"+file, []byte(output), 0644)
+    if err != nil {
+                log.Fatalln(err)
+    }
 
-	}
 }

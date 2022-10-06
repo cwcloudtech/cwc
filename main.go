@@ -46,6 +46,10 @@ func main() {
 
 	createProjectCmd := flag.NewFlagSet("create project", flag.ExitOnError)
 	AddProjectName := createProjectCmd.String("name", "", "The Project name")
+	AddProjectHost := createProjectCmd.String("host", "", "Gitlab host")
+	AddProjectToken := createProjectCmd.String("token", "", "Gitlab Token")
+	AddProjectGitUsername := createProjectCmd.String("git", "", "Git username")
+	AddProjectNamespace := createProjectCmd.String("group", "", "Gitlab Group ID")
 
 	DeleteInstanceCmd := flag.NewFlagSet("delete project", flag.ExitOnError)
 	DeleteInstanceById := DeleteInstanceCmd.String("id", "", "Target project ID")
@@ -58,12 +62,13 @@ func main() {
 
 	// login handlers
 	loginCmd := flag.NewFlagSet("login", flag.ExitOnError)
-	loginEmail := loginCmd.String("u", "", "Account email")
-	loginPassword := loginCmd.String("p", "", "Account password")
+	loginEmail := loginCmd.String("a", "", "access key")
+	loginPassword := loginCmd.String("s", "", "secret key")
 
 	// configuration handlers
 	configureCmd := flag.NewFlagSet("configure", flag.ExitOnError)
 	configureRegionCmd := configureCmd.Bool("region", false, "Configure the default region")
+	configureEndpointCmd := configureCmd.Bool("endpoint", false, "Configure the cloud api endpoint")
 
 	if len(os.Args) < 2 {
 		fmt.Println("usage: cwc <command> [parameters]")
@@ -92,7 +97,7 @@ func main() {
 
 		switch os.Args[2] {
 		case "project":
-			handlers.HandleAddProject(createProjectCmd, AddProjectName)
+			handlers.HandleAddProject(createProjectCmd, AddProjectName,AddProjectHost,AddProjectToken,AddProjectGitUsername,AddProjectNamespace)
 		case "instance":
 			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType)
 		}
@@ -117,7 +122,7 @@ func main() {
 	case "login":
 		handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
 	case "configure":
-		handlers.HandleConfigure(configureCmd, configureRegionCmd)
+		handlers.HandleConfigure(configureCmd, configureRegionCmd,configureEndpointCmd)
 	case "help":
 		handlers.HandleHelp(helpCmd)
 	case "--version":
