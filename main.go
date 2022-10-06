@@ -69,6 +69,7 @@ func main() {
 	configureCmd := flag.NewFlagSet("configure", flag.ExitOnError)
 	configureRegionCmd := configureCmd.Bool("region", false, "Configure the default region")
 	configureEndpointCmd := configureCmd.Bool("endpoint", false, "Configure the cloud api endpoint")
+	configureProviderCmd := configureCmd.Bool("provider", false, "Configure the default provider")
 
 	if len(os.Args) < 2 {
 		fmt.Println("usage: cwc <command> [parameters]")
@@ -122,7 +123,7 @@ func main() {
 	case "login":
 		handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
 	case "configure":
-		handlers.HandleConfigure(configureCmd, configureRegionCmd,configureEndpointCmd)
+		handlers.HandleConfigure(configureCmd, configureRegionCmd,configureEndpointCmd,configureProviderCmd)
 	case "help":
 		handlers.HandleHelp(helpCmd)
 	case "--version":

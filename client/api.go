@@ -206,7 +206,6 @@ func (c *Client) AddProject(project_name string,host string,token string,git_use
 	created_project := &Project{}
 	err = json.NewDecoder(respBody).Decode(created_project)
 	if err != nil {
-		fmt.Printf("hahah")
 		return nil, err
 	}
 	return created_project, nil
@@ -388,6 +387,29 @@ func SetDefaultRegion(region string) {
 	UpdateFileKeyValue("config","region",region)
 }
 
+func SetDefaultProvider(provider string) {
+	UpdateFileKeyValue("config","provider",provider)
+}
+
+
+func GetDefaultProvider() string {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+
+		return "None"
+	}
+
+	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
+	if err != nil {
+		return "None"
+	}
+
+	file_content := string(content)
+	provider := GetValueFromFile(file_content,"provider")
+	return provider
+}
+
+
 func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
@@ -445,7 +467,7 @@ func UpdateFileKeyValue(filename string, key string, value string){
 		  }
 	}
 	file_content, err := ioutil.ReadFile(dirname + "/.cwc/"+filename)
-	if GetValueFromFile(string(file_content),"endpoint")==""{
+	if GetValueFromFile(string(file_content),key)==""{
 		config_file, err := os.OpenFile(dirname + "/.cwc/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatal(err)

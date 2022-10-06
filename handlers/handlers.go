@@ -102,10 +102,10 @@ func HandleLogin(loginCmd *flag.FlagSet, access_key *string, secret_key *string)
 	fmt.Printf("You are successfully logged in\n")
 }
 
-func HandleConfigure(configureCmd *flag.FlagSet, region *bool,endpoint *bool) {
+func HandleConfigure(configureCmd *flag.FlagSet, region *bool,endpoint *bool,provider *bool) {
 
 	configureCmd.Parse(os.Args[2:])
-	if !*region && !*endpoint {
+	if !*region && !*endpoint && !*provider {
 		fmt.Println("cwc: flag is missing")
 		configureCmd.PrintDefaults()
 		os.Exit(1)
@@ -157,6 +157,10 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool,endpoint *bool) {
 			client.SetDefaultEndpoint(value)
 			fmt.Printf("Default endpoint = %v\n", value)
 		}
+		if *provider{
+			client.SetDefaultProvider(value)
+			fmt.Printf("Default provider = %v\n", value)
+		}
 
 	case "get":
 		if *region{
@@ -167,6 +171,10 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool,endpoint *bool) {
 		if *endpoint{
 			endpoint := client.GetDefaultEndpoint()
 			fmt.Printf("Default endpoint = %v\n", endpoint)
+		}
+		if *provider{
+			provider := client.GetDefaultProvider()
+			fmt.Printf("Default provider = %v\n", provider)
 		}
 	default:
 		fmt.Printf("cwc: option not found")
