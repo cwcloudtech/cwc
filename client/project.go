@@ -22,7 +22,6 @@ func (c *Client) AddProject(project_name string, host string, token string, git_
 	}
 	respBody, err := c.httpRequest(fmt.Sprintf("/project"), "POST", buf)
 	if err != nil {
-		fmt.Printf(err.Error())
 		return nil, err
 	}
 	created_project := &Project{}
@@ -44,7 +43,6 @@ func (c *Client) DeleteProject(projectId string) error {
 func (c *Client) GetAllProjects() (*[]Project, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/project"), "GET", bytes.Buffer{})
 	if err != nil {
-		fmt.Printf(err.Error())
 		return nil, err
 	}
 	projects := []Project{}
