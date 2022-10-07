@@ -38,6 +38,17 @@ func main() {
 	updateInstanceId := updateInstanceCmd.String("id", "", "Target instance ID")
 	updateInstanceStatus := updateInstanceCmd.String("status", "", "Instance status (poweroff, poweron, reboot)")
 
+	// bucket handlers
+	getBucketCmd := flag.NewFlagSet("get instance", flag.ExitOnError)
+	getAllBuckets := getBucketCmd.Bool("all", false, "Get all instances")
+	getBucketById := getBucketCmd.String("id", "", "Get instance by ID")
+
+	deleteBucketCmd := flag.NewFlagSet("delete instance", flag.ExitOnError)
+	deleteBucketById := deleteBucketCmd.String("id", "", "Target instance ID")
+
+	updateBucketCmd := flag.NewFlagSet("update instance", flag.ExitOnError)
+	updateBucketById := updateBucketCmd.String("id", "", "Target instance ID")
+
 	// project handlers
 
 	GetProjectCmd := flag.NewFlagSet("get project", flag.ExitOnError)
@@ -89,7 +100,8 @@ func main() {
 			handlers.HandleGetProject(GetProjectCmd, getAllProjects, GetProjectById)
 		case "instance":
 			handlers.HandleGetInstance(getInstanceCmd, getAllInstances, getInstanceById)
-
+		case "bucket":
+			handlers.HandleGetBucket(getBucketCmd, getAllBuckets, getBucketById)
 		case "environment":
 			handlers.HandleGetEnvironment(GetEnvCmd, getAllEnv, getEnvById)
 		}
@@ -113,11 +125,16 @@ func main() {
 			handlers.HandleDeleteProject(DeleteInstanceCmd, DeleteInstanceById)
 		case "instance":
 			handlers.HandleDeleteInstance(deleteInstanceCmd, deleteInstanceById)
+
+		case "bucket":
+			handlers.HandleDeleteBucket(deleteBucketCmd, deleteBucketById)
 		}
 	case "update":
 		switch os.Args[2] {
 		case "instance":
 			handlers.HandleUpdateInstance(updateInstanceCmd, updateInstanceId, updateInstanceStatus)
+		case "bucket":
+			handlers.HandleUpdateBucket(updateBucketCmd, updateBucketById)
 		}
 
 	case "login":

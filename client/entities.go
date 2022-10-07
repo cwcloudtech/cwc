@@ -44,9 +44,23 @@ type Instance struct {
 	Instance_type string `json:"type"`
 	Environment   string `json:"environment"`
 	Status        string `json:"status"`
+	CreatedAt     int    `json:"created_at"`
 	Project       int    `json:"project_id"`
 	Region        string `json:"region"`
 	Ip_address    string `json:"ip_address"`
+}
+
+type Bucket struct {
+	Id          int    `json:"id"`
+	Name        string `json:"name"`
+	Environment string `json:"environment"`
+	Status      string `json:"status"`
+	CreatedAt   string `json:"created_at"`
+	AccessKey   string `json:"access_key"`
+	Endpoint    string `json:"endpoint"`
+	SecretKey   string `json:"secret_key"`
+	Region      string `json:"region"`
+	Type        string `json:"type"`
 }
 
 type Project struct {

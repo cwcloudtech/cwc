@@ -38,8 +38,8 @@ func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *st
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tgitlab url\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
+	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tproject_id\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.CreatedAt, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
 
 }
 func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, env *string, instance_type *string, zone *string) {
@@ -51,8 +51,8 @@ func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, e
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tgitlab url\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
+	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tproject_id\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.CreatedAt, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
 
 }
 
@@ -69,7 +69,7 @@ func HandleUpdateInstance(updateCmd *flag.FlagSet, id *string, status *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Project %v successfully updated\n", *id)
+	fmt.Printf("Instance %v successfully updated\n", *id)
 
 }
 
@@ -91,9 +91,9 @@ func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 			os.Exit(1)
 		}
 
-		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
+		fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
 		for _, instance := range *instances {
-			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
+			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
 
 		}
 
@@ -106,8 +106,8 @@ func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("ID\tname\tstatus\tsize\tenvironment\tpublic ip\tgitlab url\n")
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
+		fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
+		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
 
 		return
 	}

@@ -15,8 +15,8 @@ func HandleAddProject(createCmd *flag.FlagSet, name *string, host *string, token
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tname\tcreated_at\turl\n")
-	fmt.Printf("%v\t%v\t%v\t%v\n", created_project.Id, created_project.Name, created_project.CreatedAt, created_project.Url)
+	fmt.Printf("ID\tcreated_at\tname\turl\n")
+	fmt.Printf("%v\t%v\t%v\t%v\n", created_project.Id, created_project.CreatedAt, created_project.Name, created_project.Url)
 
 }
 
@@ -55,9 +55,9 @@ func HandleGetProject(getCmd *flag.FlagSet, all *bool, id *string) {
 			os.Exit(1)
 		}
 
-		fmt.Printf("ID\tname\tcreated_at\turl\n")
+		fmt.Printf("ID\tcreated_at\tname\turl\n")
 		for _, project := range *projects {
-			fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.Name, project.CreatedAt, project.Url)
+			fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.CreatedAt, project.Name, project.Url)
 		}
 
 		return
@@ -69,8 +69,8 @@ func HandleGetProject(getCmd *flag.FlagSet, all *bool, id *string) {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("ID\tname\tcreated_at\turl\n")
-		fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.Name, project.CreatedAt, project.Url)
+		fmt.Printf("ID\tcreated_at\tname\tcreated_at\turl\n")
+		fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.CreatedAt, project.Name, project.Url)
 
 		return
 	}
