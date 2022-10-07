@@ -25,7 +25,7 @@ func main() {
 	addInstanceProjectId := createInstanceCmd.Int("project_id", 0, "The project id that you want to associete with the instance")
 	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the instance (code, wpaas)")
 	addInstanceType := createInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
-
+	addInstanceZone := createInstanceCmd.String("zone", "", "instance zone")
 	attachInstanceCmd := flag.NewFlagSet("attach instance", flag.ExitOnError)
 	attachInstancePlaybook := attachInstanceCmd.String("name", "", "The playbook name you want to run")
 	attachInstanceProjectId := attachInstanceCmd.Int("project_id", 0, "The project id that you want to attach with the instance")
@@ -98,9 +98,9 @@ func main() {
 
 		switch os.Args[2] {
 		case "project":
-			handlers.HandleAddProject(createProjectCmd, AddProjectName,AddProjectHost,AddProjectToken,AddProjectGitUsername,AddProjectNamespace)
+			handlers.HandleAddProject(createProjectCmd, AddProjectName, AddProjectHost, AddProjectToken, AddProjectGitUsername, AddProjectNamespace)
 		case "instance":
-			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType)
+			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone)
 		}
 	case "attach":
 		switch os.Args[2] {
@@ -123,7 +123,7 @@ func main() {
 	case "login":
 		handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
 	case "configure":
-		handlers.HandleConfigure(configureCmd, configureRegionCmd,configureEndpointCmd,configureProviderCmd)
+		handlers.HandleConfigure(configureCmd, configureRegionCmd, configureEndpointCmd, configureProviderCmd)
 	case "help":
 		handlers.HandleHelp(helpCmd)
 	case "--version":
