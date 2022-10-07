@@ -36,19 +36,21 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool, endpoint *bool, p
 			os.Exit(1)
 		}
 		if *region {
+			provider_regions, err := client.GetProviderRegions()
+			if err != nil {
+				fmt.Printf("failed: %s\n", err)
+				os.Exit(1)
 
-			possible_regions := make([]string, 9)
-			possible_regions[0] = "fr-par"
-			possible_regions[1] = "nl-ams"
-			possible_regions[2] = "pl-waw"
-			possible_regions[3] = "SBG5"
-			possible_regions[4] = "GRA11"
-			possible_regions[5] = "UK1"
-			possible_regions[6] = "DE1"
-			possible_regions[7] = "BHS5"
-			possible_regions[8] = "WAW1"
+			}
+			available_regions := []string{}
+			for _, available_region := range provider_regions.Regions {
+				available_regions = append(
+					available_regions,
+					available_region.Name,
+				)
 
-			if !utils.StringInSlice(value, possible_regions) {
+			}
+			if !utils.StringInSlice(value, available_regions) {
 				fmt.Println("cwc: invalid region value")
 				os.Exit(1)
 
@@ -62,6 +64,25 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool, endpoint *bool, p
 			fmt.Printf("Default endpoint = %v\n", value)
 		}
 		if *provider {
+			providers, err := client.GetProviders()
+			if err != nil {
+				fmt.Printf("failed: %s\n", err)
+				os.Exit(1)
+
+			}
+			available_providers := []string{}
+			for _, available_provider := range providers.Providers {
+				available_providers = append(
+					available_providers,
+					available_provider.Name,
+				)
+
+			}
+			if !utils.StringInSlice(value, available_providers) {
+				fmt.Println("cwc: invalid provider value")
+				os.Exit(1)
+
+			}
 			client.SetDefaultProvider(value)
 			fmt.Printf("Default provider = %v\n", value)
 		}

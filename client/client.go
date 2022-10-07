@@ -240,7 +240,7 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	lines := strings.Split(file_content, "\n")
 	for i, line := range lines {
 		if strings.Contains(line, key+" =") {
-			lines[i] = key + " = " + value + "\n"
+			lines[i] = key + " = " + value
 		}
 	}
 	output := strings.Join(lines, "\n")

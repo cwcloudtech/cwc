@@ -88,3 +88,16 @@ type AddProjectBody struct {
 	Namespace   string `json:"namespace"`
 	GitUsername string `json:"git_username"`
 }
+type ProviderRegion struct {
+	Name  string   `json:"name"`
+	Zones []string `json:"zones"`
+}
+type ProviderRegions struct {
+	Regions []ProviderRegion `json:"regions"`
+}
+type Provider struct {
+	Name string `json:"name"`
+}
+type AvailableProviders struct {
+	Providers []Provider `json:"providers"`
+}
