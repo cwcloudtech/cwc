@@ -55,11 +55,11 @@ dockers:
 
 brews:
   -
-    name: oss/cwc
+    name: cwc
     homepage: https://gitlab.comwork.io/oss/cwc/cwc
     tap:
       owner: oss/cwc
-      name: homebrew-cwc
+      name: cwc/homebrew-cwc
     commit_author:
       name: amirghedira
       email: amirghedira06@gmail.com
