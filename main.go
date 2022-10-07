@@ -39,15 +39,26 @@ func main() {
 	updateInstanceStatus := updateInstanceCmd.String("status", "", "Instance status (poweroff, poweron, reboot)")
 
 	// bucket handlers
-	getBucketCmd := flag.NewFlagSet("get instance", flag.ExitOnError)
-	getAllBuckets := getBucketCmd.Bool("all", false, "Get all instances")
-	getBucketById := getBucketCmd.String("id", "", "Get instance by ID")
+	getBucketCmd := flag.NewFlagSet("get bucket", flag.ExitOnError)
+	getAllBuckets := getBucketCmd.Bool("all", false, "Get all buckets")
+	getBucketById := getBucketCmd.String("id", "", "Get bucket by ID")
 
-	deleteBucketCmd := flag.NewFlagSet("delete instance", flag.ExitOnError)
-	deleteBucketById := deleteBucketCmd.String("id", "", "Target instance ID")
+	deleteBucketCmd := flag.NewFlagSet("delete bucket", flag.ExitOnError)
+	deleteBucketById := deleteBucketCmd.String("id", "", "Target bucket ID")
 
-	updateBucketCmd := flag.NewFlagSet("update instance", flag.ExitOnError)
-	updateBucketById := updateBucketCmd.String("id", "", "Target instance ID")
+	updateBucketCmd := flag.NewFlagSet("update bucket", flag.ExitOnError)
+	updateBucketById := updateBucketCmd.String("id", "", "Target bucket ID")
+
+	// registry handlers
+	getRegistryCmd := flag.NewFlagSet("get registry", flag.ExitOnError)
+	getAllRegistries := getRegistryCmd.Bool("all", false, "Get all registries")
+	getRegistryById := getRegistryCmd.String("id", "", "Get registry by ID")
+
+	deleteRegistryCmd := flag.NewFlagSet("delete registry", flag.ExitOnError)
+	deleteRegistryById := deleteRegistryCmd.String("id", "", "Target registry ID")
+
+	updateRegistryCmd := flag.NewFlagSet("update registry", flag.ExitOnError)
+	updateRegistryById := updateRegistryCmd.String("id", "", "Target registry ID")
 
 	// project handlers
 
@@ -102,6 +113,8 @@ func main() {
 			handlers.HandleGetInstance(getInstanceCmd, getAllInstances, getInstanceById)
 		case "bucket":
 			handlers.HandleGetBucket(getBucketCmd, getAllBuckets, getBucketById)
+		case "registry":
+			handlers.HandleGetRegistry(getRegistryCmd, getAllRegistries, getRegistryById)
 		case "environment":
 			handlers.HandleGetEnvironment(GetEnvCmd, getAllEnv, getEnvById)
 		}
@@ -125,7 +138,8 @@ func main() {
 			handlers.HandleDeleteProject(DeleteInstanceCmd, DeleteInstanceById)
 		case "instance":
 			handlers.HandleDeleteInstance(deleteInstanceCmd, deleteInstanceById)
-
+		case "registry":
+			handlers.HandleDeleteRegistry(deleteRegistryCmd, deleteRegistryById)
 		case "bucket":
 			handlers.HandleDeleteBucket(deleteBucketCmd, deleteBucketById)
 		}
@@ -135,6 +149,8 @@ func main() {
 			handlers.HandleUpdateInstance(updateInstanceCmd, updateInstanceId, updateInstanceStatus)
 		case "bucket":
 			handlers.HandleUpdateBucket(updateBucketCmd, updateBucketById)
+		case "registry":
+			handlers.HandleUpdateRegistry(updateRegistryCmd, updateRegistryById)
 		}
 
 	case "login":

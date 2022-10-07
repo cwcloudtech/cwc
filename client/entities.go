@@ -51,16 +51,26 @@ type Instance struct {
 }
 
 type Bucket struct {
-	Id          int    `json:"id"`
-	Name        string `json:"name"`
-	Environment string `json:"environment"`
-	Status      string `json:"status"`
-	CreatedAt   string `json:"created_at"`
-	AccessKey   string `json:"access_key"`
-	Endpoint    string `json:"endpoint"`
-	SecretKey   string `json:"secret_key"`
-	Region      string `json:"region"`
-	Type        string `json:"type"`
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Status    string `json:"status"`
+	CreatedAt string `json:"created_at"`
+	AccessKey string `json:"access_key"`
+	Endpoint  string `json:"endpoint"`
+	SecretKey string `json:"secret_key"`
+	Region    string `json:"region"`
+	Type      string `json:"type"`
+}
+type Registry struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Status    string `json:"status"`
+	CreatedAt string `json:"created_at"`
+	AccessKey string `json:"access_key"`
+	Endpoint  string `json:"endpoint"`
+	SecretKey string `json:"secret_key"`
+	Region    string `json:"region"`
+	Type      string `json:"type"`
 }
 
 type Project struct {
