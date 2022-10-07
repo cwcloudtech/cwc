@@ -55,7 +55,7 @@ dockers:
 
 brews:
   -
-    name: cwc
+    name: oss/cwc
     homepage: https://gitlab.comwork.io/oss/cwc/cwc
     tap:
       owner: cwc
