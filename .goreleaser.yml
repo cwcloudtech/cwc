@@ -46,8 +46,8 @@ dockers:
   build_flag_templates:
   - --label=org.opencontainers.image.title={{ .ProjectName }}
   - --label=org.opencontainers.image.description={{ .ProjectName }}
-  - --label=org.opencontainers.image.url=https://gitlab.comwork.io/oss/cwc
-  - --label=org.opencontainers.image.source=https://gitlab.comwork.io/oss/cwc
+  - --label=org.opencontainers.image.url=https://gitlab.comwork.io/oss/cwc/cwc
+  - --label=org.opencontainers.image.source=https://gitlab.comwork.io/oss/cwc/cwc
   - --label=org.opencontainers.image.version={{ .Version }}
   - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
   - --label=org.opencontainers.image.revision={{ .FullCommit }}
@@ -57,7 +57,7 @@ dockers:
 brews:
   -
     name: cwc
-    homepage: https://gitlab.comwork.io/oss/cwc
+    homepage: https://gitlab.comwork.io/oss/cwc/cwc
     tap:
       owner: cwc
       name: homebrew-cwc
@@ -65,7 +65,7 @@ brews:
       name: amirghedira
       email: amirghedira06@gmail.com
   - 
-    url_template: "http://gitlab.comwork.io/oss/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
+    url_template: "http://gitlab.comwork.io/oss/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 
 
 checksum:
