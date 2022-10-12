@@ -9,7 +9,7 @@ import (
 func HandleHelp(helpCmd *flag.FlagSet) {
 	helpCmd.Parse(os.Args[2:])
 	fmt.Printf("Usage: cwc <commands>\n\n")
-	fmt.Printf("List of available commands:\n\n")
+	fmt.Printf("List of available commands:\n")
 	fmt.Printf("- help (or -h|--help)\n")
 	fmt.Printf("  getting help details\n")
 	fmt.Printf("- version (or -v|--version)\n")
@@ -34,5 +34,5 @@ func HandleHelp(helpCmd *flag.FlagSet) {
 	fmt.Printf("  delete an existing project\n")
 	fmt.Printf("- get environement\n")
 	fmt.Printf("  get one or many environments\n")
-    fmt.Printf("For getting more informations, see this tutorial: https://doc.cloud.comwork.io/docs/tutorials/api/cli \n\n")
+    fmt.Printf("\nFor getting more informations, see this tutorial: https://doc.cloud.comwork.io/docs/tutorials/api/cli\n\n")
 }
