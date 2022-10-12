@@ -7,7 +7,6 @@ import (
 )
 
 func HandleHelp(helpCmd *flag.FlagSet) {
-
 	helpCmd.Parse(os.Args[2:])
 	fmt.Printf("cwc: available commands:\n\n\n")
 	fmt.Printf("- create instance \n")
@@ -34,4 +33,5 @@ func HandleHelp(helpCmd *flag.FlagSet) {
 	fmt.Printf("- configure \n")
 	fmt.Printf("  configure your default settings like region\n\n")
 
+    fmt.Printf("More informations, see this tutorial: https://doc.cloud.comwork.io/docs/tutorials/api/cli \n\n")
 }
