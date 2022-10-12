@@ -151,9 +151,9 @@ func main() {
 			handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
 		case "configure":
 			handlers.HandleConfigure(configureCmd, configureRegionCmd, configureEndpointCmd, configureProviderCmd)
-		case "help":
+		case "help", "--help", "-h":
 			handlers.HandleHelp(helpCmd)
-		case "--version":
+		case "version", "--version", "-v":
 			handlers.HandleVersion(versionCmd, Version)
 		default:
 			fmt.Printf("cwc: command not found")
