@@ -12,6 +12,7 @@ var Version = "dev"
 
 func main() {
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
+
 	versionCmd := flag.NewFlagSet("version", flag.ExitOnError)
 
 	// instance handlers
@@ -95,10 +96,10 @@ func main() {
 	// provider handlers
 	regionCmd := flag.NewFlagSet("get regions", flag.ExitOnError)
 
-	if len(os.Args) <= 2 {
+	if len(os.Args) < 2 {
 		fmt.Println("usage: cwc <command> [parameters]")
 		fmt.Printf("To see help text, you can run:\n\n")
-		fmt.Printf("cwc <command> help\n\n")
+		fmt.Printf("cwc help\n\n")
 		fmt.Println("cwc: error: the following arguments are required: command")
 		os.Exit(1)
 		return
@@ -106,6 +107,10 @@ func main() {
 
 	switch os.Args[1] {
 	case "get":
+		if len(os.Args) <= 2 {
+			handlers.HandleHelp(helpCmd)
+			os.Exit(1)
+		}
 		switch os.Args[2] {
 		case "project":
 			handlers.HandleGetProject(GetProjectCmd, getAllProjects, GetProjectById)
@@ -122,27 +127,39 @@ func main() {
 		case "regions":
 			handlers.HandleListRegions(regionCmd)
 		default:
-			fmt.Printf("cwc: command not found")
+			fmt.Printf("cwc: command not found\n")
 		}
 
 	case "create":
+		if len(os.Args) <= 2 {
+			handlers.HandleHelp(helpCmd)
+			os.Exit(1)
+		}
 		switch os.Args[2] {
 		case "project":
 			handlers.HandleAddProject(createProjectCmd, AddProjectName, AddProjectHost, AddProjectToken, AddProjectGitUsername, AddProjectNamespace)
 		case "instance":
 			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone)
 		default:
-			fmt.Printf("cwc: command not found")
+			fmt.Printf("cwc: command not found\n")
 		}
 	case "attach":
+		if len(os.Args) <= 2 {
+			handlers.HandleHelp(helpCmd)
+			os.Exit(1)
+		}
 		switch os.Args[2] {
 		case "instance":
 			handlers.HandleAttachInstance(attachInstanceCmd, attachInstanceProjectId, attachInstancePlaybook, attachInstanceType)
 		default:
-			fmt.Printf("cwc: command not found")
+			fmt.Printf("cwc: command not found\n")
 		}
 
 	case "delete":
+		if len(os.Args) <= 2 {
+			handlers.HandleHelp(helpCmd)
+			os.Exit(1)
+		}
 		switch os.Args[2] {
 		case "project":
 			handlers.HandleDeleteProject(DeleteInstanceCmd, DeleteInstanceById)
@@ -153,9 +170,13 @@ func main() {
 		case "bucket":
 			handlers.HandleDeleteBucket(deleteBucketCmd, deleteBucketById)
 		default:
-			fmt.Printf("cwc: command not found")
+			fmt.Printf("cwc: command not found\n")
 		}
 	case "update":
+		if len(os.Args) <= 2 {
+			handlers.HandleHelp(helpCmd)
+			os.Exit(1)
+		}
 		switch os.Args[2] {
 		case "instance":
 			handlers.HandleUpdateInstance(updateInstanceCmd, updateInstanceId, updateInstanceStatus)
@@ -164,7 +185,7 @@ func main() {
 		case "registry":
 			handlers.HandleUpdateRegistry(updateRegistryCmd, updateRegistryById)
 		default:
-			fmt.Printf("cwc: command not found")
+			fmt.Printf("cwc: command not found\n")
 		}
 
 	case "login":
@@ -176,7 +197,7 @@ func main() {
 	case "version", "--version", "-v":
 		handlers.HandleVersion(versionCmd, Version)
 	default:
-		fmt.Printf("cwc: command not found")
+		fmt.Printf("cwc: command not found\n")
 	}
 
 }

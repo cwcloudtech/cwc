@@ -12,10 +12,15 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool, endpoint *bool, p
 
 	configureCmd.Parse(os.Args[2:])
 	if !*region && !*endpoint && !*provider {
-		fmt.Println("cwc: flag is missing")
-		configureCmd.PrintDefaults()
+		if os.Args[2] == "help" {
+			configureCmd.PrintDefaults()
+
+		} else {
+			fmt.Println("cwc: flag is missing")
+		}
 		os.Exit(1)
 	}
+
 	if len(os.Args) < 4 {
 		fmt.Println("cwc: invalid arguments")
 		fmt.Println("cwc configure <command> <subcommand> <value>")
@@ -27,8 +32,12 @@ func HandleConfigure(configureCmd *flag.FlagSet, region *bool, endpoint *bool, p
 	}
 	subSubCommmand := os.Args[3]
 	switch subSubCommmand {
-
 	case "set":
+
+		if len(os.Args) <= 4 {
+			fmt.Println("cwc: missing mandatory parameter, please check cwc --help.")
+			os.Exit(1)
+		}
 		value := os.Args[4]
 		if value == "" {
 			fmt.Println("cwc: value is missing")
