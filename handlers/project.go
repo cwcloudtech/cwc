@@ -9,6 +9,11 @@ import (
 
 func HandleAddProject(createCmd *flag.FlagSet, name *string, host *string, token *string, git_username *string, namespace *string) {
 	createCmd.Parse(os.Args[3:])
+	if *name == "" {
+		fmt.Println("name is required to add a new project")
+		createCmd.PrintDefaults()
+		os.Exit(1)
+	}
 	client, _ := client.NewClient()
 	created_project, err := client.AddProject(*name, *host, *token, *git_username, *namespace)
 	if err != nil {
