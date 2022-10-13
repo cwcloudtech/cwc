@@ -15,8 +15,12 @@ func HandleDeleteBucket(deleteCmd *flag.FlagSet, id *string) {
 		deleteCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-	err := client.DeleteBucket(*id)
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.DeleteBucket(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -31,8 +35,12 @@ func HandleUpdateBucket(updateCmd *flag.FlagSet, id *string) {
 		updateCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-	err := client.UpdateBucket(*id)
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.UpdateBucket(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -49,7 +57,11 @@ func HandleGetBucket(getCmd *flag.FlagSet, all *bool, id *string) {
 		getCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 	if *all {
 
 		buckets, err := client.GetAllBuckets()

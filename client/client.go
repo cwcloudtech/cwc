@@ -13,14 +13,22 @@ import (
 	"strings"
 )
 
-func NewClient() *Client {
+func NewClient() (*Client, error) {
 	region := GetDefaultRegion()
 	provider := GetDefaultProvider()
+	err := error(nil)
+
+	if provider == "" {
+		err = fmt.Errorf("default provider is not set")
+	} else if region == "" {
+		err = fmt.Errorf("default region is not set")
+	}
+
 	return &Client{
 		region:     region,
 		provider:   provider,
 		httpClient: &http.Client{},
-	}
+	}, err
 }
 
 func (c *Client) UserLogin(access_key string, secret_key string) error {
@@ -81,8 +89,14 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 }
 
 func (c *Client) requestPath(path string) string {
+
+	default_api_endpoint := "https://cloud-api.comwork.io"
+	default_api_version := "v1"
 	hostname := GetDefaultEndpoint()
-	return fmt.Sprintf("%s%s", hostname, path)
+	if hostname == "" {
+		hostname = default_api_endpoint
+	}
+	return fmt.Sprintf("%s/%s%s", hostname, default_api_version, path)
 }
 
 func addUserCredentials(access_key string, secret_key string) {

@@ -15,8 +15,12 @@ func HandleDeleteInstance(deleteCmd *flag.FlagSet, id *string) {
 		deleteCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-	err := client.DeleteInstance(*id)
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.DeleteInstance(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -32,7 +36,11 @@ func ValidateInstance(createCmd *flag.FlagSet, name *string, env *string) {
 
 func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *string, instance_type *string) {
 	attachCmd.Parse(os.Args[3:])
-	client := client.NewClient()
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 	created_instance, err := client.AttachInstance(*project_id, *playbook, *instance_type)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -45,7 +53,11 @@ func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *st
 func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, env *string, instance_type *string, zone *string) {
 	createCmd.Parse(os.Args[3:])
 	ValidateInstance(createCmd, name, env)
-	client := client.NewClient()
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 	created_instance, err := client.AddInstance(*name, *project_id, *instance_type, *env, *zone)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -63,8 +75,12 @@ func HandleUpdateInstance(updateCmd *flag.FlagSet, id *string, status *string) {
 		updateCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-	err := client.UpdateInstance(*id, *status)
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.UpdateInstance(*id, *status)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -81,7 +97,11 @@ func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
 		getCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 	if *all {
 
 		instances, err := client.GetAllInstances()

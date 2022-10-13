@@ -15,8 +15,12 @@ func HandleDeleteRegistry(deleteCmd *flag.FlagSet, id *string) {
 		deleteCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-	err := client.DeleteRegistry(*id)
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.DeleteRegistry(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -31,8 +35,12 @@ func HandleUpdateRegistry(updateCmd *flag.FlagSet, id *string) {
 		updateCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-	err := client.UpdateRegistry(*id)
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.UpdateRegistry(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -49,7 +57,11 @@ func HandleGetRegistry(getCmd *flag.FlagSet, all *bool, id *string) {
 		getCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 	if *all {
 
 		registries, err := client.GetAllRegistries()

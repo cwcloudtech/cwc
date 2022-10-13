@@ -9,7 +9,7 @@ import (
 
 func HandleAddProject(createCmd *flag.FlagSet, name *string, host *string, token *string, git_username *string, namespace *string) {
 	createCmd.Parse(os.Args[3:])
-	client := client.NewClient()
+	client, _ := client.NewClient()
 	created_project, err := client.AddProject(*name, *host, *token, *git_username, *namespace)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -28,7 +28,7 @@ func HandleDeleteProject(deleteCmd *flag.FlagSet, id *string) {
 		deleteCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
+	client, _ := client.NewClient()
 
 	err := client.DeleteProject(*id)
 	if err != nil {
@@ -45,7 +45,7 @@ func HandleGetProject(getCmd *flag.FlagSet, all *bool, id *string) {
 		getCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
+	client, _ := client.NewClient()
 	if *all {
 
 		projects, err := client.GetAllProjects()

@@ -15,8 +15,7 @@ func HandleLogin(loginCmd *flag.FlagSet, access_key *string, secret_key *string)
 		loginCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
-
+	client, _ := client.NewClient()
 	err := client.UserLogin(*access_key, *secret_key)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)

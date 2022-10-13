@@ -15,7 +15,11 @@ func HandleGetEnvironment(getCmd *flag.FlagSet, all *bool, id *string) {
 		getCmd.PrintDefaults()
 		os.Exit(1)
 	}
-	client := client.NewClient()
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 	if *all {
 
 		environments, err := client.GetAllEnvironments()
