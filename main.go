@@ -108,7 +108,7 @@ func main() {
 	switch os.Args[1] {
 	case "get":
 		if len(os.Args) <= 2 {
-			handlers.HandleHelp(helpCmd)
+			handlers.HandleGetHelp(helpCmd)
 			os.Exit(1)
 		}
 		switch os.Args[2] {
@@ -132,7 +132,7 @@ func main() {
 
 	case "create":
 		if len(os.Args) <= 2 {
-			handlers.HandleHelp(helpCmd)
+			handlers.HandleCreateHelp(helpCmd)
 			os.Exit(1)
 		}
 		switch os.Args[2] {
@@ -157,7 +157,7 @@ func main() {
 
 	case "delete":
 		if len(os.Args) <= 2 {
-			handlers.HandleHelp(helpCmd)
+			handlers.HandleDeleteHelp(helpCmd)
 			os.Exit(1)
 		}
 		switch os.Args[2] {
@@ -174,7 +174,7 @@ func main() {
 		}
 	case "update":
 		if len(os.Args) <= 2 {
-			handlers.HandleHelp(helpCmd)
+			handlers.HandleUpdateHelp(helpCmd)
 			os.Exit(1)
 		}
 		switch os.Args[2] {

@@ -9,7 +9,10 @@ import (
 )
 
 func HandleConfigure(configureCmd *flag.FlagSet, region *bool, endpoint *bool, provider *bool) {
-
+	if len(os.Args) <= 2 {
+		configureCmd.PrintDefaults()
+		os.Exit(1)
+	}
 	configureCmd.Parse(os.Args[2:])
 	if !*region && !*endpoint && !*provider {
 		if os.Args[2] == "help" {
