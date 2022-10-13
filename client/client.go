@@ -24,6 +24,21 @@ func NewClient() *Client {
 }
 
 func (c *Client) UserLogin(access_key string, secret_key string) error {
+
+	buf := bytes.Buffer{}
+	project := ApiKey{
+		Accesskey: access_key,
+		SecretKey: secret_key,
+	}
+
+	err := json.NewEncoder(&buf).Encode(project)
+	if err != nil {
+		return err
+	}
+	_, err = c.httpRequest(fmt.Sprintf("/api_keys/verify"), "POST", buf)
+	if err != nil {
+		return err
+	}
 	addUserCredentials(access_key, secret_key)
 	return nil
 }
@@ -58,7 +73,6 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 			return nil, fmt.Errorf(fmt.Sprintf("Request failed with status %d", resp.StatusCode))
 
 		} else {
-
 			return nil, fmt.Errorf(errorResponse.Error)
 		}
 

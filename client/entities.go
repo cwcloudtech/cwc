@@ -73,6 +73,11 @@ type Registry struct {
 	Type      string `json:"type"`
 }
 
+type ApiKey struct {
+	Accesskey string `json:"access_key"`
+	SecretKey string `json:"secret_key"`
+}
+
 type Project struct {
 	Id        int        `json:"id"`
 	Name      string     `json:"name"`
