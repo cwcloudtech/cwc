@@ -90,7 +90,12 @@ func main() {
 	configureEndpointCmd := configureCmd.Bool("endpoint", false, "Configure the cloud api endpoint")
 	configureProviderCmd := configureCmd.Bool("provider", false, "Configure the default provider")
 
-	if len(os.Args) < 2 {
+	// provider handlers
+	providerCmd := flag.NewFlagSet("get providers", flag.ExitOnError)
+	// provider handlers
+	regionCmd := flag.NewFlagSet("get regions", flag.ExitOnError)
+
+	if len(os.Args) <= 2 {
 		fmt.Println("usage: cwc <command> [parameters]")
 		fmt.Printf("To see help text, you can run:\n\n")
 		fmt.Printf("cwc <command> help\n\n")
@@ -100,63 +105,78 @@ func main() {
 	}
 
 	switch os.Args[1] {
-		case "get":
-			switch os.Args[2] {
-				case "project":
-					handlers.HandleGetProject(GetProjectCmd, getAllProjects, GetProjectById)
-				case "instance":
-					handlers.HandleGetInstance(getInstanceCmd, getAllInstances, getInstanceById)
-				case "bucket":
-					handlers.HandleGetBucket(getBucketCmd, getAllBuckets, getBucketById)
-				case "registry":
-					handlers.HandleGetRegistry(getRegistryCmd, getAllRegistries, getRegistryById)
-				case "environment":
-					handlers.HandleGetEnvironment(GetEnvCmd, getAllEnv, getEnvById)
-			}
-
-		case "create":
-			switch os.Args[2] {
-				case "project":
-					handlers.HandleAddProject(createProjectCmd, AddProjectName, AddProjectHost, AddProjectToken, AddProjectGitUsername, AddProjectNamespace)
-				case "instance":
-					handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone)
-			}
-		case "attach":
-			switch os.Args[2] {
-				case "instance":
-					handlers.HandleAttachInstance(attachInstanceCmd, attachInstanceProjectId, attachInstancePlaybook, attachInstanceType)
-			}
-		case "delete":
-			switch os.Args[2] {
-				case "project":
-					handlers.HandleDeleteProject(DeleteInstanceCmd, DeleteInstanceById)
-				case "instance":
-					handlers.HandleDeleteInstance(deleteInstanceCmd, deleteInstanceById)
-				case "registry":
-					handlers.HandleDeleteRegistry(deleteRegistryCmd, deleteRegistryById)
-				case "bucket":
-					handlers.HandleDeleteBucket(deleteBucketCmd, deleteBucketById)
-			}
-		case "update":
-			switch os.Args[2] {
-				case "instance":
-					handlers.HandleUpdateInstance(updateInstanceCmd, updateInstanceId, updateInstanceStatus)
-				case "bucket":
-					handlers.HandleUpdateBucket(updateBucketCmd, updateBucketById)
-				case "registry":
-					handlers.HandleUpdateRegistry(updateRegistryCmd, updateRegistryById)
-			}
-
-		case "login":
-			handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
-		case "configure":
-			handlers.HandleConfigure(configureCmd, configureRegionCmd, configureEndpointCmd, configureProviderCmd)
-		case "help", "--help", "-h":
-			handlers.HandleHelp(helpCmd)
-		case "version", "--version", "-v":
-			handlers.HandleVersion(versionCmd, Version)
+	case "get":
+		switch os.Args[2] {
+		case "project":
+			handlers.HandleGetProject(GetProjectCmd, getAllProjects, GetProjectById)
+		case "instance":
+			handlers.HandleGetInstance(getInstanceCmd, getAllInstances, getInstanceById)
+		case "bucket":
+			handlers.HandleGetBucket(getBucketCmd, getAllBuckets, getBucketById)
+		case "registry":
+			handlers.HandleGetRegistry(getRegistryCmd, getAllRegistries, getRegistryById)
+		case "environment":
+			handlers.HandleGetEnvironment(GetEnvCmd, getAllEnv, getEnvById)
+		case "providers":
+			handlers.HandleListProvider(providerCmd)
+		case "regions":
+			handlers.HandleListRegions(regionCmd)
 		default:
 			fmt.Printf("cwc: command not found")
+		}
+
+	case "create":
+		switch os.Args[2] {
+		case "project":
+			handlers.HandleAddProject(createProjectCmd, AddProjectName, AddProjectHost, AddProjectToken, AddProjectGitUsername, AddProjectNamespace)
+		case "instance":
+			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone)
+		default:
+			fmt.Printf("cwc: command not found")
+		}
+	case "attach":
+		switch os.Args[2] {
+		case "instance":
+			handlers.HandleAttachInstance(attachInstanceCmd, attachInstanceProjectId, attachInstancePlaybook, attachInstanceType)
+		default:
+			fmt.Printf("cwc: command not found")
+		}
+
+	case "delete":
+		switch os.Args[2] {
+		case "project":
+			handlers.HandleDeleteProject(DeleteInstanceCmd, DeleteInstanceById)
+		case "instance":
+			handlers.HandleDeleteInstance(deleteInstanceCmd, deleteInstanceById)
+		case "registry":
+			handlers.HandleDeleteRegistry(deleteRegistryCmd, deleteRegistryById)
+		case "bucket":
+			handlers.HandleDeleteBucket(deleteBucketCmd, deleteBucketById)
+		default:
+			fmt.Printf("cwc: command not found")
+		}
+	case "update":
+		switch os.Args[2] {
+		case "instance":
+			handlers.HandleUpdateInstance(updateInstanceCmd, updateInstanceId, updateInstanceStatus)
+		case "bucket":
+			handlers.HandleUpdateBucket(updateBucketCmd, updateBucketById)
+		case "registry":
+			handlers.HandleUpdateRegistry(updateRegistryCmd, updateRegistryById)
+		default:
+			fmt.Printf("cwc: command not found")
+		}
+
+	case "login":
+		handlers.HandleLogin(loginCmd, loginEmail, loginPassword)
+	case "configure":
+		handlers.HandleConfigure(configureCmd, configureRegionCmd, configureEndpointCmd, configureProviderCmd)
+	case "help", "--help", "-h":
+		handlers.HandleHelp(helpCmd)
+	case "version", "--version", "-v":
+		handlers.HandleVersion(versionCmd, Version)
+	default:
+		fmt.Printf("cwc: command not found")
 	}
 
 }
