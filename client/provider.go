@@ -8,10 +8,6 @@ import (
 
 func GetProviderRegions() (*ProviderRegions, error) {
 
-	endpoint := GetDefaultEndpoint()
-	if endpoint == "" {
-		return nil, fmt.Errorf("endpoint is not set")
-	}
 	provider := GetDefaultProvider()
 	if provider == "" {
 		return nil, fmt.Errorf("provider is not set")
@@ -31,10 +27,6 @@ func GetProviderRegions() (*ProviderRegions, error) {
 }
 
 func GetProviders() (*AvailableProviders, error) {
-	endpoint := GetDefaultEndpoint()
-	if endpoint == "" {
-		return nil, fmt.Errorf("endpoint is not set")
-	}
 	c, _ := NewClient()
 	body, err := c.httpRequest(fmt.Sprintf("/provider"), "GET", bytes.Buffer{})
 	if err != nil {

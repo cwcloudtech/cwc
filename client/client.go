@@ -3,7 +3,6 @@ package client
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -53,16 +52,10 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.ReadCloser, err error) {
 	req, err := http.NewRequest(method, c.requestPath(path), &body)
 
-	user_token, err := getUserToken()
-	if err != nil {
-		return nil, err
-	}
+	user_token := getUserToken()
 
 	req.Header.Set("X-Auth-Token", user_token)
 
-	if err != nil {
-		return nil, err
-	}
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)
@@ -131,23 +124,21 @@ func addUserCredentials(access_key string, secret_key string) {
 	}
 }
 
-func getUserToken() (string, error) {
+func getUserToken() string {
 	dirname, err := os.UserHomeDir()
 
 	if err != nil {
-		_err := errors.New("cwc: access denied, please login")
-		return "", _err
+		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/credentials")
 	if err != nil {
-		_err := errors.New("cwc: access denied, please login")
-		return "", _err
+		return ""
 	}
 
 	file_content := string(content)
 	secret_key := GetValueFromFile(file_content, "cwc_secret_key")
-	return secret_key, err
+	return secret_key
 }
 
 func GetDefaultRegion() string {
@@ -179,12 +170,12 @@ func GetDefaultProvider() string {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
 
-		return "None"
+		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
 	if err != nil {
-		return "None"
+		return ""
 	}
 
 	file_content := string(content)
@@ -196,12 +187,12 @@ func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
 
-		return "None"
+		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
 	if err != nil {
-		return "None"
+		return ""
 	}
 
 	file_content := string(content)
