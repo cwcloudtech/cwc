@@ -23,6 +23,7 @@ func main() {
 	createInstanceCmd := flag.NewFlagSet("create instance", flag.ExitOnError)
 	addInstanceName := createInstanceCmd.String("name", "", "The instance name")
 	addInstanceProjectId := createInstanceCmd.Int("project_id", 0, "The project id that you want to associete with the instance")
+	addInstanceProjectName := createInstanceCmd.String("project_name", "", "The project name that you want to associete with the instance")
 	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the instance (code, wpaas)")
 	addInstanceType := createInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
 	addInstanceZone := createInstanceCmd.String("zone", "", "instance zone")
@@ -145,7 +146,7 @@ func main() {
 		case "project":
 			handlers.HandleAddProject(createProjectCmd, AddProjectName, AddProjectHost, AddProjectToken, AddProjectGitUsername, AddProjectNamespace)
 		case "instance":
-			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone, addInstanceDnsZone)
+			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceProjectName, addInstanceEnvironment, addInstanceType, addInstanceZone, addInstanceDnsZone)
 		default:
 			fmt.Printf("cwc: command not found\n")
 		}
