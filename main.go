@@ -26,6 +26,7 @@ func main() {
 	addInstanceEnvironment := createInstanceCmd.String("env", "", "The environment of the instance (code, wpaas)")
 	addInstanceType := createInstanceCmd.String("instance_type", "", "The instance size (DEV1-S, DEV1-M, DEV1-L, DEV1-XL)")
 	addInstanceZone := createInstanceCmd.String("zone", "", "instance zone")
+	addInstanceDnsZone := createInstanceCmd.String("dns_zone", "", "The root dns zones")
 	attachInstanceCmd := flag.NewFlagSet("attach instance", flag.ExitOnError)
 	attachInstancePlaybook := attachInstanceCmd.String("name", "", "The playbook name you want to run")
 	attachInstanceProjectId := attachInstanceCmd.Int("project_id", 0, "The project id that you want to attach with the instance")
@@ -91,9 +92,12 @@ func main() {
 	configureEndpointCmd := configureCmd.Bool("endpoint", false, "Configure the cloud api endpoint")
 	configureProviderCmd := configureCmd.Bool("provider", false, "Configure the default provider")
 
+	// dns zones handlers
+	dnsZonesCmd := flag.NewFlagSet("get dns_zones", flag.ExitOnError)
+
 	// provider handlers
 	providerCmd := flag.NewFlagSet("get providers", flag.ExitOnError)
-	// provider handlers
+	// regions handlers
 	regionCmd := flag.NewFlagSet("get regions", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
@@ -126,6 +130,8 @@ func main() {
 			handlers.HandleListProvider(providerCmd)
 		case "regions":
 			handlers.HandleListRegions(regionCmd)
+		case "dns_zones":
+			handlers.HandleListDnsZones(dnsZonesCmd)
 		default:
 			fmt.Printf("cwc: command not found\n")
 		}
@@ -139,7 +145,7 @@ func main() {
 		case "project":
 			handlers.HandleAddProject(createProjectCmd, AddProjectName, AddProjectHost, AddProjectToken, AddProjectGitUsername, AddProjectNamespace)
 		case "instance":
-			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone)
+			handlers.HandleAddInstance(createInstanceCmd, addInstanceName, addInstanceProjectId, addInstanceEnvironment, addInstanceType, addInstanceZone, addInstanceDnsZone)
 		default:
 			fmt.Printf("cwc: command not found\n")
 		}

@@ -37,10 +37,15 @@ type AttachInstanceRequest struct {
 	Instance_type string `json:"type"`
 }
 
+type Dns_zones struct {
+	Zones []string `json:"zones"`
+}
+
 type Instance struct {
 	Id            int    `json:"id"`
 	Name          string `json:"name"`
 	Zone          string `json:"zone"`
+	Root_dns_zone string `json:"root_dns_zone"`
 	Instance_type string `json:"type"`
 	Environment   string `json:"environment"`
 	Status        string `json:"status"`
