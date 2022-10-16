@@ -55,7 +55,7 @@ func (c *Client) GetAllProjects() (*[]Project, error) {
 }
 
 func (c *Client) GetProject(project_id string) (*Project, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/project/%s/%s", c.region, project_id), "GET", bytes.Buffer{})
+	body, err := c.httpRequest(fmt.Sprintf("/project/%s", project_id), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
