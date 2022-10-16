@@ -16,7 +16,6 @@ func HandleListRegions(regionCmd *flag.FlagSet) {
 		os.Exit(1)
 
 	}
-	fmt.Printf("regions \n\n")
 	for _, available_region := range provider_regions.Regions {
 		fmt.Printf("%v\n", available_region.Name)
 
