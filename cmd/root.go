@@ -22,9 +22,9 @@ import (
 )
 
 var (
-	fversion bool
+	fversion    bool
+	cli_version string
 )
-var Version = "dev"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -36,7 +36,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if fversion {
 
-			handlers.HandleVersion(Version)
+			handlers.HandleVersion(cli_version)
 		} else {
 			cmd.Help()
 		}
@@ -45,7 +45,8 @@ var rootCmd = &cobra.Command{
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
+func Execute(version string) {
+	cli_version = version
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
