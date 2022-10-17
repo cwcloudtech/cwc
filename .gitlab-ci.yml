@@ -1,6 +1,7 @@
 stages:
   - release
   - cleanup
+  - notify
 
 release:
   stage: release
@@ -34,6 +35,17 @@ cleanup:
   script:
     - chmod +x ./ci/cleanup.sh
     - ./ci/cleanup.sh
+  tags:
+    - imagesbuilder
+
+notify:
+  stage: notify
+  only:
+    refs:
+      - tags
+  script:
+    - chmod +x ./ci/notify.sh
+    - ./ci/notify.sh
   tags:
     - imagesbuilder
 
