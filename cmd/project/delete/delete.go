@@ -29,9 +29,9 @@ NOTE: The project needs to be empty and doesnt hold any instances`,
 
 func init() {
 
-	DeleteCmd.Flags().StringVarP(&projectId, "project_id", "p", "", "The project id")
+	DeleteCmd.Flags().StringVarP(&projectId, "project", "p", "", "The project id")
 
-	if err := DeleteCmd.MarkFlagRequired("project_id"); err != nil {
+	if err := DeleteCmd.MarkFlagRequired("project"); err != nil {
 		fmt.Println(err)
 	}
 }
