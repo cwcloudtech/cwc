@@ -12,7 +12,7 @@ builds:
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -X cmd.Version={{.Version}}
+      - -X main.Version={{.Version}}
 
 archives:
   -
