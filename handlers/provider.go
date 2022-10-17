@@ -2,14 +2,13 @@ package handlers
 
 import (
 	"cwc/client"
-	"flag"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
 
-func HandleListProvider(providerCmd *flag.FlagSet) {
+func HandleListProviders() {
 
-	providerCmd.Parse(os.Args[2:])
 	providers, err := client.GetProviders()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -21,4 +20,35 @@ func HandleListProvider(providerCmd *flag.FlagSet) {
 
 	}
 	return
+}
+
+func HandlerGetDefaultProvider() {
+
+	provider := client.GetDefaultProvider()
+	fmt.Printf("Default provider = %v\n", provider)
+
+}
+
+func HandlerSetDefaultProvider(value string) {
+	providers, err := client.GetProviders()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+
+	}
+	available_providers := []string{}
+	for _, available_provider := range providers.Providers {
+		available_providers = append(
+			available_providers,
+			available_provider.Name,
+		)
+
+	}
+	if !utils.StringInSlice(value, available_providers) {
+		fmt.Println("cwc: invalid provider value")
+		os.Exit(1)
+
+	}
+	client.SetDefaultProvider(value)
+
 }

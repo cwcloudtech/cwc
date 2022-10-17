@@ -7,14 +7,8 @@ import (
 	"os"
 )
 
-func HandleDeleteInstance(deleteCmd *flag.FlagSet, id *string) {
+func HandleDeleteInstance(id *string) {
 
-	deleteCmd.Parse(os.Args[3:])
-	if *id == "" {
-		fmt.Println("id is required to delete your instance")
-		deleteCmd.PrintDefaults()
-		os.Exit(1)
-	}
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -26,12 +20,6 @@ func HandleDeleteInstance(deleteCmd *flag.FlagSet, id *string) {
 		os.Exit(1)
 	}
 	fmt.Printf("Instance %v successfully deleted\n", *id)
-}
-func ValidateInstance(createCmd *flag.FlagSet, name *string, env *string) {
-	if *name == "" || *env == "" {
-		createCmd.PrintDefaults()
-		os.Exit(1)
-	}
 }
 
 func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *string, instance_type *string) {
@@ -50,9 +38,7 @@ func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *st
 	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.CreatedAt, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
 
 }
-func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, project_name *string, env *string, instance_type *string, zone *string, dns_zone *string) {
-	createCmd.Parse(os.Args[3:])
-	ValidateInstance(createCmd, name, env)
+func HandleAddInstance(name *string, project_id *int, project_name *string, env *string, instance_type *string, zone *string, dns_zone *string) {
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -68,13 +54,8 @@ func HandleAddInstance(createCmd *flag.FlagSet, name *string, project_id *int, p
 
 }
 
-func HandleUpdateInstance(updateCmd *flag.FlagSet, id *string, status *string) {
-	updateCmd.Parse(os.Args[3:])
-	if *id == "" || *status == "" {
-		fmt.Println("id and status are required")
-		updateCmd.PrintDefaults()
-		os.Exit(1)
-	}
+func HandleUpdateInstance(id *string, status *string) {
+
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -89,46 +70,26 @@ func HandleUpdateInstance(updateCmd *flag.FlagSet, id *string, status *string) {
 
 }
 
-func HandleGetInstance(getCmd *flag.FlagSet, all *bool, id *string) {
+func HandleGetInstance() {
 
-	getCmd.Parse(os.Args[3:])
-	if !*all && *id == "" {
-		fmt.Println("id is required or specify --all to get all instances.")
-		getCmd.PrintDefaults()
-		os.Exit(1)
-	}
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	if *all {
 
-		instances, err := client.GetAllInstances()
+	instances, err := client.GetAllInstances()
 
-		if err != nil {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
-
-		fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
-		for _, instance := range *instances {
-			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
-
-		}
-
-		return
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
 	}
 
-	if *id != "" {
-		instance, err := client.GetInstance(*id)
-		if err != nil {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
-		fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
+	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
+	for _, instance := range *instances {
 		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
 
-		return
 	}
+
+	return
 }

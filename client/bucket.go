@@ -20,19 +20,6 @@ func (c *Client) GetAllBuckets() (*[]Bucket, error) {
 	return &buckets, nil
 }
 
-func (c *Client) GetBucket(bucket_id string) (*Bucket, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/bucket/%s/%s/%s", c.provider, c.region, bucket_id), "GET", bytes.Buffer{})
-	if err != nil {
-		return nil, err
-	}
-	bucket := &Bucket{}
-	err = json.NewDecoder(body).Decode(bucket)
-	if err != nil {
-		return nil, err
-	}
-	return bucket, nil
-}
-
 func (c *Client) UpdateBucket(id string) error {
 	buf := bytes.Buffer{}
 

@@ -83,12 +83,8 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 
 func (c *Client) requestPath(path string) string {
 
-	default_api_endpoint := "https://cloud-api.comwork.io"
 	default_api_version := "v1"
 	hostname := GetDefaultEndpoint()
-	if hostname == "" {
-		hostname = default_api_endpoint
-	}
 	return fmt.Sprintf("%s/%s%s", hostname, default_api_version, path)
 }
 
@@ -185,18 +181,23 @@ func GetDefaultProvider() string {
 
 func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
+	default_endpoint := "https://cloud-api.comwork.io"
 	if err != nil {
 
-		return ""
+		return default_endpoint
+
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
 	if err != nil {
-		return ""
+		return default_endpoint
 	}
 
 	file_content := string(content)
 	endpoint := GetValueFromFile(file_content, "endpoint")
+	if endpoint == "" {
+		return default_endpoint
+	}
 	return endpoint
 }
 

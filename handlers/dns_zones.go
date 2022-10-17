@@ -2,14 +2,11 @@ package handlers
 
 import (
 	"cwc/client"
-	"flag"
 	"fmt"
 	"os"
 )
 
-func HandleListDnsZones(dnsZonesCmd *flag.FlagSet) {
-
-	dnsZonesCmd.Parse(os.Args[2:])
+func HandleListDnsZones() {
 	dns_zones, err := client.GetDnsZones()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
