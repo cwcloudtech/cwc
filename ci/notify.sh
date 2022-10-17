@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-SLACK_USERNAME="cwc"
-SLACK_EMOJI=":cwc:"
-SLACK_CHANNEL="#cloud"
+export SLACK_USERNAME="cwc"
+export SLACK_EMOJI=":cwc:"
+export SLACK_CHANNEL="#cloud"
 
+
+echo ${SLACK_TOKEN}
 
 slack_notif() {
     token="${1}"
