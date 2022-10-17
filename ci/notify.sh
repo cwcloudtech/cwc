@@ -5,7 +5,7 @@ export SLACK_EMOJI=":cwc:"
 export SLACK_CHANNEL="#cloud"
 
 
-echo ${SLACK_TOKEN}
+echo "Notify slack with new version ${CI_COMMIT_TAG}"
 
 slack_notif() {
     token="${1}"
