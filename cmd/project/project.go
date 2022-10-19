@@ -25,7 +25,6 @@ and listing your available project`,
 }
 
 func init() {
-	ProjectCmd.DisableFlagsInUseLine = true
 	ProjectCmd.AddCommand(ls.LsCmd)
 	ProjectCmd.AddCommand(create.CreateCmd)
 	ProjectCmd.AddCommand(delete.DeleteCmd)
