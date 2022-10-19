@@ -45,6 +45,8 @@ The configure command takes no arguments it will prompt you for each default val
 			new_default_region := utils.PromptUserForValue()
 			if new_default_region != "" {
 				handlers.HandlerSetDefaultRegion(new_default_region)
+			}else{
+				handlers.HandlerSetDefaultRegion(default_region)
 			}
 		}
 
