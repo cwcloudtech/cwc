@@ -38,13 +38,13 @@ func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *st
 	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.CreatedAt, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
 
 }
-func HandleAddInstance(name *string, project_id *int, project_name *string, env *string, instance_type *string, zone *string, dns_zone *string) {
+func HandleAddInstance(name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	created_instance, err := client.AddInstance(*name, *project_id, *project_name, *instance_type, *env, *zone, *dns_zone)
+	created_instance, err := client.AddInstance(*name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

@@ -57,6 +57,7 @@ type Instance struct {
 	Region        string `json:"region"`
 	Ip_address    string `json:"ip_address"`
 	Project_name  string `json:"project_name"`
+	Project_url   string `json:"project_url"`
 }
 
 type Bucket struct {

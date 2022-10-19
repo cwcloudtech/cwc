@@ -33,7 +33,7 @@ func (c *Client) GetInstance(instance_id string) (*Instance, error) {
 	return instance, nil
 }
 
-func (c *Client) AddInstance(instance_name string, project_id int, project_name string, instance_size string, environment string, zone string, dns_zone string) (*Instance, error) {
+func (c *Client) AddInstance(instance_name string, project_id int, project_name string, project_url string, instance_size string, environment string, zone string, dns_zone string) (*Instance, error) {
 	buf := bytes.Buffer{}
 	instance := Instance{
 		Name:          instance_name,
@@ -43,6 +43,7 @@ func (c *Client) AddInstance(instance_name string, project_id int, project_name 
 		Environment:   environment,
 		Project:       project_id,
 		Project_name:  project_name,
+		Project_url:   project_url,
 		Region:        c.region,
 	}
 
