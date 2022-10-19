@@ -13,9 +13,8 @@ import (
 // lsCmd represents the ls command
 var LsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "List availble instances in the cloud",
-	Long: `This command lets you list your available instances in the cloud
-This command takes no arguments`,
+	Short: "List availble instances types",
+	Long:  `List availble instances types`,
 	Run: func(cmd *cobra.Command, args []string) {
 		handlers.HandleListInstancesTypes()
 	},

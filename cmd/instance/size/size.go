@@ -17,9 +17,8 @@ var (
 // deleteCmd represents the delete command
 var TypeCmd = &cobra.Command{
 	Use:   "type",
-	Short: "Delete a particular virtual machine",
-	Long: `This command lets you delete a particular instance.
-To use this command you have to provide the instance ID that you want to delete`,
+	Short: "Get informations about available instances types (size)",
+	Long:  "Get informations about available instances types (size)",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
