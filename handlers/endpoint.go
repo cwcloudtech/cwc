@@ -15,5 +15,7 @@ func HandlerGetDefaultEndpoint() {
 func HandlerSetDefaultEndpoint(value string) {
 
 	client.SetDefaultEndpoint(value)
+	fmt.Printf("Default endpoint = %v\n", value)
+
 
 }

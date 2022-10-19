@@ -50,5 +50,6 @@ func HandlerSetDefaultProvider(value string) {
 
 	}
 	client.SetDefaultProvider(value)
+	fmt.Printf("Default provider = %v\n", value)
 
 }
