@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package configure
@@ -25,27 +25,27 @@ The configure command takes no arguments it will prompt you for each default val
 	 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if len(args)==0{
+		if len(args) == 0 {
 			default_endpoint := client.GetDefaultEndpoint()
 			fmt.Printf(fmt.Sprintf("Default endpoint [%s]: ", default_endpoint))
 			new_endpoint := utils.PromptUserForValue()
 			if new_endpoint != "" {
 				handlers.HandlerSetDefaultEndpoint(new_endpoint)
 			}
-	
+
 			default_provider := client.GetDefaultProvider()
 			fmt.Printf(fmt.Sprintf("Default provider [%s]: ", default_provider))
 			new_default_provider := utils.PromptUserForValue()
 			if new_default_provider != "" {
 				handlers.HandlerSetDefaultProvider(new_default_provider)
 			}
-	
+
 			default_region := client.GetDefaultRegion()
 			fmt.Printf(fmt.Sprintf("Default region [%s]: ", default_region))
 			new_default_region := utils.PromptUserForValue()
 			if new_default_region != "" {
 				handlers.HandlerSetDefaultRegion(new_default_region)
-			}else{
+			} else {
 				handlers.HandlerSetDefaultRegion(default_region)
 			}
 		}
@@ -57,6 +57,5 @@ func init() {
 	ConfigureCmd.DisableFlagsInUseLine = true
 	ConfigureCmd.AddCommand(set.SetCmd)
 	ConfigureCmd.AddCommand(get.GetCmd)
-
 
 }

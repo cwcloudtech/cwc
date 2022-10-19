@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package get
@@ -14,9 +14,9 @@ import (
 var GetEndpointCmd = &cobra.Command{
 	Use:   "endpoint",
 	Short: "Get the default endpoint",
-	Long: `This command lets you retrieve the default endpoint`,
+	Long:  `This command lets you retrieve the default endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
-			handlers.HandlerGetDefaultEndpoint()
+		handlers.HandlerGetDefaultEndpoint()
 
 	},
 }

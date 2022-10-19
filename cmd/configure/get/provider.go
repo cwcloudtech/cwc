@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package get
@@ -14,9 +14,9 @@ import (
 var GetProviderCmd = &cobra.Command{
 	Use:   "provider",
 	Short: "Get the default provider",
-	Long: `This command lets you retrieve the default provider`,
+	Long:  `This command lets you retrieve the default provider`,
 	Run: func(cmd *cobra.Command, args []string) {
-			handlers.HandlerGetDefaultProvider()
+		handlers.HandlerGetDefaultProvider()
 
 	},
 }

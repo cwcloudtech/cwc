@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package ls
@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	projectId string
-	projectName string 
-	projectUrl string
+	projectId   string
+	projectName string
+	projectUrl  string
 )
 
 // lsCmd represents the ls command
@@ -24,7 +24,7 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		handlers.HandleGetProjects(&projectId,&projectName,&projectUrl)
+		handlers.HandleGetProjects(&projectId, &projectName, &projectUrl)
 	},
 }
 

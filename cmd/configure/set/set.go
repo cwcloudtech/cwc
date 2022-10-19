@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package set
@@ -12,7 +12,7 @@ import (
 var SetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Update your default configurations",
-	Long: `This command lets you update your default configurations`,
+	Long:  `This command lets you update your default configurations`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		cmd.Help()

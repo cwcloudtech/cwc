@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package delete
@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	projectId string
-	projectName string 
-	projectUrl string
+	projectId   string
+	projectName string
+	projectUrl  string
 )
 
 // deleteCmd represents the delete command
@@ -24,7 +24,7 @@ var DeleteCmd = &cobra.Command{
 To use this command you have to provide the project ID that you want to delete
 NOTE: The project needs to be empty and doesnt hold any instances`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleDeleteProject(&projectId,&projectName,&projectUrl)
+		handlers.HandleDeleteProject(&projectId, &projectName, &projectUrl)
 	},
 }
 

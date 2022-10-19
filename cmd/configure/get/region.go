@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package get
@@ -14,9 +14,9 @@ import (
 var GetRegionCmd = &cobra.Command{
 	Use:   "region",
 	Short: "Get the default region",
-	Long: `This command lets you retrieve the default region`,
+	Long:  `This command lets you retrieve the default region`,
 	Run: func(cmd *cobra.Command, args []string) {
-			handlers.HandlerGetDefaultRegion()
+		handlers.HandlerGetDefaultRegion()
 
 	},
 }

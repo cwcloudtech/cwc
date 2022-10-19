@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 comwork.io contact.comwork.io
 
 */
 package get
@@ -12,7 +12,7 @@ import (
 var GetCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Retrieve informations about your default configurations",
-	Long: `This command lets you retrieve informations about your default configurations`,
+	Long:  `This command lets you retrieve informations about your default configurations`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 
