@@ -15,7 +15,7 @@ import (
 // projectCmd represents the project command
 var ProjectCmd = &cobra.Command{
 	Use:   "project",
-	Short: "Mange your projects in the cloud",
+	Short: "Manage your projects in the cloud",
 	Long: `This command lets you manage your projects in the cloud.
 Several actions are associated with this command such as creating a project, deleting a project
 and listing your available project`,
