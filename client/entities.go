@@ -41,6 +41,9 @@ type Dns_zones struct {
 	Zones []string `json:"zones"`
 }
 
+type InstancesTypes struct {
+	Types []string `json:"types"`
+}
 type Instance struct {
 	Id            int    `json:"id"`
 	Name          string `json:"name"`

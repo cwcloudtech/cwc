@@ -8,6 +8,8 @@ import (
 	"cwc/cmd/instance/create"
 	"cwc/cmd/instance/delete"
 	"cwc/cmd/instance/ls"
+	"cwc/cmd/instance/size"
+
 	"cwc/cmd/instance/update"
 
 	"github.com/spf13/cobra"
@@ -31,4 +33,6 @@ func init() {
 	InstanceCmd.AddCommand(update.UpdateCmd)
 	InstanceCmd.AddCommand(create.CreateCmd)
 	InstanceCmd.AddCommand(delete.DeleteCmd)
+	InstanceCmd.AddCommand(size.TypeCmd)
+
 }

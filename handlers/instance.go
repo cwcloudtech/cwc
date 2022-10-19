@@ -93,3 +93,16 @@ func HandleGetInstance() {
 
 	return
 }
+func HandleListInstancesTypes() {
+	instancesTypes, err := client.GetInstancesTypes()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+
+	}
+	for _, instance_type := range instancesTypes.Types {
+		fmt.Printf("%v\n", instance_type)
+
+	}
+	return
+}
