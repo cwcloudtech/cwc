@@ -15,7 +15,7 @@ import (
 // bucketCmd represents the bucket command
 var BucketCmd = &cobra.Command{
 	Use:   "bucket",
-	Short: "Mange your S3 buckets in the cloud",
+	Short: "Manage your S3 buckets in the cloud",
 	Long: `This command lets you manage your S3 buckets in the cloud.
 Several actions are associated with this command such as update a bucket, deleting a bucket
 and listing your available buckets`,
@@ -29,5 +29,4 @@ func init() {
 	BucketCmd.AddCommand(ls.LsCmd)
 	BucketCmd.AddCommand(update.UpdateCmd)
 	BucketCmd.AddCommand(delete.DeleteCmd)
-
 }

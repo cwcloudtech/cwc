@@ -16,7 +16,7 @@ import (
 // instanceCmd represents the instance command
 var InstanceCmd = &cobra.Command{
 	Use:   "instance",
-	Short: "Mange your virtual machines in the cloud",
+	Short: "Manage your virtual machines in the cloud",
 	Long: `This command lets you manage your virtual machines in the cloud.
 Several actions are associated with this command such as creating an instance, updating an instance, deleting an instance
 and listing your available instance`,
