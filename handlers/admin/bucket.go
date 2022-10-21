@@ -1,13 +1,13 @@
-package handlers
+package admin
 
 import (
-	"cwc/client"
+	"cwc/admin"
 	"fmt"
 	"os"
 )
 
 func HandleDeleteBucket(id *string) {
-	client, err := client.NewClient()
+	client, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -22,7 +22,7 @@ func HandleDeleteBucket(id *string) {
 
 func HandleUpdateBucket(id *string) {
 
-	client, err := client.NewClient()
+	client, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -38,7 +38,7 @@ func HandleUpdateBucket(id *string) {
 
 func HandleGetBucket() {
 
-	client, err := client.NewClient()
+	client, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

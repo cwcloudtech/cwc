@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package update
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -22,7 +22,7 @@ var UpdateCmd = &cobra.Command{
 	Long: `This command lets you update a particular bucket credentials (access_key, secret_key of the registry)
 To use this command you have to provide the registry ID`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleUpdateBucket(&bucketId)
+		user.HandleUpdateBucket(&bucketId)
 	},
 }
 

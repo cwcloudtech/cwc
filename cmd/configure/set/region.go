@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package set
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 	"os"
 
@@ -24,7 +24,7 @@ var SetRegionCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		value := args[0]
-		handlers.HandlerSetDefaultRegion(value)
+		user.HandlerSetDefaultRegion(value)
 
 	},
 }

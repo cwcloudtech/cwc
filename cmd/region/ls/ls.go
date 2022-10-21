@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package ls
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,7 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list the available regions in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleListRegions()
+		user.HandleListRegions()
 	},
 }
 

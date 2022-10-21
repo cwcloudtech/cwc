@@ -1,4 +1,4 @@
-package handlers
+package user
 
 import (
 	"cwc/client"
@@ -52,6 +52,5 @@ func HandlerSetDefaultRegion(value string) {
 
 	client.SetDefaultRegion(value)
 	fmt.Printf("Default region = %v\n", value)
-
 
 }

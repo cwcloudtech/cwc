@@ -1,4 +1,4 @@
-package handlers
+package user
 
 import (
 	"cwc/client"
@@ -16,6 +16,5 @@ func HandlerSetDefaultEndpoint(value string) {
 
 	client.SetDefaultEndpoint(value)
 	fmt.Printf("Default endpoint = %v\n", value)
-
 
 }

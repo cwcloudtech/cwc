@@ -5,6 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package cmd
 
 import (
+	"cwc/cmd/admin"
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
 	"cwc/cmd/dnszones"
@@ -14,8 +15,9 @@ import (
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
+	"cwc/handlers/user"
+
 	"cwc/cmd/registry"
-	"cwc/handlers"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -35,7 +37,7 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		if fversion {
-			handlers.HandleVersion(cli_version)
+			user.HandleVersion(cli_version)
 		} else {
 			cmd.Help()
 		}
@@ -64,6 +66,8 @@ func init() {
 	// when this action is called directly.
 
 	rootCmd.Flags().BoolVarP(&fversion, "version", "v", false, "The cli version")
+	rootCmd.AddCommand(admin.AdminCmd)
+
 	rootCmd.AddCommand(project.ProjectCmd)
 	rootCmd.AddCommand(bucket.BucketCmd)
 	rootCmd.AddCommand(instance.InstanceCmd)

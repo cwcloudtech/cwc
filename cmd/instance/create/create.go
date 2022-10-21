@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package create
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -31,7 +31,7 @@ You have to provide the project ID or the project name in which the instance wil
 You also have to provide the environment that will be installed in the virtuals machines.
 Other arguments are optional.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleAddInstance(&name, &projectId, &projectName, &projectUrl, &environment, &instanceType, &zone, &dnsZone)
+		user.HandleAddInstance(&name, &projectId, &projectName, &projectUrl, &environment, &instanceType, &zone, &dnsZone)
 	},
 }
 

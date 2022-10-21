@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package get
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,7 @@ var GetEndpointCmd = &cobra.Command{
 	Short: "Get the default endpoint",
 	Long:  `This command lets you retrieve the default endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandlerGetDefaultEndpoint()
+		user.HandlerGetDefaultEndpoint()
 
 	},
 }

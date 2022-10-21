@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package login
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,7 +23,7 @@ var LoginCmd = &cobra.Command{
 	Long: `To use the CLI you have to be authentificated. In order to login it you simply need to provide your access key
 and your secret key to the login command`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleLogin(&access_key, &secret_key)
+		user.HandleLogin(&access_key, &secret_key)
 	},
 }
 

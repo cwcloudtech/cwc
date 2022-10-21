@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package delete
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -22,7 +22,7 @@ var DeleteCmd = &cobra.Command{
 	Long: `This command lets you delete a particular instance.
 To use this command you have to provide the instance ID that you want to delete`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleDeleteInstance(&instanceId)
+		user.HandleDeleteInstance(&instanceId)
 	},
 }
 

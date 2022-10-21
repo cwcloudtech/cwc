@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package create
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -27,7 +27,7 @@ var CreateCmd = &cobra.Command{
 You have to provide the project name.
 You can also provide your Gitlab host and access token and git username to save the project in another Gitlab instance`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleAddProject(&name, &host, &token, &git, &namespace)
+		user.HandleAddProject(&name, &host, &token, &git, &namespace)
 	},
 }
 

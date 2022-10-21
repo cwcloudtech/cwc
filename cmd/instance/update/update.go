@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package update
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,7 +23,7 @@ var UpdateCmd = &cobra.Command{
 	Long: `This command lets you update a particular instance status such as poweroff, poweron, reboot
 To use this command you have to provide the instance ID and the desired status`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleUpdateInstance(&instanceId, &status)
+		user.HandleUpdateInstance(&instanceId, &status)
 	},
 }
 

@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package delete
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +24,7 @@ var DeleteCmd = &cobra.Command{
 To use this command you have to provide the project ID that you want to delete
 NOTE: The project needs to be empty and doesnt hold any instances`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandleDeleteProject(&projectId, &projectName, &projectUrl)
+		user.HandleDeleteProject(&projectId, &projectName, &projectUrl)
 	},
 }
 

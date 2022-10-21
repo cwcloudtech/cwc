@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package get
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,7 @@ var GetRegionCmd = &cobra.Command{
 	Short: "Get the default region",
 	Long:  `This command lets you retrieve the default region`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandlerGetDefaultRegion()
+		user.HandlerGetDefaultRegion()
 
 	},
 }

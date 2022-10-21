@@ -1,4 +1,4 @@
-package handlers
+package user
 
 import (
 	"cwc/client"
@@ -6,36 +6,37 @@ import (
 	"os"
 )
 
-func HandleDeleteRegistry(id *string) {
+func HandleDeleteBucket(id *string) {
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	err = client.DeleteRegistry(*id)
+	err = client.DeleteBucket(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Registry %v successfully deleted\n", *id)
+	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
-func HandleUpdateRegistry(id *string) {
+func HandleUpdateBucket(id *string) {
+
 	client, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	err = client.UpdateRegistry(*id)
+	err = client.UpdateBucket(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Registry %v successfully updated\n", *id)
+	fmt.Printf("Bucket %v successfully updated\n", *id)
 
 }
 
-func HandleGetRegistry() {
+func HandleGetBucket() {
 
 	client, err := client.NewClient()
 	if err != nil {
@@ -43,7 +44,7 @@ func HandleGetRegistry() {
 		os.Exit(1)
 	}
 
-	registries, err := client.GetAllRegistries()
+	buckets, err := client.GetAllBuckets()
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
@@ -51,11 +52,10 @@ func HandleGetRegistry() {
 	}
 
 	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	for _, registry := range *registries {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
+	for _, bucket := range *buckets {
+		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
 
 	}
 
 	return
-
 }

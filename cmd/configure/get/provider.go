@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package get
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,7 @@ var GetProviderCmd = &cobra.Command{
 	Short: "Get the default provider",
 	Long:  `This command lets you retrieve the default provider`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.HandlerGetDefaultProvider()
+		user.HandlerGetDefaultProvider()
 
 	},
 }

@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package ls
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +24,7 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		handlers.HandleGetProjects(&projectId, &projectName, &projectUrl)
+		user.HandleGetProjects(&projectId, &projectName, &projectUrl)
 	},
 }
 

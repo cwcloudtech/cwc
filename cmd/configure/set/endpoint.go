@@ -5,7 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package set
 
 import (
-	"cwc/handlers"
+	"cwc/handlers/user"
 	"fmt"
 	"os"
 
@@ -23,7 +23,7 @@ var SetEndpointCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		value := args[0]
-		handlers.HandlerSetDefaultEndpoint(value)
+		user.HandlerSetDefaultEndpoint(value)
 
 	},
 }
