@@ -70,6 +70,7 @@ type Bucket struct {
 	Endpoint  string `json:"endpoint"`
 	SecretKey string `json:"secret_key"`
 	Region    string `json:"region"`
+	Email     string `json:"email"`
 	Type      string `json:"type"`
 }
 type Registry struct {
@@ -82,6 +83,7 @@ type Registry struct {
 	SecretKey string `json:"secret_key"`
 	Region    string `json:"region"`
 	Type      string `json:"type"`
+	Email     string `json:"email"`
 }
 
 type ApiKey struct {

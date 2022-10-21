@@ -8,6 +8,7 @@ import (
 	"cwc/cmd/admin/bucket"
 	"cwc/cmd/admin/instance"
 	"cwc/cmd/admin/project"
+	"cwc/cmd/admin/registry"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +26,8 @@ var AdminCmd = &cobra.Command{
 func init() {
 	AdminCmd.DisableFlagsInUseLine = true
 	AdminCmd.AddCommand(project.ProjectCmd)
+	AdminCmd.AddCommand(registry.RegistryCmd)
+
 	AdminCmd.AddCommand(bucket.BucketCmd)
 	AdminCmd.AddCommand(instance.InstanceCmd)
 

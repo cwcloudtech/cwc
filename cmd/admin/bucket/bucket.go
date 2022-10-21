@@ -5,6 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package bucket
 
 import (
+	"cwc/cmd/admin/bucket/create"
 	"cwc/cmd/admin/bucket/delete"
 	"cwc/cmd/admin/bucket/ls"
 	"cwc/cmd/admin/bucket/update"
@@ -27,6 +28,8 @@ and listing your available buckets`,
 func init() {
 	BucketCmd.DisableFlagsInUseLine = true
 	BucketCmd.AddCommand(ls.LsCmd)
+	BucketCmd.AddCommand(create.CreateCmd)
+
 	BucketCmd.AddCommand(update.UpdateCmd)
 	BucketCmd.AddCommand(delete.DeleteCmd)
 }

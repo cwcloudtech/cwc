@@ -75,21 +75,3 @@ func (c *Client) AdminDeleteInstance(instanceId string) error {
 	}
 	return nil
 }
-
-func GetInstancesTypes() (*InstancesTypes, error) {
-	c, err := NewClient()
-	if err != nil {
-		return nil, err
-	}
-	body, err := c.httpRequest(fmt.Sprintf("/%s/instance_types", c.provider), "GET", bytes.Buffer{})
-	if err != nil {
-		return nil, err
-	}
-	instancesTypes := &InstancesTypes{}
-	err = json.NewDecoder(body).Decode(instancesTypes)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
-	return instancesTypes, nil
-}

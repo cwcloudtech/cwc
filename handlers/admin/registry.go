@@ -1,13 +1,29 @@
 package admin
 
 import (
-	"cwc/client"
+	"cwc/admin"
 	"fmt"
 	"os"
 )
 
+func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
+	client, err := admin.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	created_registry, err := client.AdminAddRegistry(*user_email, *name, *reg_type)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_registry.Id, created_registry.CreatedAt, created_registry.Name, created_registry.Status, created_registry.AccessKey, created_registry.SecretKey, created_registry.Endpoint)
+}
+
 func HandleDeleteRegistry(id *string) {
-	client, err := client.NewClient()
+	client, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -21,7 +37,7 @@ func HandleDeleteRegistry(id *string) {
 }
 
 func HandleUpdateRegistry(id *string) {
-	client, err := client.NewClient()
+	client, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -37,7 +53,7 @@ func HandleUpdateRegistry(id *string) {
 
 func HandleGetRegistry() {
 
-	client, err := client.NewClient()
+	client, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
