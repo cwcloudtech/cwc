@@ -6,6 +6,7 @@ package admin
 
 import (
 	"cwc/cmd/admin/bucket"
+	"cwc/cmd/admin/environment"
 	"cwc/cmd/admin/instance"
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
@@ -27,7 +28,7 @@ func init() {
 	AdminCmd.DisableFlagsInUseLine = true
 	AdminCmd.AddCommand(project.ProjectCmd)
 	AdminCmd.AddCommand(registry.RegistryCmd)
-
+	AdminCmd.AddCommand(environment.EnvironmentCmd)
 	AdminCmd.AddCommand(bucket.BucketCmd)
 	AdminCmd.AddCommand(instance.InstanceCmd)
 

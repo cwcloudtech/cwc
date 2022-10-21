@@ -28,6 +28,21 @@ type Environment struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name"`
 	Path        string `json:"path"`
+	Roles       string `json:"roles"`
+	MainRole    string `json:"main_role"`
+	IsPrivate   bool   `json:"is_private"`
+	Description string `json:"description"`
+}
+
+type AddEnvironmentType struct {
+	Id         int      `json:"id"`
+	Name       string   `json:"name"`
+	Path       string   `json:"path"`
+	Roles      []string `json:"roles"`
+	SubDomains []string `json:"subdomains"`
+	MainRole   string   `json:"main_role"`
+	IsPrivate  bool     `json:"is_private"`
+
 	Description string `json:"description"`
 }
 
