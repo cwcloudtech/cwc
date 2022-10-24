@@ -38,3 +38,21 @@ func HandleGetUsers() {
 	return
 
 }
+
+func HandleGetUser(id *string) {
+
+	client, err := admin.NewClient()
+
+	responseUser, err := client.GetUser(*id)
+
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("ID\temail\tregistration\taddress\tcompany\tcontact\tadmin\t confirmed\tbillable\n")
+	user := responseUser.Result
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t\n", user.Id, user.Email, user.RegistrationNumber, user.Address,user.CompanyName,user.ContactInfo,user.IsAdmin,user.Confirmed,user.Billable)
+
+
+}

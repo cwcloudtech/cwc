@@ -39,6 +39,10 @@ type ResponseUsers struct {
 	Result   []User   `json:"result"`
 }
 
+type ResponseUser struct {
+	Result  User   `json:"result"`
+}
+
 type User struct {
 	Id          int    `json:"id"`
 	Email        string `json:"email"`

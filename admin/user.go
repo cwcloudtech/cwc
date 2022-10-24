@@ -19,3 +19,19 @@ func (c *Client) GetAllUsers() (*ResponseUsers, error) {
 	return &ResponseUsers, nil
 }
 
+func (c *Client) GetUser(id string) (*ResponseUser, error) {
+	body, err := c.httpRequest(fmt.Sprintf("/admin/user/%s",id), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+	ResponseUser :=ResponseUser{}
+	err = json.NewDecoder(body).Decode(&ResponseUser)
+
+	if err != nil {
+		return nil, err
+	}
+	return &ResponseUser, nil
+}
+
+
+
