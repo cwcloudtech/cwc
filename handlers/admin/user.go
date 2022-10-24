@@ -56,3 +56,15 @@ func HandleGetUser(id *string) {
 
 
 }
+
+
+func HandleDeleteUser(id *string) {
+	client, err := admin.NewClient()
+
+	err = client.DeleteUser(*id)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("User %v successfully deleted\n", *id)
+}

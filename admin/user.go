@@ -35,3 +35,11 @@ func (c *Client) GetUser(id string) (*ResponseUser, error) {
 
 
 
+
+func (c *Client) DeleteUser(userId string) error {
+	_, err := c.httpRequest(fmt.Sprintf("/admin/user/%s", userId), "DELETE", bytes.Buffer{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
