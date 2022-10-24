@@ -7,6 +7,8 @@ package admin
 import (
 	"cwc/cmd/admin/bucket"
 	"cwc/cmd/admin/environment"
+	"cwc/cmd/admin/user"
+
 	"cwc/cmd/admin/instance"
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
@@ -31,5 +33,7 @@ func init() {
 	AdminCmd.AddCommand(environment.EnvironmentCmd)
 	AdminCmd.AddCommand(bucket.BucketCmd)
 	AdminCmd.AddCommand(instance.InstanceCmd)
+	AdminCmd.AddCommand(user.UserCmd)
+
 
 }

@@ -34,6 +34,24 @@ type Environment struct {
 	Description string `json:"description"`
 }
 
+
+type ResponseUsers struct {
+	Result   []User   `json:"result"`
+}
+
+type User struct {
+	Id          int    `json:"id"`
+	Email        string `json:"email"`
+	RegistrationNumber       string `json:"registration_number"`
+	Address    string `json:"address"`
+	CompanyName   string   `json:"company_name"`
+	ContactInfo string `json:"contact_info"`
+	IsAdmin bool `json:"is_admin"`
+	Confirmed bool `json:"confirmed"`
+	Billable bool `json:"billable"`
+
+}
+
 type AddEnvironmentType struct {
 	Id         int      `json:"id"`
 	Name       string   `json:"name"`

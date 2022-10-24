@@ -7,6 +7,7 @@ package environment
 import (
 	"cwc/cmd/admin/environment/create"
 	"cwc/cmd/admin/environment/delete"
+	"cwc/cmd/admin/environment/ls"
 
 	"github.com/spf13/cobra"
 )
@@ -25,5 +26,7 @@ func init() {
 	EnvironmentCmd.DisableFlagsInUseLine = true
 	EnvironmentCmd.AddCommand(create.CreateCmd)
 	EnvironmentCmd.AddCommand(delete.DeleteCmd)
+	EnvironmentCmd.AddCommand(ls.LsCmd)
+
 
 }
