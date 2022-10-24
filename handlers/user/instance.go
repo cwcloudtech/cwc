@@ -70,7 +70,7 @@ func HandleUpdateInstance(id *string, status *string) {
 
 }
 
-func HandleGetInstance() {
+func HandleGetInstances() {
 
 	client, err := client.NewClient()
 	if err != nil {
@@ -104,5 +104,28 @@ func HandleListInstancesTypes() {
 		fmt.Printf("%v\n", instance_type)
 
 	}
+	return
+}
+
+
+func HandleGetInstance(id *string) {
+
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	instance, err := client.GetInstance(*id)
+
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
+
+
 	return
 }

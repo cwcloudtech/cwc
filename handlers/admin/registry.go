@@ -51,7 +51,7 @@ func HandleUpdateRegistry(id *string) {
 
 }
 
-func HandleGetRegistry() {
+func HandleGetRegistries() {
 
 	client, err := admin.NewClient()
 	if err != nil {
@@ -71,6 +71,28 @@ func HandleGetRegistry() {
 		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
 
 	}
+
+	return
+
+}
+
+func HandleGetRegistry(id *string) {
+
+	client, err := admin.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	registry, err := client.GetRegistry(*id)
+
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
 
 	return
 

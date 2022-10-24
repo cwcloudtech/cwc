@@ -10,6 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	bucketId string
+)
+
 // lsCmd represents the ls command
 var LsCmd = &cobra.Command{
 	Use:   "ls",
@@ -17,10 +21,17 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available buckets in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		admin.HandleGetBucket()
+
+		if *&bucketId==""{
+
+			admin.HandleGetBuckets()
+		}else{
+			admin.HandleGetBucket(&bucketId)
+		}
 	},
 }
 
 func init() {
+	LsCmd.Flags().StringVarP(&bucketId, "id", "b", "", "The bucket id")
 
 }

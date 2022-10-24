@@ -20,6 +20,20 @@ func (c *Client) AdminGetAllInstances() (*[]Instance, error) {
 	return &instances, nil
 }
 
+func (c *Client) GetInstance(instance_id string) (*Instance, error) {
+	body, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s", instance_id), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+	instance := &Instance{}
+	err = json.NewDecoder(body).Decode(instance)
+	if err != nil {
+		return nil, err
+	}
+	return instance, nil
+}
+
+
 func (c *Client) AdminAddInstance(user_email string, instance_name string, project_id int, project_name string, project_url string, instance_size string, environment string, zone string, dns_zone string) (*Instance, error) {
 	buf := bytes.Buffer{}
 	instance := Instance{

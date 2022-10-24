@@ -36,7 +36,7 @@ func HandleUpdateBucket(id *string) {
 
 }
 
-func HandleGetBucket() {
+func HandleGetBuckets() {
 
 	client, err := client.NewClient()
 	if err != nil {
@@ -56,6 +56,28 @@ func HandleGetBucket() {
 		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
 
 	}
+
+	return
+}
+
+func HandleGetBucket(id *string) {
+
+	client, err := client.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	bucket, err := client.GetBucket(*id)
+
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
+	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
+
 
 	return
 }

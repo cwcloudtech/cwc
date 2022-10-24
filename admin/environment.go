@@ -56,3 +56,15 @@ func (c *Client) GetAllEnvironments() (*[]Environment, error) {
 	return &environments, nil
 }
 
+func (c *Client) GetEnvironment(env_id string) (*Environment, error) {
+	body, err := c.httpRequest(fmt.Sprintf("/admin/environment/%s", env_id), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+	environment := &Environment{}
+	err = json.NewDecoder(body).Decode(environment)
+	if err != nil {
+		return nil, err
+	}
+	return environment, nil
+}
