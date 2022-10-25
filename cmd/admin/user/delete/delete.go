@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	userId   string
+	userId string
 )
 
 // deleteCmd represents the delete command
@@ -29,8 +29,8 @@ NOTE: The project needs to be empty and doesnt hold any instances`,
 
 func init() {
 
-	DeleteCmd.Flags().StringVarP(&userId, "id", "u", "", "The user id")
-	if err := DeleteCmd.MarkFlagRequired("id"); err != nil {
+	DeleteCmd.Flags().StringVarP(&userId, "user", "u", "", "The user id")
+	if err := DeleteCmd.MarkFlagRequired("user"); err != nil {
 		fmt.Println(err)
 	}
 

@@ -13,6 +13,7 @@ import (
 var (
 	instanceId string
 )
+
 // lsCmd represents the ls command
 var LsCmd = &cobra.Command{
 	Use:   "ls",
@@ -20,10 +21,10 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available instances in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if *&instanceId==""{
+		if *&instanceId == "" {
 
 			user.HandleGetInstances()
-		}else{
+		} else {
 			user.HandleGetInstance(&instanceId)
 		}
 
@@ -32,7 +33,6 @@ This command takes no arguments`,
 
 func init() {
 
-	LsCmd.Flags().StringVarP(&instanceId, "id", "i", "", "The instance id")
-
+	LsCmd.Flags().StringVarP(&instanceId, "instance", "i", "", "The instance id")
 
 }

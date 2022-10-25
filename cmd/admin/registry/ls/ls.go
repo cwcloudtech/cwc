@@ -22,16 +22,16 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if *&registryId==""{
+		if *&registryId == "" {
 
 			admin.HandleGetRegistries()
-		}else{
+		} else {
 			admin.HandleGetRegistry(&registryId)
 		}
 	},
 }
 
 func init() {
-	LsCmd.Flags().StringVarP(&registryId, "id", "r", "", "The registry id")
+	LsCmd.Flags().StringVarP(&registryId, "registry", "r", "", "The registry id")
 
 }

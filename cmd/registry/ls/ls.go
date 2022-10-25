@@ -10,10 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 var (
 	registryId string
 )
+
 // lsCmd represents the ls command
 var LsCmd = &cobra.Command{
 	Use:   "ls",
@@ -22,17 +22,16 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-
-		if *&registryId==""{
+		if *&registryId == "" {
 
 			user.HandleGetRegistries()
-		}else{
+		} else {
 			user.HandleGetRegistry(&registryId)
 		}
 	},
 }
 
 func init() {
-	LsCmd.Flags().StringVarP(&registryId, "id", "r", "", "The registry id")
+	LsCmd.Flags().StringVarP(&registryId, "registry", "r", "", "The registry id")
 
 }
