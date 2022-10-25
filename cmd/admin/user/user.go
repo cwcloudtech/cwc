@@ -5,6 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package user
 
 import (
+	"cwc/cmd/admin/user/delete"
 	"cwc/cmd/admin/user/ls"
 
 	"github.com/spf13/cobra"
@@ -23,4 +24,6 @@ var UserCmd = &cobra.Command{
 func init() {
 	UserCmd.DisableFlagsInUseLine = true
 	UserCmd.AddCommand(ls.LsCmd)
+	UserCmd.AddCommand(delete.DeleteCmd)
+
 }
