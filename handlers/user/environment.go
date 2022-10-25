@@ -2,24 +2,26 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
 
 func HandleGetEnvironments() {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 
-	environments, err := client.GetAllEnvironments()
+	environments, err := c.GetAllEnvironments()
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tname\tpath\tdescription\n")
-	for _, environment := range *environments {
-		fmt.Printf("%v\t%v\t%v\t%v\n", environment.Id, environment.Name, environment.Path, environment.Description)
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(environments)
+	} else {
+		utils.PrintMultiRow(client.Environment{}, *environments)
 	}
 
 	return
@@ -27,17 +29,19 @@ func HandleGetEnvironments() {
 }
 
 func HandleGetEnvironment(id *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 
-	environment, err := client.GetEnvironment(*id)
+	environment, err := c.GetEnvironment(*id)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tname\tpath\tdescription\n")
-	fmt.Printf("%v\t%v\t%v\t%v\n", environment.Id, environment.Name, environment.Path, environment.Description)
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(environment)
+	} else {
+		utils.PrintRow(*environment)
+	}
 
 	return
-	
-}
 
+}

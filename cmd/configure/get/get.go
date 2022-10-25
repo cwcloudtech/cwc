@@ -22,6 +22,7 @@ var GetCmd = &cobra.Command{
 func init() {
 	GetCmd.DisableFlagsInUseLine = true
 	GetCmd.AddCommand(GetEndpointCmd)
+	GetCmd.AddCommand(GetFormatCmd)
 	GetCmd.AddCommand(GetProviderCmd)
 	GetCmd.AddCommand(GetRegionCmd)
 

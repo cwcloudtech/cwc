@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
@@ -13,8 +14,11 @@ func HandleAddEnvironment(name *string, path *string, roles *[]string, main_role
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tname\tpath\tmain_role\troles\tdescription\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\n", created_env.Id, created_env.Name, created_env.Path, created_env.MainRole, created_env.Roles, created_env.Description)
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_env)
+	} else {
+		utils.PrintRow(*created_env)
+	}
 
 }
 
@@ -29,7 +33,6 @@ func HandleDeleteEnvironment(id *string) {
 	fmt.Printf("Environment %v successfully deleted\n", *id)
 }
 
-
 func HandleGetEnvironments() {
 
 	client, err := admin.NewClient()
@@ -40,15 +43,15 @@ func HandleGetEnvironments() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tname\tpath\tdescription\n")
-	for _, environment := range *environments {
-		fmt.Printf("%v\t%v\t%v\t%v\n", environment.Id, environment.Name, environment.Path, environment.Description)
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(environments)
+	} else {
+		utils.PrintMultiRow(admin.Environment{}, *environments)
 	}
 
 	return
 
 }
-
 
 func HandleGetEnvironment(id *string) {
 	client, err := admin.NewClient()
@@ -58,9 +61,12 @@ func HandleGetEnvironment(id *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tname\tpath\tdescription\n")
-	fmt.Printf("%v\t%v\t%v\t%v\n", environment.Id, environment.Name, environment.Path, environment.Description)
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(environment)
+	} else {
+		utils.PrintRow(*environment)
+	}
 
 	return
-	
+
 }

@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
@@ -37,47 +38,48 @@ func HandleUpdateRegistry(id *string) {
 
 func HandleGetRegistries() {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	registries, err := client.GetAllRegistries()
+	registries, err := c.GetAllRegistries()
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	for _, registry := range *registries {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
-
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(registries)
+	} else {
+		utils.PrintMultiRow(client.Registry{}, *registries)
 	}
-
 	return
 
 }
 
 func HandleGetRegistry(id *string) {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	registry, err := client.GetRegistry(*id)
+	registry, err := c.GetRegistry(*id)
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
-
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(registry)
+	} else {
+		utils.PrintRow(*registry)
+	}
 	return
 
 }

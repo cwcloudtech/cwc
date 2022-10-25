@@ -158,6 +158,9 @@ func SetDefaultRegion(region string) {
 	UpdateFileKeyValue("config", "region", region)
 }
 
+func SetDefaultFormat(format string) {
+	UpdateFileKeyValue("config", "format", format)
+}
 func SetDefaultProvider(provider string) {
 	UpdateFileKeyValue("config", "provider", provider)
 }
@@ -179,6 +182,22 @@ func GetDefaultProvider() string {
 	return provider
 }
 
+func GetDefaultFormat() string {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+
+		return ""
+	}
+
+	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
+	if err != nil {
+		return ""
+	}
+
+	file_content := string(content)
+	format := GetValueFromFile(file_content, "format")
+	return format
+}
 func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
 	default_endpoint := "https://cloud-api.comwork.io"

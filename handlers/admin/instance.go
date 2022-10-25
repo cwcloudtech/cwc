@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
@@ -32,8 +33,11 @@ func HandleAddInstance(user_email *string, name *string, project_id *int, projec
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tproject_id\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_instance.Id, created_instance.CreatedAt, created_instance.Name, created_instance.Status, created_instance.Instance_type, created_instance.Environment, created_instance.Project)
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_instance)
+	} else {
+		utils.PrintRow(*created_instance)
+	}
 
 }
 
@@ -68,10 +72,10 @@ func HandleGetInstances() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
-	for _, instance := range *instances {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
-
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(instances)
+	} else {
+		utils.PrintMultiRow(admin.Instance{}, *instances)
 	}
 
 	return
@@ -91,10 +95,11 @@ func HandleGetInstance(id *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
-
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(instance)
+	} else {
+		utils.PrintRow(*instance)
+	}
 
 	return
 }

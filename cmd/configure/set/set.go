@@ -23,5 +23,6 @@ func init() {
 	SetCmd.DisableFlagsInUseLine = true
 	SetCmd.AddCommand(SetEndpointCmd)
 	SetCmd.AddCommand(SetProviderCmd)
+	SetCmd.AddCommand(SetFormatCmd)
 	SetCmd.AddCommand(SetRegionCmd)
 }

@@ -48,6 +48,12 @@ The configure command takes no arguments it will prompt you for each default val
 			} else {
 				user.HandlerSetDefaultRegion(default_region)
 			}
+			default_format := client.GetDefaultFormat()
+			fmt.Printf(fmt.Sprintf("Default output format [%s]: ", default_format))
+			new_default_format := utils.PromptUserForValue()
+			if new_default_format != "" {
+				user.HandlerSetDefaultFormat(new_default_format)
+			}
 		}
 
 	},

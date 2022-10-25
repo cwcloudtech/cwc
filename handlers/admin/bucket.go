@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
@@ -18,8 +19,11 @@ func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_bucket.Id, created_bucket.CreatedAt, created_bucket.Name, created_bucket.Status, created_bucket.AccessKey, created_bucket.SecretKey, created_bucket.Endpoint)
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_bucket)
+	} else {
+		utils.PrintRow(*created_bucket)
+	}
 }
 
 func HandleDeleteBucket(id *string) {
@@ -67,15 +71,14 @@ func HandleGetBuckets() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	for _, bucket := range *buckets {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
-
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(buckets)
+	} else {
+		utils.PrintMultiRow(admin.Bucket{}, *buckets)
 	}
 
 	return
 }
-
 
 func HandleGetBucket(id *string) {
 
@@ -92,9 +95,11 @@ func HandleGetBucket(id *string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
-
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(bucket)
+	} else {
+		utils.PrintRow(*bucket)
+	}
 
 	return
 }

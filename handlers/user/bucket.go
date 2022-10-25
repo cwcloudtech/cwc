@@ -1,7 +1,9 @@
 package user
 
 import (
+	"cwc/admin"
 	"cwc/client"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
@@ -38,23 +40,23 @@ func HandleUpdateBucket(id *string) {
 
 func HandleGetBuckets() {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	buckets, err := client.GetAllBuckets()
+	buckets, err := c.GetAllBuckets()
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	for _, bucket := range *buckets {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
-
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(buckets)
+	} else {
+		utils.PrintMultiRow(admin.Bucket{}, *buckets)
 	}
 
 	return
@@ -62,22 +64,24 @@ func HandleGetBuckets() {
 
 func HandleGetBucket(id *string) {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	bucket, err := client.GetBucket(*id)
+	bucket, err := c.GetBucket(*id)
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", bucket.Id, bucket.CreatedAt, bucket.Name, bucket.Status, bucket.AccessKey, bucket.SecretKey, bucket.Endpoint)
-
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(bucket)
+	} else {
+		utils.PrintRow(*bucket)
+	}
 
 	return
 }

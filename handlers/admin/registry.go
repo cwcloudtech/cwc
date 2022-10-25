@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
@@ -18,8 +19,11 @@ func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", created_registry.Id, created_registry.CreatedAt, created_registry.Name, created_registry.Status, created_registry.AccessKey, created_registry.SecretKey, created_registry.Endpoint)
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_registry)
+	} else {
+		utils.PrintRow(*created_registry)
+	}
 }
 
 func HandleDeleteRegistry(id *string) {
@@ -65,11 +69,10 @@ func HandleGetRegistries() {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	for _, registry := range *registries {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
-
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(registries)
+	} else {
+		utils.PrintMultiRow(admin.Project{}, *registries)
 	}
 
 	return
@@ -90,10 +93,11 @@ func HandleGetRegistry(id *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("ID\tcreated_at\tname\tstatus\taccess_key\tsecret_key\tendpoint\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\n", registry.Id, registry.CreatedAt, registry.Name, registry.Status, registry.AccessKey, registry.SecretKey, registry.Endpoint)
-
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(registry)
+	} else {
+		utils.PrintRow(*registry)
+	}
 	return
 
 }

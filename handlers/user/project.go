@@ -2,20 +2,24 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/utils"
 	"fmt"
 	"os"
 )
 
 func HandleAddProject(name *string, host *string, token *string, git_username *string, namespace *string) {
 
-	client, _ := client.NewClient()
-	created_project, err := client.AddProject(*name, *host, *token, *git_username, *namespace)
+	c, _ := client.NewClient()
+	created_project, err := c.AddProject(*name, *host, *token, *git_username, *namespace)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("ID\tcreated_at\tname\turl\n")
-	fmt.Printf("%v\t%v\t%v\t%v\n", created_project.Id, created_project.CreatedAt, created_project.Name, created_project.Url)
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_project)
+	} else {
+		utils.PrintRow(*created_project)
+	}
 
 }
 
@@ -53,9 +57,10 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 			os.Exit(1)
 		}
 
-		fmt.Printf("ID\tcreated_at\tname\turl\n")
-		for _, project := range *projects {
-			fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.CreatedAt, project.Name, project.Url)
+		if client.GetDefaultFormat() == "json" {
+			utils.PrintJson(projects)
+		} else {
+			utils.PrintMultiRow(client.Project{}, *projects)
 		}
 
 	} else {
@@ -73,8 +78,11 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("ID\tcreated_at\tname\tcreated_at\turl\n")
-		fmt.Printf("%v\t%v\t%v\t%v\n", project.Id, project.CreatedAt, project.Name, project.Url)
+		if client.GetDefaultFormat() == "json" {
+			utils.PrintJson(project)
+		} else {
+			utils.PrintRow(*project)
+		}
 
 	}
 

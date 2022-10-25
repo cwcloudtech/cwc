@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/utils"
 	"flag"
 	"fmt"
 	"os"
@@ -72,23 +73,22 @@ func HandleUpdateInstance(id *string, status *string) {
 
 func HandleGetInstances() {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	instances, err := client.GetAllInstances()
+	instances, err := c.GetAllInstances()
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
-	for _, instance := range *instances {
-		fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
-
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(instances)
+	} else {
+		utils.PrintMultiRow(client.Instance{}, *instances)
 	}
 
 	return
@@ -107,25 +107,25 @@ func HandleListInstancesTypes() {
 	return
 }
 
-
 func HandleGetInstance(id *string) {
 
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	instance, err := client.GetInstance(*id)
+	instance, err := c.GetInstance(*id)
 
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("ID\tcreated_at\tname\tstatus\tsize\tenvironment\tpublic ip\tproject_id\n")
-	fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", instance.Id, instance.CreatedAt, instance.Name, instance.Status, instance.Instance_type, instance.Environment, instance.Ip_address, instance.Project)
-
-
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(instance)
+	} else {
+		utils.PrintRow(*instance)
+	}
 	return
 }

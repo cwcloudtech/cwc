@@ -18,3 +18,17 @@ func HandlerSetDefaultEndpoint(value string) {
 	fmt.Printf("Default endpoint = %v\n", value)
 
 }
+
+func HandlerSetDefaultFormat(value string) {
+
+	client.SetDefaultFormat(value)
+	fmt.Printf("Default output format = %v\n", value)
+
+}
+
+func HandlerGetDefaultFormat() {
+
+	format := client.GetDefaultFormat()
+	fmt.Printf("Default output format = %v\n", format)
+
+}
