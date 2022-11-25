@@ -22,6 +22,20 @@ func HandleDeleteInstance(id *string) {
 	fmt.Printf("Instance %v successfully deleted\n", *id)
 }
 
+func HandleRefreshInstance(id *string) {
+
+	client, err := admin.NewClient()
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	err = client.AdminRefreshInstance(*id)
+	if err != nil {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Instance %v state successfully refreshed\n", *id)
+}
 func HandleAddInstance(user_email *string, name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
 	client, err := admin.NewClient()
 	if err != nil {

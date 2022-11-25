@@ -89,3 +89,11 @@ func (c *Client) AdminDeleteInstance(instanceId string) error {
 	}
 	return nil
 }
+
+func (c *Client) AdminRefreshInstance(instanceId string) error {
+	_, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s/refresh", instanceId), "POST", bytes.Buffer{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
