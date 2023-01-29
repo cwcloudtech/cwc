@@ -61,7 +61,7 @@ func (c *Client) UpdateRegistry(id string) error {
 	buf := bytes.Buffer{}
 
 	renew := RenewCredentials{
-		UpdateCreds: true
+		UpdateCreds: true,
 	}
 
 	err := json.NewEncoder(&buf).Encode(renew)
