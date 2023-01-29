@@ -65,9 +65,9 @@ func (c *Client) UpdateBucket(id string) error {
 		UpdateCreds: true,
 	}
 
-	err := json.NewEncoder(&buf).Encode(renew)
-	if err != nil {
-		return err
+	encode_err := json.NewEncoder(&buf).Encode(renew)
+	if encode_err != nil {
+		return encode_err
 	}
 
 	_, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s", id), "PATCH", buf)
