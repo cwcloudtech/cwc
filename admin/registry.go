@@ -60,6 +60,15 @@ func (c *Client) GetRegistry(registry_id string) (*Registry, error) {
 func (c *Client) UpdateRegistry(id string) error {
 	buf := bytes.Buffer{}
 
+	renew := RenewCredentials{
+		UpdateCreds: true
+	}
+
+	err := json.NewEncoder(&buf).Encode(renew)
+	if err != nil {
+		return nil, err
+	}
+
 	_, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s", id), "PATCH", buf)
 	if err != nil {
 		return err

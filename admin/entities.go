@@ -110,6 +110,7 @@ type Bucket struct {
 	Email     string `json:"email"`
 	Type      string `json:"type"`
 }
+
 type Registry struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
@@ -121,6 +122,10 @@ type Registry struct {
 	Region    string `json:"region"`
 	Type      string `json:"type"`
 	Email     string `json:"email"`
+}
+
+type RenewCredentials struct {
+	UpdateCreds bool `json:"update_creds"`
 }
 
 type ApiKey struct {
