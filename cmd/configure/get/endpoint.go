@@ -17,7 +17,6 @@ var GetEndpointCmd = &cobra.Command{
 	Long:  `This command lets you retrieve the default endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandlerGetDefaultEndpoint()
-
 	},
 }
 

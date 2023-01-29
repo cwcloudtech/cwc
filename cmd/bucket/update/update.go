@@ -27,11 +27,9 @@ To use this command you have to provide the bucket ID`,
 }
 
 func init() {
-
 	UpdateCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
 
 	if err := UpdateCmd.MarkFlagRequired("bucket"); err != nil {
 		fmt.Println(err)
 	}
-
 }

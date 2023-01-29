@@ -15,7 +15,6 @@ var GetCmd = &cobra.Command{
 	Long:  `This command lets you retrieve informations about your default configurations`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
-
 	},
 }
 
@@ -25,5 +24,4 @@ func init() {
 	GetCmd.AddCommand(GetFormatCmd)
 	GetCmd.AddCommand(GetProviderCmd)
 	GetCmd.AddCommand(GetRegionCmd)
-
 }

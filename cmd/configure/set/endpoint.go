@@ -24,7 +24,6 @@ var SetEndpointCmd = &cobra.Command{
 		}
 		value := args[0]
 		user.HandlerSetDefaultEndpoint(value)
-
 	},
 }
 

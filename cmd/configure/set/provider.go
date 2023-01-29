@@ -24,7 +24,6 @@ var SetProviderCmd = &cobra.Command{
 		}
 		value := args[0]
 		user.HandlerSetDefaultProvider(value)
-
 	},
 }
 

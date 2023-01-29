@@ -24,7 +24,6 @@ var ConfigureCmd = &cobra.Command{
 The configure command takes no arguments it will prompt you for each default value
 	 `,
 	Run: func(cmd *cobra.Command, args []string) {
-
 		if len(args) == 0 {
 			default_endpoint := client.GetDefaultEndpoint()
 			fmt.Printf(fmt.Sprintf("Default endpoint [%s]: ", default_endpoint))
@@ -63,5 +62,4 @@ func init() {
 	ConfigureCmd.DisableFlagsInUseLine = true
 	ConfigureCmd.AddCommand(set.SetCmd)
 	ConfigureCmd.AddCommand(get.GetCmd)
-
 }

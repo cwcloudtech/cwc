@@ -24,7 +24,6 @@ var SetFormatCmd = &cobra.Command{
 		}
 		value := args[0]
 		user.HandlerSetDefaultFormat(value)
-
 	},
 }
 

@@ -17,7 +17,6 @@ var GetProviderCmd = &cobra.Command{
 	Long:  `This command lets you retrieve the default provider`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandlerGetDefaultProvider()
-
 	},
 }
 

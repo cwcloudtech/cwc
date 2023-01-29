@@ -22,7 +22,6 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if *&bucketId == "" {
-
 			user.HandleGetBuckets()
 		} else {
 			user.HandleGetBucket(&bucketId)
@@ -31,7 +30,5 @@ This command takes no arguments`,
 }
 
 func init() {
-
 	LsCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
-
 }

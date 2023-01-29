@@ -30,7 +30,7 @@ var CreateCmd = &cobra.Command{
 func init() {
 	CreateCmd.Flags().StringVarP(&name, "name", "n", "", "The registry name")
 	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associeted with the project")
-	CreateCmd.Flags().StringVarP(&reg_type, "type", "t", "", "The registry type (private/public)")
+	CreateCmd.Flags().StringVarP(&reg_type, "type", "t", "", "The registry type (private/public-read)")
 
 	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
 		fmt.Println(err)

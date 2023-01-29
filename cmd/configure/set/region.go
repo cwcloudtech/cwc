@@ -25,7 +25,6 @@ var SetRegionCmd = &cobra.Command{
 		}
 		value := args[0]
 		user.HandlerSetDefaultRegion(value)
-
 	},
 }
 

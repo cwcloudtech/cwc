@@ -14,7 +14,6 @@ var SetCmd = &cobra.Command{
 	Short: "Update your default configurations",
 	Long:  `This command lets you update your default configurations`,
 	Run: func(cmd *cobra.Command, args []string) {
-
 		cmd.Help()
 	},
 }

@@ -30,8 +30,6 @@ func init() {
 	RegistryCmd.AddCommand(ls.LsCmd)
 	RegistryCmd.AddCommand(ls.LsCmd)
 	RegistryCmd.AddCommand(create.CreateCmd)
-
 	RegistryCmd.AddCommand(update.UpdateCmd)
 	RegistryCmd.AddCommand(delete.DeleteCmd)
-
 }

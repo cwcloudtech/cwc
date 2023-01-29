@@ -17,7 +17,6 @@ var GetRegionCmd = &cobra.Command{
 	Long:  `This command lets you retrieve the default region`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandlerGetDefaultRegion()
-
 	},
 }
 

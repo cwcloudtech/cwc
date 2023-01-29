@@ -16,7 +16,6 @@ var GetFormatCmd = &cobra.Command{
 	Long:  `This command lets you retrieve the default format`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandlerGetDefaultFormat()
-
 	},
 }
 

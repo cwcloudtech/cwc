@@ -1,5 +1,3 @@
-
-
 builds:
   - binary: cwc
     goos:
@@ -36,7 +34,6 @@ gitlab_urls:
   # Only works with GitLab 13.5+
   use_package_registry: false
 
-
 universal_binaries:
   - replace: true
 
@@ -53,7 +50,6 @@ dockers:
   - --label=org.opencontainers.image.revision={{ .FullCommit }}
   - --label=org.opencontainers.image.licenses=MIT
 
-
 brews:
   -
     name: cwc
@@ -66,7 +62,6 @@ brews:
       email: amirghedira06@gmail.com
   - 
     url_template: "http://gitlab.comwork.io/oss/cwc/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
-
 
 checksum:
   name_template: 'checksums.txt'

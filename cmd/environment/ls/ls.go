@@ -22,7 +22,6 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if *&environmentId == "" {
-
 			user.HandleGetEnvironments()
 		} else {
 			user.HandleGetEnvironment(&environmentId)
@@ -32,5 +31,4 @@ This command takes no arguments`,
 
 func init() {
 	LsCmd.Flags().StringVarP(&environmentId, "environment", "e", "", "The environment id")
-
 }
