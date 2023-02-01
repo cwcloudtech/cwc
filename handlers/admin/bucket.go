@@ -40,14 +40,14 @@ func HandleDeleteBucket(id *string) {
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
-func HandleUpdateBucket(id *string) {
+func HandleUpdateBucket(id *string, email *string) {
 
-	client, err := admin.NewClient()
+	admin, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	err = client.UpdateBucket(*id)
+	err = admin.UpdateBucket(*id, *email)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

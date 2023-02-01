@@ -13,6 +13,7 @@ import (
 
 var (
 	bucketId string
+	email string
 )
 
 // updateCmd represents the update command
@@ -22,15 +23,21 @@ var UpdateCmd = &cobra.Command{
 	Long: `This command lets you update a particular bucket credentials (access_key, secret_key of the bucket)
 To use this command you have to provide the bucket ID`,
 	Run: func(cmd *cobra.Command, args []string) {
-		admin.HandleUpdateBucket(&bucketId)
+		admin.HandleUpdateBucket(&bucketId, &email)
 	},
 }
 
 func init() {
 
 	UpdateCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
-
+	UpdateCmd.MarkFlagRequired("bucket")
+	UpdateCmd.Flags().StringVarP(&email, "transfer bucket", "t", "", "Transfer the bucket to another user by his email")
+	
 	if err := UpdateCmd.MarkFlagRequired("bucket"); err != nil {
+		fmt.Println(err)
+	}
+
+	if err := UpdateCmd.MarkFlagRequired("transfer"); err != nil {
 		fmt.Println(err)
 	}
 
