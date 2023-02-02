@@ -5,6 +5,7 @@ Copyright © 2022 comwork.io contact.comwork.io
 package cmd
 
 import (
+	"fmt"
 	"cwc/cmd/admin"
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
@@ -21,6 +22,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"moul.io/banner"
 )
 
 var (
@@ -31,11 +33,12 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "cwc",
-	Short: "A Command Line interface to manage your cloud resources in comwork cloud",
-	Long:  "A Command Line interface to manage your cloud resources in comwork cloud.\nComplete documentation is available here: https://doc.cloud.comwork.io/docs/tutorials/api/cli/",
+	Short: "\nA Command Line interface to manage your cloud resources in comwork cloud",
+	Long:  "\nA Command Line interface to manage your cloud resources in comwork cloud.\nComplete documentation is available here: https://doc.cloud.comwork.io/docs/tutorials/api/cli/",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(banner.Inline("welcome to comwork cloud"))
 		if fversion {
 			user.HandleVersion(cli_version)
 		} else {
