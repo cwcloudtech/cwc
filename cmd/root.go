@@ -1,11 +1,9 @@
 /*
 Copyright © 2022 comwork.io contact.comwork.io
-
 */
 package cmd
 
 import (
-	"fmt"
 	"cwc/cmd/admin"
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
@@ -17,6 +15,7 @@ import (
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
 	"cwc/handlers/user"
+	"fmt"
 
 	"cwc/cmd/registry"
 	"os"
@@ -38,7 +37,7 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(banner.Inline("welcome to comwork cloud"))
+		fmt.Println(banner.Inline("cwcloud cli"))
 		if fversion {
 			user.HandleVersion(cli_version)
 		} else {
