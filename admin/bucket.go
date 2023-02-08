@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"net/mail"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -57,12 +58,22 @@ func (c *Client) GetBucket(bucket_id string) (*Bucket, error) {
 	return bucket, nil
 }
 
+func valid(email string) bool {
+    _, err := mail.ParseAddress(email)
+    return err == nil
+}
 
-func (c *Client) UpdateBucket(id string) error {
+func (c *Client) UpdateBucket(id string, email string) error {
 	buf := bytes.Buffer{}
+	var updateCreds bool = true
 
 	renew := RenewCredentials{
-		UpdateCreds: true,
+		Email: email,
+		UpdateCreds: updateCreds,
+	}
+
+	if len(email) > 0 && valid(email) {
+		updateCreds = false
 	}
 
 	encode_err := json.NewEncoder(&buf).Encode(renew)

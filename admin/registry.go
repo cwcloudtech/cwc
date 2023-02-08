@@ -57,11 +57,17 @@ func (c *Client) GetRegistry(registry_id string) (*Registry, error) {
 	return registry, nil
 }
 
-func (c *Client) UpdateRegistry(id string) error {
+func (c *Client) UpdateRegistry(id string, email string) error {
 	buf := bytes.Buffer{}
+	var updateCreds bool = true
 
 	renew := RenewCredentials{
-		UpdateCreds: true,
+		Email: email,
+		UpdateCreds: updateCreds,
+	}
+
+	if len(email) > 0 && valid(email) {
+		updateCreds = false
 	}
 
 	encode_err := json.NewEncoder(&buf).Encode(renew)

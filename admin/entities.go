@@ -125,6 +125,7 @@ type Registry struct {
 }
 
 type RenewCredentials struct {
+	Email string `json:"email"`
 	UpdateCreds bool `json:"update_creds"`
 }
 

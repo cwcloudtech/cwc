@@ -40,13 +40,13 @@ func HandleDeleteRegistry(id *string) {
 	fmt.Printf("Registry %v successfully deleted\n", *id)
 }
 
-func HandleUpdateRegistry(id *string) {
-	client, err := admin.NewClient()
+func HandleUpdateRegistry(id *string, email *string) {
+	admin, err := admin.NewClient()
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	err = client.UpdateRegistry(*id)
+	err = admin.UpdateRegistry(*id, *email)
 	if err != nil {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

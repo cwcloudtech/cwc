@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 comwork.io contact.comwork.io
-
 */
 package cmd
 
@@ -16,11 +15,13 @@ import (
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
 	"cwc/handlers/user"
+	"fmt"
 
 	"cwc/cmd/registry"
 	"os"
 
 	"github.com/spf13/cobra"
+	"moul.io/banner"
 )
 
 var (
@@ -31,11 +32,12 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "cwc",
-	Short: "A Command Line interface to manage your cloud resources in comwork cloud",
-	Long:  "A Command Line interface to manage your cloud resources in comwork cloud.\nComplete documentation is available here: https://doc.cloud.comwork.io/docs/tutorials/api/cli/",
+	Short: "\nA Command Line interface to manage your cloud resources in comwork cloud",
+	Long:  "\nA Command Line interface to manage your cloud resources in comwork cloud.\nComplete documentation is available here: https://doc.cloud.comwork.io/docs/tutorials/api/cli/",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(banner.Inline("cwcloud cli"))
 		if fversion {
 			user.HandleVersion(cli_version)
 		} else {
