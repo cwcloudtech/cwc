@@ -6,20 +6,22 @@ As it's written in go, it's pretty easy to ship into your IaC pipelines.
 
 Documentation: you'll find everything you need [here](https://doc.cloud.comwork.io/docs/tutorials/api/cli).  
 
-## Commands
-```
-go run main.go
-```
-This will run the main file.  
-Like the normal use of the CLI you can follow the previous command with flags and subcommands.
-
 ## Git repositories
 
 * Main repo: https://gitlab.comwork.io/oss/cwc/cwc.git
 * Github mirror: https://github.com/idrissneumann/cwc.git
 * Gitlab mirror: https://gitlab.com/ineumann/cwc.git
 
-# Deliver a new release
+## Getting started in local
+
+```shell
+go run main.go
+```
+
+This will run the main file.  
+Like the normal use of the CLI you can follow the previous command with flags and subcommands.
+
+## Deliver a new release
 
 __1/__ Create a new release
 
