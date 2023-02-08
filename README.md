@@ -12,7 +12,7 @@ Documentation: you'll find everything you need [here](https://doc.cloud.comwork.
 * Github mirror: https://github.com/idrissneumann/cwc.git
 * Gitlab mirror: https://gitlab.com/ineumann/cwc.git
 
-## Getting started in local
+## Getting started
 
 ```shell
 go run main.go
