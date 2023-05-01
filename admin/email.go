@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 )
 
-func (c *Client) AdminSendEmail(from_email string, to_email string, subject string, content string, templated bool) (*EmailResponse, error) {
+func (c *Client) AdminSendEmail(from string, to string, bcc string, subject string, content string, templated bool) (*EmailResponse, error) {
 	buf := bytes.Buffer{}
 	email := Email{
-		From:      from_email,
-		To:        to_email,
+		From:      from,
+		To:        to,
+		Bcc:       bcc,
 		Subject:   subject,
 		Content:   content,
 		Templated: templated,

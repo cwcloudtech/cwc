@@ -99,6 +99,7 @@ type Instance struct {
 type Email struct {
 	From      string `json:"from"`
 	To        string `json:"to"`
+	Bcc       string `json:"bcc"`
 	Subject   string `json:"subject"`
 	Content   string `json:"content"`
 	Templated bool   `json:"templated"`
