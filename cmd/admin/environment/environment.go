@@ -1,6 +1,5 @@
 /*
-Copyright © 2022 comwork.io contact.comwork.io
-
+Copyright © 2022 comwork.io contact@comwork.io
 */
 package environment
 
@@ -27,6 +26,5 @@ func init() {
 	EnvironmentCmd.AddCommand(create.CreateCmd)
 	EnvironmentCmd.AddCommand(delete.DeleteCmd)
 	EnvironmentCmd.AddCommand(ls.LsCmd)
-
 
 }

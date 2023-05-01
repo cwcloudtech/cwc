@@ -34,26 +34,24 @@ type Environment struct {
 	Description string `json:"description"`
 }
 
-
 type ResponseUsers struct {
-	Result   []User   `json:"result"`
+	Result []User `json:"result"`
 }
 
 type ResponseUser struct {
-	Result  User   `json:"result"`
+	Result User `json:"result"`
 }
 
 type User struct {
-	Id          int    `json:"id"`
-	Email        string `json:"email"`
-	RegistrationNumber       string `json:"registration_number"`
-	Address    string `json:"address"`
-	CompanyName   string   `json:"company_name"`
-	ContactInfo string `json:"contact_info"`
-	IsAdmin bool `json:"is_admin"`
-	Confirmed bool `json:"confirmed"`
-	Billable bool `json:"billable"`
-
+	Id                 int    `json:"id"`
+	Email              string `json:"email"`
+	RegistrationNumber string `json:"registration_number"`
+	Address            string `json:"address"`
+	CompanyName        string `json:"company_name"`
+	ContactInfo        string `json:"contact_info"`
+	IsAdmin            bool   `json:"is_admin"`
+	Confirmed          bool   `json:"confirmed"`
+	Billable           bool   `json:"billable"`
 }
 
 type AddEnvironmentType struct {
@@ -98,6 +96,18 @@ type Instance struct {
 	Project_url   string `json:"project_url"`
 }
 
+type Email struct {
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Subject   string `json:"subject"`
+	Content   string `json:"content"`
+	Templated bool   `json:"templated"`
+}
+
+type EmailResponse struct {
+	Status string `json:"status"`
+}
+
 type Bucket struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
@@ -125,8 +135,8 @@ type Registry struct {
 }
 
 type RenewCredentials struct {
-	Email string `json:"email"`
-	UpdateCreds bool `json:"update_creds"`
+	Email       string `json:"email"`
+	UpdateCreds bool   `json:"update_creds"`
 }
 
 type ApiKey struct {

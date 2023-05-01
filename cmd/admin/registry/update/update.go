@@ -1,6 +1,5 @@
 /*
-Copyright © 2022 comwork.io contact.comwork.io
-
+Copyright © 2022 comwork.io contact@comwork.io
 */
 package update
 
@@ -13,7 +12,7 @@ import (
 
 var (
 	registryId string
-	email string
+	email      string
 )
 
 // updateCmd represents the update command

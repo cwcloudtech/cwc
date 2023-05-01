@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 comwork.io contact.comwork.io
+Copyright © 2022 comwork.io contact@comwork.io
 */
 package cmd
 

@@ -1,6 +1,5 @@
 /*
-Copyright © 2022 comwork.io contact.comwork.io
-
+Copyright © 2022 comwork.io contact@comwork.io
 */
 package update
 
@@ -13,7 +12,7 @@ import (
 
 var (
 	bucketId string
-	email string
+	email    string
 )
 
 // updateCmd represents the update command
@@ -31,7 +30,7 @@ func init() {
 
 	UpdateCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
 	UpdateCmd.Flags().StringVarP(&email, "transfer bucket", "t", "", "Transfer the bucket to another user by his email")
-	
+
 	if err := UpdateCmd.MarkFlagRequired("bucket"); err != nil {
 		fmt.Println(err)
 	}
