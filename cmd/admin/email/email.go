@@ -34,8 +34,8 @@ func init() {
 	EmailCmd.Flags().StringVarP(&to, "to", "t", "", "The recipient email address")
 	EmailCmd.Flags().StringVarP(&content, "bcc", "b", "", "Bcc email address")
 	EmailCmd.Flags().StringVarP(&subject, "subject", "s", "", "The subject")
-	EmailCmd.Flags().StringVarP(&content, "content", "c", "", "The subject")
-	EmailCmd.Flags().BoolVarP(&templated, "templated", "m", false, "The subject")
+	EmailCmd.Flags().StringVarP(&content, "content", "c", "", "The content")
+	EmailCmd.Flags().BoolVarP(&templated, "templated", "m", false, "Use the cwcloud's template")
 
 	if err := EmailCmd.MarkFlagRequired("to"); err != nil {
 		fmt.Println(err)

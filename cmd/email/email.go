@@ -33,7 +33,7 @@ func init() {
 	EmailCmd.Flags().StringVarP(&to, "to", "t", "", "The recipient email address")
 	EmailCmd.Flags().StringVarP(&content, "bcc", "b", "", "Bcc email address")
 	EmailCmd.Flags().StringVarP(&subject, "subject", "s", "", "The subject")
-	EmailCmd.Flags().StringVarP(&content, "content", "c", "", "The subject")
+	EmailCmd.Flags().StringVarP(&content, "content", "c", "", "The content")
 
 	if err := EmailCmd.MarkFlagRequired("to"); err != nil {
 		fmt.Println(err)
