@@ -71,6 +71,7 @@ type Bucket struct {
 	Region    string `json:"region"`
 	Type      string `json:"type"`
 }
+
 type Registry struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
@@ -81,6 +82,19 @@ type Registry struct {
 	SecretKey string `json:"secret_key"`
 	Region    string `json:"region"`
 	Type      string `json:"type"`
+}
+
+type Email struct {
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Bcc       string `json:"bcc"`
+	Subject   string `json:"subject"`
+	Content   string `json:"content"`
+	Templated bool   `json:"templated"`
+}
+
+type EmailResponse struct {
+	Status string `json:"status"`
 }
 
 type ApiKey struct {

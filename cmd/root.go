@@ -8,6 +8,7 @@ import (
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
 	"cwc/cmd/dnszones"
+	"cwc/cmd/email"
 	"cwc/cmd/environment"
 	"cwc/cmd/instance"
 	"cwc/cmd/login"
@@ -74,6 +75,7 @@ func init() {
 	rootCmd.AddCommand(bucket.BucketCmd)
 	rootCmd.AddCommand(instance.InstanceCmd)
 	rootCmd.AddCommand(registry.RegistryCmd)
+	rootCmd.AddCommand(email.EmailCmd)
 	rootCmd.AddCommand(login.LoginCmd)
 	rootCmd.AddCommand(provider.ProviderCmd)
 	rootCmd.AddCommand(environment.EnvironmentCmd)

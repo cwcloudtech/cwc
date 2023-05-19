@@ -24,5 +24,4 @@ func init() {
 	UserCmd.DisableFlagsInUseLine = true
 	UserCmd.AddCommand(ls.LsCmd)
 	UserCmd.AddCommand(delete.DeleteCmd)
-
 }
