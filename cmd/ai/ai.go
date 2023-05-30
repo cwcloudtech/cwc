@@ -4,6 +4,7 @@ Copyright © 2022 comwork.io contact@comwork.io
 package ai
 
 import (
+	"cwc/cmd/ai/models"
 	"cwc/cmd/ai/prompt"
 
 	"github.com/spf13/cobra"
@@ -21,5 +22,6 @@ var AiCmd = &cobra.Command{
 
 func init() {
 	AiCmd.DisableFlagsInUseLine = true
+	AiCmd.AddCommand(models.ModelsCmd)
 	AiCmd.AddCommand(prompt.PromptCmd)
 }

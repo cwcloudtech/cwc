@@ -97,6 +97,10 @@ type EmailResponse struct {
 	Status string `json:"status"`
 }
 
+type ModelsResponse struct {
+	Models []string `json:"models"`
+}
+
 type Prompt struct {
 	Model   string `json:"model"`
 	Message string `json:"message"`
