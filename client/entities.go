@@ -97,6 +97,17 @@ type EmailResponse struct {
 	Status string `json:"status"`
 }
 
+type Prompt struct {
+	Model   string `json:"model"`
+	Message string `json:"message"`
+}
+
+type PromptResponse struct {
+	Status   string   `json:"status"`
+	Response []string `json:"response"`
+	Score    float64  `json:"score"`
+}
+
 type ApiKey struct {
 	Accesskey string `json:"access_key"`
 	SecretKey string `json:"secret_key"`

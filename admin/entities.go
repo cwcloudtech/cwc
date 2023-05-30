@@ -14,10 +14,12 @@ type LoginBody struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
 type ReponseLogin struct {
 	Token     string `json:"token"`
 	Confirmed bool   `json:"confirmed"`
 }
+
 type Client struct {
 	region     string
 	provider   string

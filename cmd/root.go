@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"cwc/cmd/admin"
+	"cwc/cmd/ai"
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
 	"cwc/cmd/dnszones"
@@ -59,15 +60,6 @@ func Execute(version string) {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cwc.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-
 	rootCmd.Flags().BoolVarP(&fversion, "version", "v", false, "The cli version")
 	rootCmd.AddCommand(admin.AdminCmd)
 
@@ -76,6 +68,7 @@ func init() {
 	rootCmd.AddCommand(instance.InstanceCmd)
 	rootCmd.AddCommand(registry.RegistryCmd)
 	rootCmd.AddCommand(email.EmailCmd)
+	rootCmd.AddCommand(ai.AiCmd)
 	rootCmd.AddCommand(login.LoginCmd)
 	rootCmd.AddCommand(provider.ProviderCmd)
 	rootCmd.AddCommand(environment.EnvironmentCmd)
