@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"cwc/env"
 )
 
 func NewClient() (*Client, error) {
@@ -202,7 +203,7 @@ func GetDefaultProvider() string {
 
 func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
-	default_endpoint := "https://cloud-api.comwork.io"
+	default_endpoint := env.API_URL
 	if err != nil {
 
 		return default_endpoint
