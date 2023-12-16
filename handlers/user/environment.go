@@ -24,14 +24,11 @@ func HandleGetEnvironments(pretty *bool) {
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(environments)
+	} else if *pretty {
+		displayEnvironmentsAsTable(*environments)
 	} else {
-		if *pretty {
-			displayEnvironmentsAsTable(*environments)
-		} else {
-			utils.PrintMultiRow(client.Environment{}, *environments)
-		}
+		utils.PrintMultiRow(client.Environment{}, *environments)
 	}
-
 }
 
 func HandleGetEnvironment(id *string, pretty *bool) {

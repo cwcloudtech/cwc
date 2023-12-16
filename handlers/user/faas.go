@@ -20,7 +20,9 @@ func HandleGetLanguages(pretty *bool) {
 		os.Exit(1)
 	}
 
-	if *pretty {
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(languages)
+	} else if *pretty {
 		utils.PrintPrettyArray("Available languages", languages.Languages)
 	} else {
 		utils.PrintArray(languages.Languages)
@@ -34,7 +36,9 @@ func HandleGetTriggerKinds(pretty *bool) {
 		os.Exit(1)
 	}
 
-	if *pretty {
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(triggerKinds)
+	} else if *pretty {
 		utils.PrintPrettyArray("Available trigger kinds", triggerKinds.TriggerKinds)
 	} else {
 		utils.PrintArray(triggerKinds.TriggerKinds)
@@ -250,7 +254,9 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		os.Exit(1)
 	}
 
-	if *pretty {
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_function)
+	} else if *pretty {
 		utils.PrintPretty("Function successfully created", *created_function)
 	} else {
 		utils.PrintRow(*created_function)

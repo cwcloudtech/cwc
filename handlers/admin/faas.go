@@ -40,14 +40,16 @@ func HandleGetFunctions(pretty *bool) {
 }
 
 func HandleGetFunctionOwner(id *string, pretty *bool) {
-	client, _ := admin.NewClient()
-	owner, err := client.GetFunctionOwnerById(*id)
+	c, _ := admin.NewClient()
+	owner, err := c.GetFunctionOwnerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	if *pretty {
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(owner)
+	} else if *pretty {
 		utils.PrintPretty("Owner found", *owner)
 	} else {
 		utils.PrintRow(*owner)
@@ -107,14 +109,16 @@ func HandleGetInvocations(pretty *bool) {
 }
 
 func HandleGetInvocationInvoker(id *string, pretty *bool) {
-	client, _ := admin.NewClient()
-	invoker, err := client.GetInvocationInvokerById(*id)
+	c, _ := admin.NewClient()
+	invoker, err := c.GetInvocationInvokerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	if *pretty {
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(invoker)
+	} else if *pretty {
 		utils.PrintPretty("Invoker found", *invoker)
 	} else {
 		utils.PrintRow(*invoker)
@@ -151,38 +155,38 @@ func HandleGetTriggers(pretty *bool) {
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggers)
+	} else if *pretty {
+		displayTriggersAsTable(*triggers)
 	} else {
-		if *pretty {
-			displayTriggersAsTable(*triggers)
-		} else {
-			var triggersDisplay []admin.TriggerDisplay
-			for i, trigger := range *triggers {
-				triggersDisplay = append(triggersDisplay, admin.TriggerDisplay{
-					Id:          trigger.Id,
-					Kind:        trigger.Kind,
-					Owner_id:    trigger.Owner_id,
-					Name:        trigger.Content.Name,
-					Cron_expr:   trigger.Content.Cron_expr,
-					Function_id: trigger.Content.Function_id,
-					Created_at:  trigger.Created_at,
-					Updated_at:  trigger.Updated_at,
-				})
-				triggersDisplay[i].Id = trigger.Id
-			}
-			utils.PrintMultiRow(admin.TriggerDisplay{}, triggersDisplay)
+		var triggersDisplay []admin.TriggerDisplay
+		for i, trigger := range *triggers {
+			triggersDisplay = append(triggersDisplay, admin.TriggerDisplay{
+				Id:          trigger.Id,
+				Kind:        trigger.Kind,
+				Owner_id:    trigger.Owner_id,
+				Name:        trigger.Content.Name,
+				Cron_expr:   trigger.Content.Cron_expr,
+				Function_id: trigger.Content.Function_id,
+				Created_at:  trigger.Created_at,
+				Updated_at:  trigger.Updated_at,
+			})
+			triggersDisplay[i].Id = trigger.Id
 		}
+		utils.PrintMultiRow(admin.TriggerDisplay{}, triggersDisplay)
 	}
 }
 
 func HandleGetTriggerOwner(id *string, pretty *bool) {
-	client, _ := admin.NewClient()
-	owner, err := client.GetTriggerOwnerById(*id)
+	c, _ := admin.NewClient()
+	owner, err := c.GetTriggerOwnerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	if *pretty {
+	if admin.GetDefaultFormat() == "json" {
+		utils.PrintJson(owner)
+	} else if *pretty {
 		utils.PrintPretty("Owner found", *owner)
 	} else {
 		utils.PrintRow(*owner)
