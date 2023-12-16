@@ -9,13 +9,13 @@ import (
 )
 
 func HandleDeleteBucket(id *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.DeleteBucket(*id)
+	err = c.DeleteBucket(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -25,13 +25,13 @@ func HandleDeleteBucket(id *string) {
 }
 
 func HandleUpdateBucket(id *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.UpdateBucket(*id)
+	err = c.UpdateBucket(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

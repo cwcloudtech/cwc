@@ -126,35 +126,35 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	}
 
 	if admin.GetDefaultFormat() == "json" {
-		utils.PrintJson(created_env)
+		utils.PrintJson(*created_env)
 	} else {
-		fmt.Printf("Environment %s successfully created\n", created_env.Name)
-		fmt.Printf("  ➤ ID: %d\n", created_env.Id)
-		fmt.Printf("  ➤ Name: %s\n", created_env.Name)
-		fmt.Printf("  ➤ Path: %s\n", created_env.Path)
-		fmt.Printf("  ➤ Description: %s\n", created_env.Description)
-		fmt.Printf("  ➤ Subdomains: %s\n", created_env.SubDomains)
-		fmt.Printf("  ➤ Is Private: %t\n", created_env.IsPrivate)
-		fmt.Printf("  ➤ Roles: %s\n", created_env.Roles)
-		fmt.Printf((" ➤ Environment Logo URL: %s\n"), created_env.LogUrl)
+		utils.PrintPretty(fmt.Sprintf("Environment %s successfully created", created_env.Name), *created_env)
 	}
-
 }
 
 func HandleDeleteEnvironment(id *string) {
-
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	err = client.AdminDeleteEnvironment(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Environment %v successfully deleted\n", *id)
 }
 
 func HandleGetEnvironments(pretty *bool) {
-
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	environments, err := client.GetAllEnvironments()
 
 	if nil != err {
@@ -187,13 +187,7 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
 	} else if *pretty {
-		fmt.Printf("  ➤ ID: %d\n", environment.Id)
-		fmt.Printf("  ➤ Name: %s\n", environment.Name)
-		fmt.Printf("  ➤ Path: %s\n", environment.Path)
-		fmt.Printf("  ➤ Description: %s\n", environment.Description)
-		fmt.Printf("  ➤ Subdomains: %s\n", environment.SubDomains)
-		fmt.Printf("  ➤ Is Private: %t\n", environment.IsPrivate)
-		fmt.Printf("  ➤ Roles: %s\n", environment.Roles)
+		utils.PrintPretty("Environment found", environment)
 	} else {
 		utils.PrintRow(environment)
 	}

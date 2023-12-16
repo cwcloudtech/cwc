@@ -5,7 +5,6 @@ import (
 	"cwc/utils"
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -20,25 +19,23 @@ func HandleGetFunctions(pretty *bool) {
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(functions)
+	} else if *pretty {
+		displayFunctionsAsTable(*functions)
 	} else {
-		if *pretty {
-			displayFunctionsAsTable(*functions)
-		} else {
-			var functionsDisplay []admin.FunctionDisplay
-			for i, function := range *functions {
-				functionsDisplay = append(functionsDisplay, admin.FunctionDisplay{
-					Id:         function.Id,
-					Owner_id:   function.Owner_id,
-					Is_public:  function.Is_public,
-					Name:       function.Content.Name,
-					Language:   function.Content.Language,
-					Created_at: function.Created_at,
-					Updated_at: function.Updated_at,
-				})
-				functionsDisplay[i].Id = function.Id
-			}
-			utils.PrintMultiRow(admin.FunctionDisplay{}, functionsDisplay)
+		var functionsDisplay []admin.FunctionDisplay
+		for i, function := range *functions {
+			functionsDisplay = append(functionsDisplay, admin.FunctionDisplay{
+				Id:         function.Id,
+				Owner_id:   function.Owner_id,
+				Is_public:  function.Is_public,
+				Name:       function.Content.Name,
+				Language:   function.Content.Language,
+				Created_at: function.Created_at,
+				Updated_at: function.Updated_at,
+			})
+			functionsDisplay[i].Id = function.Id
 		}
+		utils.PrintMultiRow(admin.FunctionDisplay{}, functionsDisplay)
 	}
 }
 
@@ -51,8 +48,7 @@ func HandleGetFunctionOwner(id *string, pretty *bool) {
 	}
 
 	if *pretty {
-		fmt.Printf("  ➤ ID: %s\n", strconv.Itoa(owner.Id))
-		fmt.Printf("  ➤ Username: %s\n", owner.Username)
+		utils.PrintPretty("Owner found", *owner)
 	} else {
 		utils.PrintRow(*owner)
 	}
@@ -119,8 +115,7 @@ func HandleGetInvocationInvoker(id *string, pretty *bool) {
 	}
 
 	if *pretty {
-		fmt.Printf("  ➤ ID: %s\n", strconv.Itoa(invoker.Id))
-		fmt.Printf("  ➤ Username: %s\n", invoker.Username)
+		utils.PrintPretty("Invoker found", *invoker)
 	} else {
 		utils.PrintRow(*invoker)
 	}
@@ -188,8 +183,7 @@ func HandleGetTriggerOwner(id *string, pretty *bool) {
 	}
 
 	if *pretty {
-		fmt.Printf("  ➤ ID: %s\n", strconv.Itoa(owner.Id))
-		fmt.Printf("  ➤ Username: %s\n", owner.Username)
+		utils.PrintPretty("Owner found", *owner)
 	} else {
 		utils.PrintRow(*owner)
 	}

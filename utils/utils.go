@@ -55,6 +55,28 @@ func PrintHeader(class interface{}) {
 	fmt.Println(headerMsg)
 }
 
+func PrintPretty(firstLine string, class interface{}) {
+	fmt.Println(firstLine + ":")
+
+	values := reflect.ValueOf(class)
+	typesOf := values.Type()
+	for i := 0; i < values.NumField(); i++ {
+		fmt.Println("  ➤ " + typesOf.Field(i).Name + ": " + fmt.Sprintf("%v\t", values.Field(i).Interface()))
+	}
+}
+
+func PrintPrettyArray(firstLine string, lst []string) {
+	fmt.Println(firstLine + ":")
+
+	for _, elem := range lst {
+		fmt.Printf("  ➤ %v\n", elem)
+	}
+}
+
+func PrintArray(lst []string) {
+	fmt.Printf("%s\n", strings.Join(lst, "\n"))
+}
+
 func PrintRow(class interface{}) {
 	PrintHeader(class)
 	values := reflect.ValueOf(class)

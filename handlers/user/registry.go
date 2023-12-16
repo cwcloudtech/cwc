@@ -8,13 +8,13 @@ import (
 )
 
 func HandleDeleteRegistry(id *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.DeleteRegistry(*id)
+	err = c.DeleteRegistry(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -24,13 +24,13 @@ func HandleDeleteRegistry(id *string) {
 }
 
 func HandleUpdateRegistry(id *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.UpdateRegistry(*id)
+	err = c.UpdateRegistry(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

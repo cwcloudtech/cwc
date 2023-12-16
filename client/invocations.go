@@ -11,6 +11,7 @@ func (c *Client) GetAllInvocations() (*[]Invocation, error) {
 	if nil != err {
 		return nil, err
 	}
+
 	response := InvocationsResponse{}
 	err = json.NewDecoder(body).Decode(&response)
 
@@ -25,11 +26,13 @@ func (c *Client) GetInvocationById(invocation_id string) (*Invocation, error) {
 	if nil != err {
 		return nil, err
 	}
+
 	invocation := &Invocation{}
 	err = json.NewDecoder(body).Decode(invocation)
 	if nil != err {
 		return nil, err
 	}
+
 	return invocation, nil
 }
 

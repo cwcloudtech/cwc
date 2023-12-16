@@ -49,15 +49,10 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
+	} else if *pretty {
+		utils.PrintPretty("Environment found", *environment)
 	} else {
-		if *pretty {
-			fmt.Printf("  ➤ ID: %d\n", environment.Id)
-			fmt.Printf("  ➤ Name: %s\n", environment.Name)
-			fmt.Printf("  ➤ Path: %s\n", environment.Path)
-			fmt.Printf("  ➤ Description: %s\n", environment.Description)
-		} else {
-			utils.PrintRow(environment)
-		}
+		utils.PrintRow(environment)
 	}
 }
 

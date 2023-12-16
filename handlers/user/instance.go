@@ -9,13 +9,13 @@ import (
 )
 
 func HandleDeleteInstance(id *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.DeleteInstance(*id)
+	err = c.DeleteInstance(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -26,13 +26,13 @@ func HandleDeleteInstance(id *string) {
 
 func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *string, instance_type *string) {
 	attachCmd.Parse(os.Args[3:])
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	created_instance, err := client.AttachInstance(*project_id, *playbook, *instance_type)
+	created_instance, err := c.AttachInstance(*project_id, *playbook, *instance_type)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -43,13 +43,13 @@ func HandleAttachInstance(attachCmd *flag.FlagSet, project_id *int, playbook *st
 }
 
 func HandleAddInstance(name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	created_instance, err := client.AddInstance(*name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
+	created_instance, err := c.AddInstance(*name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -60,13 +60,13 @@ func HandleAddInstance(name *string, project_id *int, project_name *string, proj
 }
 
 func HandleUpdateInstance(id *string, status *string) {
-	client, err := client.NewClient()
+	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.UpdateInstance(*id, *status)
+	err = c.UpdateInstance(*id, *status)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
