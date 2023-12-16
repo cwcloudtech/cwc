@@ -6,18 +6,8 @@ import (
 	"fmt"
 )
 
-func (c *Client) AdminAddEnvironment(name string, path string, roles []string, main_role string, is_private bool, description string, subdomains []string) (*Environment, error) {
+func (c *Client) AdminAddEnvironment(environment Environment) (*Environment, error) {
 	buf := bytes.Buffer{}
-	environment := AddEnvironmentType{
-		Name:        name,
-		Path:        path,
-		Roles:       roles,
-		MainRole:    main_role,
-		IsPrivate:   is_private,
-		Description: description,
-		SubDomains:  subdomains,
-	}
-	println(environment.Roles[1])
 	err := json.NewEncoder(&buf).Encode(environment)
 	if err != nil {
 		return nil, err

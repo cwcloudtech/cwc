@@ -31,9 +31,12 @@ type Environment struct {
 	Name        string `json:"name"`
 	Path        string `json:"path"`
 	Roles       string `json:"roles"`
-	MainRole    string `json:"main_role"`
 	IsPrivate   bool   `json:"is_private"`
 	Description string `json:"description"`
+	EnvironmentTemplate string `json:"environment_template"`
+	DocTemplate string `json:"doc_template"`
+	SubDomains string `json:"subdomains"`
+	LogUrl   string   `json:"logo_url"`
 }
 
 type ResponseUsers struct {
@@ -57,15 +60,15 @@ type User struct {
 }
 
 type AddEnvironmentType struct {
-	Id         int      `json:"id"`
 	Name       string   `json:"name"`
 	Path       string   `json:"path"`
-	Roles      []string `json:"roles"`
-	SubDomains []string `json:"subdomains"`
-	MainRole   string   `json:"main_role"`
+	Roles      string `json:"roles"`
 	IsPrivate  bool     `json:"is_private"`
-
 	Description string `json:"description"`
+	EnvironmentTemplate string `json:"environment_template"`
+	DocTemplate string `json:"doc_template"`
+	SubDomains string `json:"subdomains"`
+	LogoUrl   string   `json:"logo_url"`
 }
 
 type AttachInstanceRequest struct {
@@ -175,4 +178,129 @@ type Provider struct {
 }
 type AvailableProviders struct {
 	Providers []Provider `json:"providers"`
+}
+
+type FunctionContent struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+	Language string `json:"language"`
+	Args []string `json:"args"`
+	Regexp string `json:"regexp"`
+	Callback_url string `json:"callback_url"`
+	Callback_authorization_header string `json:"callback_authorization_header"`
+}
+
+type Function struct {
+	Id          string    `json:"id"`
+	Owner_id	int    `json:"owner_id"`
+	Is_public   bool   `json:"is_public"`
+	Content FunctionContent `json:"content"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type FunctionDisplay struct {
+	Id          string    `json:"id"`
+	Owner_id	int    `json:"owner_id"`
+	Is_public   bool   `json:"is_public"`
+	Name string `json:"name"`
+	Language string `json:"language"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type FunctionsResponse struct {
+	Status  string     `json:"status"`
+	Code   int        `json:"code"`
+	StartIndex int `json:"start_index"`
+	MaxIndex int `json:"max_index"`
+    Results []Function `json:"results"`
+}
+
+type Argument struct {
+	Key string `json:"key"`
+	Value string `json:"value"`
+}
+
+type InvocationContent struct {
+	Args []Argument `json:"args"`
+	State string `json:"state"`
+	Result string `json:"result"`
+	User_id string `json:"user_id"`
+	Function_id string `json:"function_id"`
+}
+
+type Invocation struct {
+	Id          string    `json:"id"`
+	Invoker_id	int    `json:"invoker_id"`
+	Updated_at  string `json:"updated_at"`
+	Content InvocationContent `json:"content"`
+	Created_at string `json:"created_at"`
+}
+
+type InvocationDisplay struct {
+	Id          string    `json:"id"`
+	Invoker_id	int    `json:"invoker_id"`
+	Function_id string `json:"function_id"`
+	State string `json:"state"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type InvocationsResponse struct {
+	Status  string     `json:"status"`
+	Code   int        `json:"code"`
+	StartIndex int `json:"start_index"`
+	MaxIndex int `json:"max_index"`
+	Results []Invocation `json:"results"`
+}
+
+type TriggerContent struct {
+	Args []Argument `json:"args"`
+	Name string `json:"name"`
+	Cron_expr string `json:"cron_expr"`
+	Function_id string `json:"function_id"`
+}
+
+type Trigger struct {
+	Id          string    `json:"id"`
+	Kind 	  string `json:"kind"`
+	Owner_id	int    `json:"owner_id"`
+	Content TriggerContent `json:"content"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type TriggerDisplay struct {
+	Id          string    `json:"id"`
+	Kind 	  string `json:"kind"`
+	Owner_id	int    `json:"owner_id"`
+	Name string `json:"name"`
+	Cron_expr string `json:"cron_expr"`
+	Function_id string `json:"function_id"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type TriggersResponse struct {
+	Status  string     `json:"status"`
+	Code   int        `json:"code"`
+	StartIndex int `json:"start_index"`
+	MaxIndex int `json:"max_index"`
+	Results []Trigger `json:"results"`
+}
+
+type FunctionOwner struct {
+	Id int `json:"id"`
+	Username string `json:"username"`
+}
+
+type InvocationInvoker struct {
+	Id int `json:"id"`
+	Username string `json:"username"`
+}
+
+type TriggerOwner struct {
+	Id int `json:"id"`
+	Username string `json:"username"`
 }

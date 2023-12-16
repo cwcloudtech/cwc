@@ -16,6 +16,7 @@ import (
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
+	"cwc/cmd/faas"
 	"cwc/handlers/user"
 	"fmt"
 
@@ -75,5 +76,6 @@ func init() {
 	rootCmd.AddCommand(region.RegionCmd)
 	rootCmd.AddCommand(dnszones.DnsZonesCmd)
 	rootCmd.AddCommand(configure.ConfigureCmd)
+	rootCmd.AddCommand(faas.FaasCmd)
 
 }

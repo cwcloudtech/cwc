@@ -50,36 +50,59 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 	addUserCredentials(access_key, secret_key)
 	return nil
 }
+
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.ReadCloser, err error) {
-	req, err := http.NewRequest(method, c.requestPath(path), &body)
+    req, err := http.NewRequest(method, c.requestPath(path), &body)
 
-	user_token := getUserToken()
+    user_token := getUserToken()
 
-	req.Header.Set("X-Auth-Token", user_token)
+    req.Header.Set("X-Auth-Token", user_token)
 
-	req.Header.Add("Content-Type", "application/json")
+    req.Header.Add("Content-Type", "application/json")
 
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		respBody := new(bytes.Buffer)
-		_, err := respBody.ReadFrom(resp.Body)
-		if err != nil {
-			return nil, fmt.Errorf("an error occured")
-		}
-		errorResponse := ErrorResponse{}
-		json.NewDecoder(respBody).Decode(&errorResponse)
-		if errorResponse.Error == "" {
-			return nil, fmt.Errorf(fmt.Sprintf("Request failed with status %d", resp.StatusCode))
+    resp, err := c.httpClient.Do(req)
+    if err != nil {
+        return nil, err
+    }
 
-		} else {
-			return nil, fmt.Errorf(errorResponse.Error)
-		}
+    switch {
+    case resp.StatusCode >= 200 && resp.StatusCode < 300:
+        // Handle 2xx status codes as success
+        return resp.Body, nil
+    case resp.StatusCode >= 300 && resp.StatusCode < 400:
+        // Handle 3xx status codes (redirects, not necessarily an error)
+        // You can add specific handling for 3xx codes if needed
+    case resp.StatusCode >= 400 && resp.StatusCode < 500:
+        // Handle 4xx status codes as client errors
+        respBody := new(bytes.Buffer)
+        _, err := respBody.ReadFrom(resp.Body)
+        if err != nil {
+            return nil, fmt.Errorf("an error occurred")
+        }
+        errorResponse := ErrorResponse{}
+        json.NewDecoder(respBody).Decode(&errorResponse)
+        if errorResponse.Error == "" {
+            return nil, fmt.Errorf(fmt.Sprintf("Client error with status %d", resp.StatusCode))
+        } else {
+            return nil, fmt.Errorf(errorResponse.Error)
+        }
+    case resp.StatusCode >= 500:
+        // Handle 5xx status codes as server errors
+        respBody := new(bytes.Buffer)
+        _, err := respBody.ReadFrom(resp.Body)
+        if err != nil {
+            return nil, fmt.Errorf("an error occurred")
+        }
+        errorResponse := ErrorResponse{}
+        json.NewDecoder(respBody).Decode(&errorResponse)
+        if errorResponse.Error == "" {
+            return nil, fmt.Errorf(fmt.Sprintf("Server error with status %d", resp.StatusCode))
+        } else {
+            return nil, fmt.Errorf(errorResponse.Error)
+        }
+    }
 
-	}
-	return resp.Body, nil
+    return nil, fmt.Errorf("Unhandled status code: %d", resp.StatusCode)
 }
 
 func (c *Client) requestPath(path string) string {

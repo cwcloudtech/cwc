@@ -5,9 +5,10 @@ import (
 	"cwc/utils"
 	"fmt"
 	"os"
+	"github.com/olekukonko/tablewriter"
 )
 
-func HandleGetEnvironments() {
+func HandleGetEnvironments(pretty *bool) {
 
 	c, err := client.NewClient()
 
@@ -21,14 +22,16 @@ func HandleGetEnvironments() {
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(environments)
 	} else {
-		utils.PrintMultiRow(client.Environment{}, *environments)
+		if *pretty {
+			displayEnvironmentsAsTable(*environments)
+		} else {
+			utils.PrintMultiRow(client.Environment{}, *environments)
+		}
 	}
-
-	return
 
 }
 
-func HandleGetEnvironment(id *string) {
+func HandleGetEnvironment(id *string, pretty *bool) {
 	c, err := client.NewClient()
 
 	environment, err := c.GetEnvironment(*id)
@@ -39,9 +42,35 @@ func HandleGetEnvironment(id *string) {
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
 	} else {
-		utils.PrintRow(*environment)
+		if *pretty {
+			fmt.Printf("➤ ID: %d\n", environment.Id)
+			fmt.Printf("➤ Name: %s\n", environment.Name)
+			fmt.Printf("➤ Path: %s\n", environment.Path)
+			fmt.Printf("➤ Description: %s\n", environment.Description)
+		} else {
+			utils.PrintRow(environment)
+		}
+	}
+}
+
+
+func displayEnvironmentsAsTable(environments []client.Environment) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "Name", "Path", "Description"})
+
+	if len(environments) == 0 {
+		fmt.Println("No environments found")
+		return
+	} else {
+		for _, environment := range environments {
+			table.Append([]string{
+				fmt.Sprintf("%d", environment.Id), 
+				environment.Name,
+				environment.Path,
+				environment.Description,
+			})
+		}
 	}
 
-	return
-
+	table.Render()
 }

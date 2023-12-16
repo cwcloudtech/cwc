@@ -11,6 +11,7 @@ import (
 
 var (
 	environmentId string
+	pretty 	  bool = false
 )
 
 // lsCmd represents the ls command
@@ -21,13 +22,14 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if *&environmentId == "" {
-			user.HandleGetEnvironments()
+			user.HandleGetEnvironments(&pretty)
 		} else {
-			user.HandleGetEnvironment(&environmentId)
+			user.HandleGetEnvironment(&environmentId, &pretty)
 		}
 	},
 }
 
 func init() {
 	LsCmd.Flags().StringVarP(&environmentId, "environment", "e", "", "The environment id")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output")
 }
