@@ -12,6 +12,7 @@ var (
 	content         client.InvocationAddContent
 	interactive     bool = false
 	argumentsValues []string
+	synchronous     bool = false
 	pretty          bool = false
 )
 
@@ -20,7 +21,7 @@ var CreateCmd = &cobra.Command{
 	Short: "Create an invocation in the cloud",
 	Long:  `This command lets you create an invocation in the cloud.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleAddInvocation(&content, &argumentsValues, &interactive, &pretty)
+		user.HandleAddInvocation(&content, &argumentsValues, &interactive, &pretty, &synchronous)
 	},
 }
 
@@ -28,6 +29,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&content.Function_id, "function_id", "f", "", "The function id")
 	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode")
 	CreateCmd.Flags().StringArrayVarP(&argumentsValues, "args", "a", []string{}, "The invocation arguments values")
+	CreateCmd.Flags().BoolVarP(&synchronous, "synchronous", "s", false, "Synchronous invocation (optional)")
 	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output")
 
 	err := CreateCmd.MarkFlagRequired("function_id")

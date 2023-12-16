@@ -535,7 +535,7 @@ func displayInvocationsAsTable(invocations []client.Invocation) {
 	table.Render() // Render the table
 }
 
-func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, pretty *bool) {
+func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, pretty *bool, synchronous *bool) {
 	c, _ := client.NewClient()
 	var id = &content.Function_id
 	function, _ := c.GetFunctionById(*id)
@@ -564,7 +564,7 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 		}
 	}
 
-	created_invocation, err := c.AddInvocation(*content)
+	created_invocation, err := c.AddInvocation(*content, *synchronous)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

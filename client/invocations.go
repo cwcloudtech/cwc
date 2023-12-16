@@ -7,7 +7,7 @@ import (
 )
 
 func (c *Client) GetAllInvocations() (*[]Invocation, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/faas/invocations"), "GET", bytes.Buffer{})
+	body, err := c.httpRequest("/faas/invocations", "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (c *Client) GetInvocationById(invocation_id string) (*Invocation, error) {
 	return invocation, nil
 }
 
-func (c *Client) AddInvocation(content InvocationAddContent) (*Invocation, error) {
+func (c *Client) AddInvocation(content InvocationAddContent, synchronous bool) (*Invocation, error) {
 	buf := bytes.Buffer{}
 	if len(content.Args) == 0 {
 		content.Args = []Argument{}
@@ -48,7 +48,12 @@ func (c *Client) AddInvocation(content InvocationAddContent) (*Invocation, error
 		return nil, err
 	}
 
-	respBody, err := c.httpRequest("/faas/invocation", "POST", buf)
+	endpoint := "/faas/invocation"
+	if synchronous {
+		endpoint = endpoint + "/sync"
+	}
+
+	respBody, err := c.httpRequest(endpoint, "POST", buf)
 	if nil != err {
 		return nil, err
 	}
