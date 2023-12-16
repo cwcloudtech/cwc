@@ -8,7 +8,7 @@ import (
 
 var (
 	functionId string
-	pretty bool = false
+	pretty     bool = false
 )
 
 var LsCmd = &cobra.Command{
@@ -23,10 +23,9 @@ This command takes no arguments`,
 			user.HandleGetFunction(&functionId, &pretty)
 		}
 	},
-
 }
 
 func init() {
 	LsCmd.Flags().StringVarP(&functionId, "id", "f", "", "The function id")
-	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }

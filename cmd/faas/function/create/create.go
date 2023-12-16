@@ -26,7 +26,7 @@ func init() {
 	CreateCmd.Flags().BoolVarP(&function.Is_public, "is_public", "p", false, "Is the function public? (optional)")
 	CreateCmd.Flags().StringVarP(&function.Content.Name, "name", "n", "", "Name of the function")
 	CreateCmd.Flags().StringVarP(&function.Content.Language, "language", "l", "", "Language of the function")
-	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode")
+	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 	CreateCmd.Flags().StringVarP(&function.Content.Regexp, "regexp", "r", "", "Arguments matching regexp (optional)")
 	CreateCmd.Flags().StringVarP(&function.Content.Callback_url, "callback-url", "u", "", "Callback URL of the function (optional)")
 	CreateCmd.Flags().StringVarP(&function.Content.Callback_authorization_header, "callback-authorization-header", "a", "", "Callback Authorization Header of the function (optional)")

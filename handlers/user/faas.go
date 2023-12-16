@@ -600,6 +600,7 @@ func HandleTruncateInvocations() {
 		fmt.Printf("failed: %s\n", truncate_err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Invocations successfully truncated\n")
 }
 
@@ -708,7 +709,6 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 		fmt.Printf("Trigger kind: ")
 		scanner.Scan()
 		trigger.Kind = scanner.Text()
-
 		for _, available_triggerKind := range triggerKinds.TriggerKinds {
 			if trigger.Kind == available_triggerKind {
 				isTriggerKindAllowed = true
@@ -771,8 +771,8 @@ func HandleDeleteTrigger(id *string) {
 		fmt.Printf("failed: %s\n", delete_err)
 		os.Exit(1)
 	}
-	fmt.Printf("Trigger successfully deleted\n")
 
+	fmt.Printf("Trigger successfully deleted\n")
 }
 
 func HandleTruncateTriggers() {

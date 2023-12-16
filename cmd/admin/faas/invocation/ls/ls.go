@@ -8,7 +8,7 @@ import (
 
 var (
 	invocationId string
-	pretty 	 bool = false
+	pretty       bool = false
 )
 
 var LsCmd = &cobra.Command{
@@ -27,5 +27,5 @@ This command takes no arguments`,
 
 func init() {
 	LsCmd.Flags().StringVarP(&invocationId, "invocation", "i", "", "The invocation id")
-	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }

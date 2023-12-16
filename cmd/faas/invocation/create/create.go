@@ -27,10 +27,10 @@ var CreateCmd = &cobra.Command{
 
 func init() {
 	CreateCmd.Flags().StringVarP(&content.Function_id, "function_id", "f", "", "The function id")
-	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode")
+	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 	CreateCmd.Flags().StringArrayVarP(&argumentsValues, "args", "a", []string{}, "The invocation arguments values")
 	CreateCmd.Flags().BoolVarP(&synchronous, "synchronous", "s", false, "Synchronous invocation (optional)")
-	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output")
+	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 
 	err := CreateCmd.MarkFlagRequired("function_id")
 	if nil != err {

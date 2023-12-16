@@ -25,7 +25,7 @@ To use this command you have to provide the function ID`,
 
 func init() {
 	UpdateCmd.Flags().StringVarP(&functionId, "id", "f", "", "The function ID")
-	UpdateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode")
+	UpdateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 	UpdateCmd.Flags().StringVarP(&function.Content.Language, "language", "l", "", "The function language")
 	UpdateCmd.Flags().StringVarP(&function.Content.Regexp, "regexp", "r", "", "The function regexp")
 	UpdateCmd.Flags().StringVarP(&function.Content.Callback_url, "callback_url", "u", "", "The function callback url")

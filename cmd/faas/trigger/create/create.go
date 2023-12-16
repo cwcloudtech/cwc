@@ -25,7 +25,7 @@ var CreateCmd = &cobra.Command{
 
 func init() {
 	CreateCmd.Flags().StringVarP(&trigger.Content.Function_id, "function_id", "f", "", "The trigger function id")
-	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode")
+	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 	CreateCmd.Flags().StringVarP(&trigger.Content.Name, "name", "n", "", "The trigger name")
 	CreateCmd.Flags().StringVarP(&trigger.Kind, "kind", "k", "", "The trigger kind")
 	CreateCmd.Flags().StringVarP(&trigger.Content.Cron_expr, "cron_expr", "c", "", "The trigger cron expression")
