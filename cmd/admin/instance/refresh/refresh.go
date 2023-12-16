@@ -25,10 +25,10 @@ To use this command you have to provide the instance ID that you want to refresh
 }
 
 func init() {
-
 	RefreshCmd.Flags().StringVarP(&instanceId, "instance", "i", "", "The instance id")
 
-	if err := RefreshCmd.MarkFlagRequired("instance"); err != nil {
+	err := RefreshCmd.MarkFlagRequired("instance")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

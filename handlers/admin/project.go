@@ -11,7 +11,7 @@ func HandleAddProject(user_email *string, name *string, host *string, token *str
 
 	c, _ := admin.NewClient()
 	created_project, err := c.AdminAddProject(*user_email, *name, *host, *token, *git_username, *namespace)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -27,19 +27,19 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 	admin, _ := admin.NewClient()
 	if *id != "" {
 		err := admin.AdminDeleteProjectById(*id)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
 	} else if *name != "" {
 		err := admin.AdminDeleteProjectByName(*name)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
 	} else {
 		err := admin.AdminDeleteProjectByUrl(*url)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
@@ -53,7 +53,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 	if *project_id == "" && *project_name == "" && *project_url == "" {
 		projects, err := c.AdminGetAllProjects()
 
-		if err != nil {
+		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
@@ -74,7 +74,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 			project, err = c.AdminGetProjectByUrl(*project_url)
 		}
 
-		if err != nil {
+		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}

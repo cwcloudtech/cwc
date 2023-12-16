@@ -17,7 +17,7 @@ var (
 	privacy     bool = true
 	description string
 	subdomains  string
-	logo_url   string
+	logo_url    string
 )
 
 // createCmd represents the create command
@@ -39,13 +39,18 @@ func init() {
 	CreateCmd.Flags().StringVarP(&subdomains, "subdomains", "s", "", "The environment subdomains")
 	CreateCmd.Flags().StringVarP(&logo_url, "logo_url", "l", "", "The environment logo url")
 
-	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
+	err := CreateCmd.MarkFlagRequired("name")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("path"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("path")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("roles"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("roles")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

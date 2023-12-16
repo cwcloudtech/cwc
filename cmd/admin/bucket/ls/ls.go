@@ -32,5 +32,4 @@ This command takes no arguments`,
 
 func init() {
 	LsCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
-
 }

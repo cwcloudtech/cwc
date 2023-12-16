@@ -26,10 +26,10 @@ To use this command you have to provide the environment ID that you want to dele
 }
 
 func init() {
-
 	DeleteCmd.Flags().StringVarP(&envId, "environment", "e", "", "The environment id")
 
-	if err := DeleteCmd.MarkFlagRequired("environment"); err != nil {
+	err := DeleteCmd.MarkFlagRequired("environment")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

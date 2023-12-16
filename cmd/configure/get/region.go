@@ -20,5 +20,4 @@ var GetRegionCmd = &cobra.Command{
 }
 
 func init() {
-
 }

@@ -9,15 +9,15 @@ import (
 )
 
 var (
-	content client.InvocationAddContent
-	interactive bool = false
+	content         client.InvocationAddContent
+	interactive     bool = false
 	argumentsValues []string
 )
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create an invocation in the cloud",
-	Long: `This command lets you create an invocation in the cloud.`,
+	Long:  `This command lets you create an invocation in the cloud.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleAddInvocation(&content, &argumentsValues, &interactive)
 	},
@@ -28,7 +28,8 @@ func init() {
 	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode")
 	CreateCmd.Flags().StringArrayVarP(&argumentsValues, "args", "a", []string{}, "The invocation arguments values")
 
-	if err := CreateCmd.MarkFlagRequired("function_id"); err != nil {
+	err := CreateCmd.MarkFlagRequired("function_id")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

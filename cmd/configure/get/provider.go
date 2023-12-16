@@ -20,5 +20,4 @@ var GetProviderCmd = &cobra.Command{
 }
 
 func init() {
-
 }

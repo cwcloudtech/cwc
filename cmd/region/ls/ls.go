@@ -21,5 +21,4 @@ This command takes no arguments`,
 }
 
 func init() {
-
 }

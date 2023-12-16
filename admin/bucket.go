@@ -1,10 +1,10 @@
 package admin
 
 import (
-	"net/mail"
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/mail"
 )
 
 func (c *Client) AdminAddBucket(user_email string, name string, reg_type string) (*Bucket, error) {
@@ -16,16 +16,16 @@ func (c *Client) AdminAddBucket(user_email string, name string, reg_type string)
 	}
 
 	err := json.NewEncoder(&buf).Encode(bucket)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s/%s/provision", c.provider, c.region), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	created_bucket := &Bucket{}
 	err = json.NewDecoder(respBody).Decode(created_bucket)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return created_bucket, nil
@@ -33,13 +33,13 @@ func (c *Client) AdminAddBucket(user_email string, name string, reg_type string)
 
 func (c *Client) GetAllBuckets() (*[]Bucket, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s/%s/all", c.provider, c.region), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	buckets := []Bucket{}
 	err = json.NewDecoder(body).Decode(&buckets)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &buckets, nil
@@ -47,20 +47,20 @@ func (c *Client) GetAllBuckets() (*[]Bucket, error) {
 
 func (c *Client) GetBucket(bucket_id string) (*Bucket, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s", bucket_id), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	bucket := &Bucket{}
 	err = json.NewDecoder(body).Decode(bucket)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return bucket, nil
 }
 
 func valid(email string) bool {
-    _, err := mail.ParseAddress(email)
-    return err == nil
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
 
 func (c *Client) UpdateBucket(id string, email string) error {
@@ -68,7 +68,7 @@ func (c *Client) UpdateBucket(id string, email string) error {
 	var updateCreds bool = true
 
 	renew := RenewCredentials{
-		Email: email,
+		Email:       email,
 		UpdateCreds: updateCreds,
 	}
 
@@ -77,12 +77,12 @@ func (c *Client) UpdateBucket(id string, email string) error {
 	}
 
 	encode_err := json.NewEncoder(&buf).Encode(renew)
-	if encode_err != nil {
+	if nil != encode_err {
 		return encode_err
 	}
 
 	_, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s", id), "PATCH", buf)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil
@@ -90,7 +90,7 @@ func (c *Client) UpdateBucket(id string, email string) error {
 
 func (c *Client) DeleteBucket(bucketId string) error {
 	_, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s", bucketId), "DELETE", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil

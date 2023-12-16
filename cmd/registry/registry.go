@@ -28,5 +28,4 @@ func init() {
 	RegistryCmd.AddCommand(ls.LsCmd)
 	RegistryCmd.AddCommand(update.UpdateCmd)
 	RegistryCmd.AddCommand(delete.DeleteCmd)
-
 }

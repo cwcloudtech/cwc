@@ -27,14 +27,16 @@ and your secret key to the login command`,
 }
 
 func init() {
-
 	LoginCmd.Flags().StringVarP(&access_key, "access_key", "a", "", "API access key")
 	LoginCmd.Flags().StringVarP(&secret_key, "secret_key", "s", "", "API secret key")
 
-	if err := LoginCmd.MarkFlagRequired("access_key"); err != nil {
+	err := LoginCmd.MarkFlagRequired("access_key")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := LoginCmd.MarkFlagRequired("secret_key"); err != nil {
+
+	err = LoginCmd.MarkFlagRequired("secret_key")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

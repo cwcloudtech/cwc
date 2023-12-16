@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	functionId string
+	functionId  string
 	interactive bool = false
-	function client.Function
+	function    client.Function
 )
 
 var UpdateCmd = &cobra.Command{
@@ -21,7 +21,6 @@ To use this command you have to provide the function ID`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleUpdateFunction(&functionId, &function, &interactive)
 	},
-
 }
 
 func init() {
@@ -36,7 +35,8 @@ func init() {
 	UpdateCmd.Flags().StringSliceVarP(&function.Content.Args, "args", "g", []string{}, "Arguments of the function")
 	UpdateCmd.Flags().StringVarP(&function.Content.Code, "code", "c", "", "The function code")
 
-	if err := UpdateCmd.MarkFlagRequired("id"); err != nil {
+	err := UpdateCmd.MarkFlagRequired("id")
+	if nil != err {
 		panic(err)
 	}
 }

@@ -10,12 +10,12 @@ import (
 
 func HandleDeleteBucket(id *string) {
 	client, err := client.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	err = client.DeleteBucket(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -25,12 +25,12 @@ func HandleDeleteBucket(id *string) {
 func HandleUpdateBucket(id *string) {
 
 	client, err := client.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	err = client.UpdateBucket(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -41,14 +41,14 @@ func HandleUpdateBucket(id *string) {
 func HandleGetBuckets() {
 
 	c, err := client.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	buckets, err := c.GetAllBuckets()
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -65,14 +65,14 @@ func HandleGetBuckets() {
 func HandleGetBucket(id *string) {
 
 	c, err := client.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	bucket, err := c.GetBucket(*id)
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}

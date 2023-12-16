@@ -32,5 +32,4 @@ This command takes no arguments`,
 
 func init() {
 	LsCmd.Flags().StringVarP(&registryId, "registry", "r", "", "The registry id")
-
 }

@@ -9,13 +9,13 @@ import (
 
 func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	created_registry, err := client.AdminAddRegistry(*user_email, *name, *reg_type)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -28,12 +28,12 @@ func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
 
 func HandleDeleteRegistry(id *string) {
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	err = client.DeleteRegistry(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -42,12 +42,12 @@ func HandleDeleteRegistry(id *string) {
 
 func HandleUpdateRegistry(id *string, email *string) {
 	admin, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	err = admin.UpdateRegistry(*id, *email)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -58,14 +58,14 @@ func HandleUpdateRegistry(id *string, email *string) {
 func HandleGetRegistries() {
 
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	registries, err := client.GetAllRegistries()
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -82,14 +82,14 @@ func HandleGetRegistries() {
 func HandleGetRegistry(id *string) {
 
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	registry, err := client.GetRegistry(*id)
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}

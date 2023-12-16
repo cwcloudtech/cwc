@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"cwc/env"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"cwc/env"
 )
 
 func NewClient() (*Client, error) {
@@ -40,11 +40,11 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 	}
 
 	err := json.NewEncoder(&buf).Encode(project)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	_, err = c.httpRequest(fmt.Sprintf("/api_keys/verify"), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	addUserCredentials(access_key, secret_key)
@@ -52,57 +52,57 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 }
 
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.ReadCloser, err error) {
-    req, err := http.NewRequest(method, c.requestPath(path), &body)
+	req, err := http.NewRequest(method, c.requestPath(path), &body)
 
-    user_token := getUserToken()
+	user_token := getUserToken()
 
-    req.Header.Set("X-Auth-Token", user_token)
+	req.Header.Set("X-Auth-Token", user_token)
 
-    req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Content-Type", "application/json")
 
-    resp, err := c.httpClient.Do(req)
-    if err != nil {
-        return nil, err
-    }
+	resp, err := c.httpClient.Do(req)
+	if nil != err {
+		return nil, err
+	}
 
-    switch {
-    case resp.StatusCode >= 200 && resp.StatusCode < 300:
-        // Handle 2xx status codes as success
-        return resp.Body, nil
-    case resp.StatusCode >= 300 && resp.StatusCode < 400:
-        // Handle 3xx status codes (redirects, not necessarily an error)
-        // You can add specific handling for 3xx codes if needed
-    case resp.StatusCode >= 400 && resp.StatusCode < 500:
-        // Handle 4xx status codes as client errors
-        respBody := new(bytes.Buffer)
-        _, err := respBody.ReadFrom(resp.Body)
-        if err != nil {
-            return nil, fmt.Errorf("an error occurred")
-        }
-        errorResponse := ErrorResponse{}
-        json.NewDecoder(respBody).Decode(&errorResponse)
-        if errorResponse.Error == "" {
-            return nil, fmt.Errorf(fmt.Sprintf("Client error with status %d", resp.StatusCode))
-        } else {
-            return nil, fmt.Errorf(errorResponse.Error)
-        }
-    case resp.StatusCode >= 500:
-        // Handle 5xx status codes as server errors
-        respBody := new(bytes.Buffer)
-        _, err := respBody.ReadFrom(resp.Body)
-        if err != nil {
-            return nil, fmt.Errorf("an error occurred")
-        }
-        errorResponse := ErrorResponse{}
-        json.NewDecoder(respBody).Decode(&errorResponse)
-        if errorResponse.Error == "" {
-            return nil, fmt.Errorf(fmt.Sprintf("Server error with status %d", resp.StatusCode))
-        } else {
-            return nil, fmt.Errorf(errorResponse.Error)
-        }
-    }
+	switch {
+	case resp.StatusCode >= 200 && resp.StatusCode < 300:
+		// Handle 2xx status codes as success
+		return resp.Body, nil
+	case resp.StatusCode >= 300 && resp.StatusCode < 400:
+		// Handle 3xx status codes (redirects, not necessarily an error)
+		// You can add specific handling for 3xx codes if needed
+	case resp.StatusCode >= 400 && resp.StatusCode < 500:
+		// Handle 4xx status codes as client errors
+		respBody := new(bytes.Buffer)
+		_, err := respBody.ReadFrom(resp.Body)
+		if nil != err {
+			return nil, fmt.Errorf("an error occurred")
+		}
+		errorResponse := ErrorResponse{}
+		json.NewDecoder(respBody).Decode(&errorResponse)
+		if errorResponse.Error == "" {
+			return nil, fmt.Errorf(fmt.Sprintf("Client error with status %d", resp.StatusCode))
+		} else {
+			return nil, fmt.Errorf(errorResponse.Error)
+		}
+	case resp.StatusCode >= 500:
+		// Handle 5xx status codes as server errors
+		respBody := new(bytes.Buffer)
+		_, err := respBody.ReadFrom(resp.Body)
+		if nil != err {
+			return nil, fmt.Errorf("an error occurred")
+		}
+		errorResponse := ErrorResponse{}
+		json.NewDecoder(respBody).Decode(&errorResponse)
+		if errorResponse.Error == "" {
+			return nil, fmt.Errorf(fmt.Sprintf("Server error with status %d", resp.StatusCode))
+		} else {
+			return nil, fmt.Errorf(errorResponse.Error)
+		}
+	}
 
-    return nil, fmt.Errorf("Unhandled status code: %d", resp.StatusCode)
+	return nil, fmt.Errorf("Unhandled status code: %d", resp.StatusCode)
 }
 
 func (c *Client) requestPath(path string) string {
@@ -115,30 +115,30 @@ func (c *Client) requestPath(path string) string {
 func addUserCredentials(access_key string, secret_key string) {
 	dirname, err := os.UserHomeDir()
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
 		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 		}
 	}
 	f, err := os.Create(dirname + "/.cwc/credentials")
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	_, err = f.WriteString("cwc_access_key = " + access_key + "\n")
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	_, err = f.WriteString("cwc_secret_key = " + secret_key + "\n")
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
@@ -147,12 +147,12 @@ func addUserCredentials(access_key string, secret_key string) {
 func getUserToken() string {
 	dirname, err := os.UserHomeDir()
 
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/credentials")
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
@@ -163,13 +163,13 @@ func getUserToken() string {
 
 func GetDefaultRegion() string {
 	dirname, err := os.UserHomeDir()
-	if err != nil {
+	if nil != err {
 
 		return "fr-par"
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return "fr-par"
 	}
 
@@ -191,13 +191,13 @@ func SetDefaultProvider(provider string) {
 
 func GetDefaultProvider() string {
 	dirname, err := os.UserHomeDir()
-	if err != nil {
+	if nil != err {
 
 		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
@@ -208,13 +208,13 @@ func GetDefaultProvider() string {
 
 func GetDefaultFormat() string {
 	dirname, err := os.UserHomeDir()
-	if err != nil {
+	if nil != err {
 
 		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
@@ -225,14 +225,14 @@ func GetDefaultFormat() string {
 func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
 	default_endpoint := env.API_URL
-	if err != nil {
+	if nil != err {
 
 		return default_endpoint
 
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return default_endpoint
 	}
 
@@ -265,13 +265,13 @@ func GetValueFromFile(content_file string, key string) string {
 func UpdateFileKeyValue(filename string, key string, value string) {
 	dirname, err := os.UserHomeDir()
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
 		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 		}
 		os.Create(dirname + "/.cwc/" + filename)
@@ -283,11 +283,11 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 	file_content, err := ioutil.ReadFile(dirname + "/.cwc/" + filename)
 	if GetValueFromFile(string(file_content), key) == "" {
 		config_file, err := os.OpenFile(dirname+"/.cwc/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 		}
 		_, err = config_file.WriteString(key + " = " + value + "\n")
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 
 		}
@@ -308,7 +308,7 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	}
 	output := strings.Join(lines, "\n")
 	err = ioutil.WriteFile(dirname+"/.cwc/"+file, []byte(output), 0644)
-	if err != nil {
+	if nil != err {
 		log.Fatalln(err)
 	}
 

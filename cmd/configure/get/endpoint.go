@@ -20,5 +20,4 @@ var GetEndpointCmd = &cobra.Command{
 }
 
 func init() {
-
 }

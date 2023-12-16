@@ -25,7 +25,7 @@ func HandleGetUsers() {
 
 	responseUsers, err := client.GetAllUsers()
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -46,7 +46,7 @@ func HandleGetUser(id *string) {
 
 	responseUser, err := client.GetUser(*id)
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -65,7 +65,7 @@ func HandleDeleteUser(id *string) {
 	client, err := admin.NewClient()
 
 	err = client.DeleteUser(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}

@@ -31,10 +31,13 @@ func init() {
 	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associeted with the project")
 	CreateCmd.Flags().StringVarP(&reg_type, "type", "t", "", "The bucket type (private/public-read)")
 
-	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
+	err := CreateCmd.MarkFlagRequired("name")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("user"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("user")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

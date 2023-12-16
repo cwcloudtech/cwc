@@ -26,10 +26,10 @@ To use this command you have to provide the instance ID that you want to delete`
 }
 
 func init() {
-
 	DeleteCmd.Flags().StringVarP(&instanceId, "instance", "i", "", "The instance id")
 
-	if err := DeleteCmd.MarkFlagRequired("instance"); err != nil {
+	err := DeleteCmd.MarkFlagRequired("instance")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

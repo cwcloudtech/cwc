@@ -27,15 +27,16 @@ To use this command you have to provide the instance ID and the desired status`,
 }
 
 func init() {
-
 	UpdateCmd.Flags().StringVarP(&instanceId, "instance", "i", "", "The instance id")
 	UpdateCmd.Flags().StringVarP(&status, "status", "s", "", "Instance status (poweroff, poweron, reboot)")
 
-	if err := UpdateCmd.MarkFlagRequired("instance"); err != nil {
+	err := UpdateCmd.MarkFlagRequired("instance")
+	if nil != err {
 		fmt.Println(err)
 	}
 
-	if err := UpdateCmd.MarkFlagRequired("status"); err != nil {
+	err = UpdateCmd.MarkFlagRequired("status")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

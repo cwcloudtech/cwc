@@ -28,9 +28,7 @@ This command takes no arguments`,
 }
 
 func init() {
-
 	LsCmd.Flags().StringVarP(&projectId, "id", "p", "", "The project id")
 	LsCmd.Flags().StringVarP(&projectName, "name", "n", "", "The project name")
 	LsCmd.Flags().StringVarP(&projectUrl, "url", "u", "", "The project url")
-
 }

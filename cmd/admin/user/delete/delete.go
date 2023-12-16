@@ -27,10 +27,10 @@ NOTE: The project needs to be empty and doesnt hold any instances`,
 }
 
 func init() {
-
 	DeleteCmd.Flags().StringVarP(&userId, "user", "u", "", "The user id")
-	if err := DeleteCmd.MarkFlagRequired("user"); err != nil {
+
+	err := DeleteCmd.MarkFlagRequired("user")
+	if nil != err {
 		fmt.Println(err)
 	}
-
 }

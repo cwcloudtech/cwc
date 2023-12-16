@@ -26,10 +26,10 @@ To use this command you have to provide the bucket ID that you want to delete`,
 }
 
 func init() {
-
 	DeleteCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
 
-	if err := DeleteCmd.MarkFlagRequired("bucket"); err != nil {
+	err := DeleteCmd.MarkFlagRequired("bucket")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

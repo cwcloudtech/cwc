@@ -27,5 +27,4 @@ var SetProviderCmd = &cobra.Command{
 }
 
 func init() {
-
 }

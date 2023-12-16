@@ -27,5 +27,4 @@ var SetFormatCmd = &cobra.Command{
 }
 
 func init() {
-
 }

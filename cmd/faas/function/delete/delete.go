@@ -8,11 +8,11 @@ import (
 )
 
 var (
-	functionId   string
+	functionId string
 )
 
 var DeleteCmd = &cobra.Command{
-	Use:  "delete",
+	Use:   "delete",
 	Short: "Delete a particular function",
 	Long: `This command lets you delete a particular function.
 To use this command you have to provide the function ID that you want to delete.`,
@@ -25,7 +25,8 @@ To use this command you have to provide the function ID that you want to delete.
 func init() {
 	DeleteCmd.Flags().StringVarP(&functionId, "function", "f", "", "The function id")
 
-	if err := DeleteCmd.MarkFlagRequired("function"); err != nil {
+	err := DeleteCmd.MarkFlagRequired("function")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

@@ -15,16 +15,16 @@ func (c *Client) AdminAddRegistry(user_email string, name string, reg_type strin
 	}
 
 	err := json.NewEncoder(&buf).Encode(registry)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s/%s/provision", c.provider, c.region), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	created_registry := &Registry{}
 	err = json.NewDecoder(respBody).Decode(created_registry)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return created_registry, nil
@@ -32,13 +32,13 @@ func (c *Client) AdminAddRegistry(user_email string, name string, reg_type strin
 
 func (c *Client) GetAllRegistries() (*[]Registry, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s/%s/all", c.provider, c.region), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	registries := []Registry{}
 	err = json.NewDecoder(body).Decode(&registries)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &registries, nil
@@ -46,12 +46,12 @@ func (c *Client) GetAllRegistries() (*[]Registry, error) {
 
 func (c *Client) GetRegistry(registry_id string) (*Registry, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s", registry_id), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	registry := &Registry{}
 	err = json.NewDecoder(body).Decode(registry)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return registry, nil
@@ -62,7 +62,7 @@ func (c *Client) UpdateRegistry(id string, email string) error {
 	var updateCreds bool = true
 
 	renew := RenewCredentials{
-		Email: email,
+		Email:       email,
 		UpdateCreds: updateCreds,
 	}
 
@@ -71,12 +71,12 @@ func (c *Client) UpdateRegistry(id string, email string) error {
 	}
 
 	encode_err := json.NewEncoder(&buf).Encode(renew)
-	if encode_err != nil {
+	if nil != encode_err {
 		return encode_err
 	}
 
 	_, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s", id), "PATCH", buf)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil
@@ -84,7 +84,7 @@ func (c *Client) UpdateRegistry(id string, email string) error {
 
 func (c *Client) DeleteRegistry(registry_id string) error {
 	_, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s", registry_id), "DELETE", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil

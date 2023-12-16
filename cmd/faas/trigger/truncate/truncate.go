@@ -14,7 +14,7 @@ This command will delete all triggers that you have.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleTruncateTriggers()
 	},
-
 }
 
-func init() {}
+func init() {
+}

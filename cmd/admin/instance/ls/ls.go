@@ -31,7 +31,5 @@ This command takes no arguments`,
 }
 
 func init() {
-
 	LsCmd.Flags().StringVarP(&instanceId, "instance", "i", "", "The instance id")
-
 }

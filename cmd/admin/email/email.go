@@ -37,13 +37,18 @@ func init() {
 	EmailCmd.Flags().StringVarP(&content, "content", "c", "", "The content")
 	EmailCmd.Flags().BoolVarP(&templated, "templated", "m", false, "Use the cwcloud's template")
 
-	if err := EmailCmd.MarkFlagRequired("to"); err != nil {
+	err := EmailCmd.MarkFlagRequired("to")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := EmailCmd.MarkFlagRequired("subject"); err != nil {
+
+	err = EmailCmd.MarkFlagRequired("subject")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := EmailCmd.MarkFlagRequired("content"); err != nil {
+
+	err = EmailCmd.MarkFlagRequired("content")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

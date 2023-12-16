@@ -26,10 +26,10 @@ To use this command you have to provide the registry ID that you want to delete`
 }
 
 func init() {
-
 	DeleteCmd.Flags().StringVarP(&registryId, "registry", "r", "", "The registry id")
 
-	if err := DeleteCmd.MarkFlagRequired("registry"); err != nil {
+	err := DeleteCmd.MarkFlagRequired("registry")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

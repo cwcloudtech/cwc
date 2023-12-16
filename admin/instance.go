@@ -8,13 +8,13 @@ import (
 
 func (c *Client) AdminGetAllInstances() (*[]Instance, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s/%s/all", c.provider, c.region), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	instances := []Instance{}
 	err = json.NewDecoder(body).Decode(&instances)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &instances, nil
@@ -22,17 +22,16 @@ func (c *Client) AdminGetAllInstances() (*[]Instance, error) {
 
 func (c *Client) GetInstance(instance_id string) (*Instance, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s", instance_id), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	instance := &Instance{}
 	err = json.NewDecoder(body).Decode(instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return instance, nil
 }
-
 
 func (c *Client) AdminAddInstance(user_email string, instance_name string, project_id int, project_name string, project_url string, instance_size string, environment string, zone string, dns_zone string) (*Instance, error) {
 	buf := bytes.Buffer{}
@@ -50,16 +49,16 @@ func (c *Client) AdminAddInstance(user_email string, instance_name string, proje
 	}
 
 	err := json.NewEncoder(&buf).Encode(instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s/%s/%s/provision/%s", c.provider, c.region, instance.Zone, instance.Environment), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	created_instance := &Instance{}
 	err = json.NewDecoder(respBody).Decode(created_instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return created_instance, nil
@@ -72,11 +71,11 @@ func (c *Client) AdminUpdateInstance(id string, status string) error {
 		Status: status,
 	}
 	err := json.NewEncoder(&buf).Encode(UpdateInstanceRequest)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	_, err = c.httpRequest(fmt.Sprintf("/admin/instance/%s", id), "PATCH", buf)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil
@@ -84,7 +83,7 @@ func (c *Client) AdminUpdateInstance(id string, status string) error {
 
 func (c *Client) AdminDeleteInstance(instanceId string) error {
 	_, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s", instanceId), "DELETE", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil
@@ -92,7 +91,7 @@ func (c *Client) AdminDeleteInstance(instanceId string) error {
 
 func (c *Client) AdminRefreshInstance(instanceId string) error {
 	_, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s/refresh", instanceId), "POST", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil

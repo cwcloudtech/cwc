@@ -8,13 +8,13 @@ import (
 
 func (c *Client) GetAllInstances() (*[]Instance, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s", c.provider, c.region), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	instances := []Instance{}
 	err = json.NewDecoder(body).Decode(&instances)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &instances, nil
@@ -22,12 +22,12 @@ func (c *Client) GetAllInstances() (*[]Instance, error) {
 
 func (c *Client) GetInstance(instance_id string) (*Instance, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s", c.provider, c.region, instance_id), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	instance := &Instance{}
 	err = json.NewDecoder(body).Decode(instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return instance, nil
@@ -48,16 +48,16 @@ func (c *Client) AddInstance(instance_name string, project_id int, project_name 
 	}
 
 	err := json.NewEncoder(&buf).Encode(instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s/provision/%s", c.provider, c.region, instance.Zone, instance.Environment), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	created_instance := &Instance{}
 	err = json.NewDecoder(respBody).Decode(created_instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return created_instance, nil
@@ -70,11 +70,11 @@ func (c *Client) UpdateInstance(id string, status string) error {
 		Status: status,
 	}
 	err := json.NewEncoder(&buf).Encode(UpdateInstanceRequest)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	_, err = c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s", c.provider, c.region, id), "PATCH", buf)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil
@@ -82,7 +82,7 @@ func (c *Client) UpdateInstance(id string, status string) error {
 
 func (c *Client) DeleteInstance(instanceId string) error {
 	_, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s", c.provider, c.region, instanceId), "DELETE", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil
@@ -97,16 +97,16 @@ func (c *Client) AttachInstance(project_id int, playbook string, instance_size s
 	}
 
 	err := json.NewEncoder(&buf).Encode(instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/attach/%v", c.region, instance.ProjectId), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	created_instance := &Instance{}
 	err = json.NewDecoder(respBody).Decode(created_instance)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return created_instance, nil
@@ -114,16 +114,16 @@ func (c *Client) AttachInstance(project_id int, playbook string, instance_size s
 
 func GetInstancesTypes() (*InstancesTypes, error) {
 	c, err := NewClient()
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	body, err := c.httpRequest(fmt.Sprintf("/%s/instance_types", c.provider), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	instancesTypes := &InstancesTypes{}
 	err = json.NewDecoder(body).Decode(instancesTypes)
-	if err != nil {
+	if nil != err {
 		fmt.Println(err.Error())
 		return nil, err
 	}

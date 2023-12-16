@@ -46,16 +46,23 @@ func init() {
 	CreateCmd.Flags().StringVarP(&zone, "zone", "z", "", "instance zone")
 	CreateCmd.Flags().StringVarP(&dnsZone, "dns_zone", "d", "", "The root dns zones")
 
-	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
+	err := CreateCmd.MarkFlagRequired("name")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("environment"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("environment")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("zone"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("zone")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("user"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("user")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

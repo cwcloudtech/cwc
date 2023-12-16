@@ -9,13 +9,13 @@ import (
 
 func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	created_bucket, err := client.AdminAddBucket(*user_email, *name, *reg_type)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -28,12 +28,12 @@ func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 
 func HandleDeleteBucket(id *string) {
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	err = client.DeleteBucket(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -43,12 +43,12 @@ func HandleDeleteBucket(id *string) {
 func HandleUpdateBucket(id *string, email *string) {
 
 	admin, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 	err = admin.UpdateBucket(*id, *email)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -59,14 +59,14 @@ func HandleUpdateBucket(id *string, email *string) {
 func HandleGetBuckets() {
 
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	buckets, err := client.GetAllBuckets()
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -83,14 +83,14 @@ func HandleGetBuckets() {
 func HandleGetBucket(id *string) {
 
 	client, err := admin.NewClient()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	bucket, err := client.GetBucket(*id)
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}

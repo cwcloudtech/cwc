@@ -14,7 +14,7 @@ This command will delete all invocations that you have.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleTruncateInvocations()
 	},
-
 }
 
-func init() {}
+func init() {
+}

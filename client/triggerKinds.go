@@ -9,15 +9,15 @@ import (
 func GetTriggerKinds() (*TriggerKindsResponse, error) {
 	c, _ := NewClient()
 	body, err := c.httpRequest("/faas/trigger_kinds", "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	triggerKinds := &TriggerKindsResponse{}
 	err = json.NewDecoder(body).Decode(triggerKinds)
-	if err != nil {
+	if nil != err {
 		fmt.Println(err.Error())
 		return nil, err
 	}
 	return triggerKinds, nil
-	
+
 }

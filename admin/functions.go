@@ -8,13 +8,13 @@ import (
 
 func (c *Client) GetAllFunctions() (*[]Function, error) {
 	body, err := c.httpRequest("/admin/faas/functions", "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	response := FunctionsResponse{}
 	err = json.NewDecoder(body).Decode(&response)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 
@@ -23,13 +23,13 @@ func (c *Client) GetAllFunctions() (*[]Function, error) {
 
 func (c *Client) GetFunctionOwnerById(id string) (*FunctionOwner, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/faas/function/%s/owner", id), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	response := FunctionOwner{}
 	err = json.NewDecoder(body).Decode(&response)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 

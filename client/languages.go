@@ -1,4 +1,4 @@
-package client 
+package client
 
 import (
 	"bytes"
@@ -9,12 +9,12 @@ import (
 func GetLanguages() (*LanguagesResponse, error) {
 	c, _ := NewClient()
 	body, err := c.httpRequest("/faas/languages", "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	languages := &LanguagesResponse{}
 	err = json.NewDecoder(body).Decode(languages)
-	if err != nil {
+	if nil != err {
 		fmt.Println(err.Error())
 		return nil, err
 	}

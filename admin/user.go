@@ -5,40 +5,38 @@ import (
 	"encoding/json"
 	"fmt"
 )
+
 func (c *Client) GetAllUsers() (*ResponseUsers, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/user/all"), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
-	ResponseUsers :=ResponseUsers{}
+	ResponseUsers := ResponseUsers{}
 	err = json.NewDecoder(body).Decode(&ResponseUsers)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &ResponseUsers, nil
 }
 
 func (c *Client) GetUser(id string) (*ResponseUser, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/admin/user/%s",id), "GET", bytes.Buffer{})
-	if err != nil {
+	body, err := c.httpRequest(fmt.Sprintf("/admin/user/%s", id), "GET", bytes.Buffer{})
+	if nil != err {
 		return nil, err
 	}
-	ResponseUser :=ResponseUser{}
+	ResponseUser := ResponseUser{}
 	err = json.NewDecoder(body).Decode(&ResponseUser)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &ResponseUser, nil
 }
 
-
-
-
 func (c *Client) DeleteUser(userId string) error {
 	_, err := c.httpRequest(fmt.Sprintf("/admin/user/%s", userId), "DELETE", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	return nil

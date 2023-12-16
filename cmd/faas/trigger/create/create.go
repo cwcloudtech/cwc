@@ -9,17 +9,17 @@ import (
 )
 
 var (
-	trigger client.Trigger
+	trigger         client.Trigger
 	argumentsValues []string
-	interactive bool = false
+	interactive     bool = false
 )
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a trigger in the cloud",
-	Long: `This command lets you create a trigger in the cloud.`,
+	Long:  `This command lets you create a trigger in the cloud.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleAddTrigger(&trigger,&argumentsValues,&interactive)
+		user.HandleAddTrigger(&trigger, &argumentsValues, &interactive)
 	},
 }
 
@@ -31,19 +31,28 @@ func init() {
 	CreateCmd.Flags().StringVarP(&trigger.Content.Cron_expr, "cron_expr", "c", "", "The trigger cron expression")
 	CreateCmd.Flags().StringArrayVarP(&argumentsValues, "args", "a", []string{}, "The trigger arguments values")
 
-	if err := CreateCmd.MarkFlagRequired("function_id"); err != nil {
+	err := CreateCmd.MarkFlagRequired("function_id")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("name")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("kind"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("kind")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("cron_expr"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("cron_expr")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("args"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("args")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

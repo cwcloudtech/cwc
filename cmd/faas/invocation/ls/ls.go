@@ -8,7 +8,7 @@ import (
 
 var (
 	invocationId string
-	pretty bool = false
+	pretty       bool = false
 )
 
 var LsCmd = &cobra.Command{

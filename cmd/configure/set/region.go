@@ -28,5 +28,4 @@ var SetRegionCmd = &cobra.Command{
 }
 
 func init() {
-
 }

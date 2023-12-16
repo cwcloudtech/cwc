@@ -28,7 +28,6 @@ NOTE: The project needs to be empty and doesnt hold any instances`,
 }
 
 func init() {
-
 	DeleteCmd.Flags().StringVarP(&projectId, "id", "p", "", "The project id")
 	DeleteCmd.Flags().StringVarP(&projectName, "name", "n", "", "The project name")
 	DeleteCmd.Flags().StringVarP(&projectUrl, "url", "u", "", "The project url")

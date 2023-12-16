@@ -27,12 +27,11 @@ To use this command you have to provide the bucket ID`,
 }
 
 func init() {
-
 	UpdateCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
 	UpdateCmd.Flags().StringVarP(&email, "transfer bucket", "t", "", "Transfer the bucket to another user by his email")
 
-	if err := UpdateCmd.MarkFlagRequired("bucket"); err != nil {
+	err := UpdateCmd.MarkFlagRequired("bucket")
+	if nil != err {
 		fmt.Println(err)
 	}
-
 }

@@ -17,18 +17,18 @@ func (c *Client) AdminSendEmail(from string, to string, bcc string, subject stri
 	}
 
 	err := json.NewEncoder(&buf).Encode(email)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 
 	respBody, err := c.httpRequest("/admin/email", "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 
 	response := &EmailResponse{}
 	err = json.NewDecoder(respBody).Decode(response)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 

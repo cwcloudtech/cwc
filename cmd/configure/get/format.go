@@ -19,5 +19,4 @@ var GetFormatCmd = &cobra.Command{
 }
 
 func init() {
-
 }

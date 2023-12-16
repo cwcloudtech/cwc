@@ -16,17 +16,17 @@ func (c *Client) SendEmail(from string, to string, bcc string, subject string, c
 	}
 
 	err := json.NewEncoder(&buf).Encode(email)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest("/email", "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 
 	response := &EmailResponse{}
 	err = json.NewDecoder(respBody).Decode(response)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 

@@ -29,10 +29,13 @@ func init() {
 	PromptCmd.Flags().StringVarP(&model, "model", "t", "", "The chosen model")
 	PromptCmd.Flags().StringVarP(&message, "message", "m", "", "The message input")
 
-	if err := PromptCmd.MarkFlagRequired("model"); err != nil {
+	err := PromptCmd.MarkFlagRequired("model")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := PromptCmd.MarkFlagRequired("message"); err != nil {
+
+	err = PromptCmd.MarkFlagRequired("message")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

@@ -27,5 +27,4 @@ var SetEndpointCmd = &cobra.Command{
 }
 
 func init() {
-
 }

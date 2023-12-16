@@ -8,16 +8,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 var (
-	function client.Function
+	function    client.Function
 	interactive bool = false
 )
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a function in the cloud",
-	Long: `This command lets you create a function in the cloud.`,
+	Long:  `This command lets you create a function in the cloud.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleAddFunction(&function, &interactive)
 	},
@@ -34,11 +33,13 @@ func init() {
 	CreateCmd.Flags().StringSliceVarP(&function.Content.Args, "args", "g", []string{}, "Arguments of the function")
 	CreateCmd.Flags().StringVarP(&function.Content.Code, "code", "c", "", "Code of the function (optional)")
 
-	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
-		fmt.Println(err)
-	}
-	if err := CreateCmd.MarkFlagRequired("language"); err != nil {
+	err := CreateCmd.MarkFlagRequired("name")
+	if nil != err {
 		fmt.Println(err)
 	}
 
+	err = CreateCmd.MarkFlagRequired("language")
+	if nil != err {
+		fmt.Println(err)
+	}
 }

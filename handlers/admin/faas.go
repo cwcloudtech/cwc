@@ -13,7 +13,7 @@ import (
 func HandleGetFunctions(pretty *bool) {
 	client, _ := admin.NewClient()
 	functions, err := client.GetAllFunctions()
-	if err != nil {
+	if nil != err {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -45,7 +45,7 @@ func HandleGetFunctions(pretty *bool) {
 func HandleGetFunctionOwner(id *string, pretty *bool) {
 	client, _ := admin.NewClient()
 	owner, err := client.GetFunctionOwnerById(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -83,7 +83,7 @@ func displayFunctionsAsTable(functions []admin.Function) {
 func HandleGetInvocations(pretty *bool) {
 	client, _ := admin.NewClient()
 	invocations, err := client.GetAllInvocations()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -114,7 +114,7 @@ func HandleGetInvocations(pretty *bool) {
 func HandleGetInvocationInvoker(id *string, pretty *bool) {
 	client, _ := admin.NewClient()
 	invoker, err := client.GetInvocationInvokerById(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -150,7 +150,7 @@ func displayInvocationsAsTable(invocations []admin.Invocation) {
 func HandleGetTriggers(pretty *bool) {
 	client, _ := admin.NewClient()
 	triggers, err := client.GetAllTriggers()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -183,7 +183,7 @@ func HandleGetTriggers(pretty *bool) {
 func HandleGetTriggerOwner(id *string, pretty *bool) {
 	client, _ := admin.NewClient()
 	owner, err := client.GetTriggerOwnerById(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}

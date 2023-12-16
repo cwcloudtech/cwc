@@ -5,6 +5,7 @@ import (
 	"cwc/utils"
 	"fmt"
 	"os"
+
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -14,7 +15,7 @@ func HandleGetEnvironments(pretty *bool) {
 
 	environments, err := c.GetAllEnvironments()
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -35,7 +36,7 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	c, err := client.NewClient()
 
 	environment, err := c.GetEnvironment(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -53,7 +54,6 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	}
 }
 
-
 func displayEnvironmentsAsTable(environments []client.Environment) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"ID", "Name", "Path", "Description"})
@@ -64,7 +64,7 @@ func displayEnvironmentsAsTable(environments []client.Environment) {
 	} else {
 		for _, environment := range environments {
 			table.Append([]string{
-				fmt.Sprintf("%d", environment.Id), 
+				fmt.Sprintf("%d", environment.Id),
 				environment.Name,
 				environment.Path,
 				environment.Description,

@@ -14,12 +14,12 @@ func GetProviderRegions() (*ProviderRegions, error) {
 	}
 	c, _ := NewClient()
 	body, err := c.httpRequest(fmt.Sprintf("/provider/%s/region", provider), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	providerRegions := &ProviderRegions{}
 	err = json.NewDecoder(body).Decode(providerRegions)
-	if err != nil {
+	if nil != err {
 		fmt.Println(err.Error())
 		return nil, err
 	}
@@ -29,12 +29,12 @@ func GetProviderRegions() (*ProviderRegions, error) {
 func GetProviders() (*AvailableProviders, error) {
 	c, _ := NewClient()
 	body, err := c.httpRequest(fmt.Sprintf("/provider"), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	available_providers := &AvailableProviders{}
 	err = json.NewDecoder(body).Decode(available_providers)
-	if err != nil {
+	if nil != err {
 		fmt.Println(err.Error())
 		return nil, err
 	}

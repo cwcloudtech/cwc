@@ -2,6 +2,7 @@ package admin
 
 import (
 	"bytes"
+	"cwc/env"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"cwc/env"
 )
 
 func NewClient() (*Client, error) {
@@ -40,11 +40,11 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 	}
 
 	err := json.NewEncoder(&buf).Encode(project)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	_, err = c.httpRequest(fmt.Sprintf("/api_keys/verify"), "POST", buf)
-	if err != nil {
+	if nil != err {
 		return err
 	}
 	addUserCredentials(access_key, secret_key)
@@ -60,13 +60,13 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		respBody := new(bytes.Buffer)
 		_, err := respBody.ReadFrom(resp.Body)
-		if err != nil {
+		if nil != err {
 			return nil, fmt.Errorf("an error occured")
 		}
 		errorResponse := ErrorResponse{}
@@ -92,30 +92,30 @@ func (c *Client) requestPath(path string) string {
 func addUserCredentials(access_key string, secret_key string) {
 	dirname, err := os.UserHomeDir()
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
 		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 		}
 	}
 	f, err := os.Create(dirname + "/.cwc/credentials")
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	_, err = f.WriteString("cwc_access_key = " + access_key + "\n")
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	_, err = f.WriteString("cwc_secret_key = " + secret_key + "\n")
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
@@ -124,12 +124,12 @@ func addUserCredentials(access_key string, secret_key string) {
 func getUserToken() string {
 	dirname, err := os.UserHomeDir()
 
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/credentials")
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
@@ -140,13 +140,13 @@ func getUserToken() string {
 
 func GetDefaultRegion() string {
 	dirname, err := os.UserHomeDir()
-	if err != nil {
+	if nil != err {
 
 		return "fr-par"
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return "fr-par"
 	}
 
@@ -169,13 +169,13 @@ func SetDefaultProvider(provider string) {
 
 func GetDefaultFormat() string {
 	dirname, err := os.UserHomeDir()
-	if err != nil {
+	if nil != err {
 
 		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
@@ -186,13 +186,13 @@ func GetDefaultFormat() string {
 
 func GetDefaultProvider() string {
 	dirname, err := os.UserHomeDir()
-	if err != nil {
+	if nil != err {
 
 		return ""
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return ""
 	}
 
@@ -204,14 +204,14 @@ func GetDefaultProvider() string {
 func GetDefaultEndpoint() string {
 	dirname, err := os.UserHomeDir()
 	default_endpoint := env.API_URL
-	if err != nil {
+	if nil != err {
 
 		return default_endpoint
 
 	}
 
 	content, err := ioutil.ReadFile(dirname + "/.cwc/config")
-	if err != nil {
+	if nil != err {
 		return default_endpoint
 	}
 
@@ -244,13 +244,13 @@ func GetValueFromFile(content_file string, key string) string {
 func UpdateFileKeyValue(filename string, key string, value string) {
 	dirname, err := os.UserHomeDir()
 
-	if err != nil {
+	if nil != err {
 		log.Fatal(err)
 
 	}
 	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
 		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 		}
 		os.Create(dirname + "/.cwc/" + filename)
@@ -262,11 +262,11 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 	file_content, err := ioutil.ReadFile(dirname + "/.cwc/" + filename)
 	if GetValueFromFile(string(file_content), key) == "" {
 		config_file, err := os.OpenFile(dirname+"/.cwc/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 		}
 		_, err = config_file.WriteString(key + " = " + value + "\n")
-		if err != nil {
+		if nil != err {
 			log.Fatal(err)
 
 		}
@@ -287,7 +287,7 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	}
 	output := strings.Join(lines, "\n")
 	err = ioutil.WriteFile(dirname+"/.cwc/"+file, []byte(output), 0644)
-	if err != nil {
+	if nil != err {
 		log.Fatalln(err)
 	}
 

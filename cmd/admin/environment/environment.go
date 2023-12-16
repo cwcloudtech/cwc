@@ -26,5 +26,4 @@ func init() {
 	EnvironmentCmd.AddCommand(create.CreateCmd)
 	EnvironmentCmd.AddCommand(delete.DeleteCmd)
 	EnvironmentCmd.AddCommand(ls.LsCmd)
-
 }

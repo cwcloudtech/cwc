@@ -16,6 +16,7 @@ func StringInSlice(a string, list []string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -23,7 +24,7 @@ func PromptUserForValue() string {
 	reader := bufio.NewReader(os.Stdin)
 	// ReadString will block until the delimiter is entered
 	value, err := reader.ReadString('\n')
-	if err != nil {
+	if nil != err {
 		fmt.Println("An error occured while reading input. Please try again", err)
 		return ""
 	}
@@ -35,10 +36,11 @@ func PromptUserForValue() string {
 
 func PrintJson(class interface{}) {
 	marchal_class, err := json.Marshal(class)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("%s\n", JsonPrettyPrint(string(marchal_class)))
 }
 
@@ -49,8 +51,10 @@ func PrintHeader(class interface{}) {
 	for i := 0; i < values.NumField(); i++ {
 		headerMsg = headerMsg + typesOf.Field(i).Name + "\t"
 	}
+
 	fmt.Println(headerMsg)
 }
+
 func PrintRow(class interface{}) {
 	PrintHeader(class)
 	values := reflect.ValueOf(class)
@@ -58,6 +62,7 @@ func PrintRow(class interface{}) {
 	for i := 0; i < values.NumField(); i++ {
 		valuesMsg = valuesMsg + fmt.Sprintf("%v\t", values.Field(i).Interface())
 	}
+
 	fmt.Println(valuesMsg)
 }
 
@@ -70,14 +75,16 @@ func PrintMultiRow(type_class interface{}, class interface{}) {
 		for i := 0; i < v.NumField(); i++ {
 			valuesMsg = valuesMsg + fmt.Sprintf("%v\t", v.Field(i).Interface())
 		}
+
 		fmt.Println(valuesMsg)
 	}
 }
 func JsonPrettyPrint(in string) string {
 	var out bytes.Buffer
 	err := json.Indent(&out, []byte(in), "", "\t")
-	if err != nil {
+	if nil != err {
 		return in
 	}
+
 	return out.String()
 }

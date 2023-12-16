@@ -39,10 +39,13 @@ func init() {
 	CreateCmd.Flags().StringVarP(&git, "git", "g", "", "Git username")
 	CreateCmd.Flags().StringVarP(&namespace, "namespace", "s", "", "Gitlab Group ID")
 
-	if err := CreateCmd.MarkFlagRequired("name"); err != nil {
+	err := CreateCmd.MarkFlagRequired("name")
+	if nil != err {
 		fmt.Println(err)
 	}
-	if err := CreateCmd.MarkFlagRequired("user"); err != nil {
+
+	err = CreateCmd.MarkFlagRequired("user")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

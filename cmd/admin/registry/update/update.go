@@ -27,12 +27,11 @@ To use this command you have to provide the registry ID`,
 }
 
 func init() {
-
 	UpdateCmd.Flags().StringVarP(&registryId, "registry", "r", "", "The registry id")
 	UpdateCmd.Flags().StringVarP(&email, "transfer registry", "t", "", "Transfer the registry to another user by his email")
 
-	if err := UpdateCmd.MarkFlagRequired("registry"); err != nil {
+	err := UpdateCmd.MarkFlagRequired("registry")
+	if nil != err {
 		fmt.Println(err)
 	}
-
 }

@@ -11,12 +11,12 @@ import (
 	"cwc/cmd/dnszones"
 	"cwc/cmd/email"
 	"cwc/cmd/environment"
+	"cwc/cmd/faas"
 	"cwc/cmd/instance"
 	"cwc/cmd/login"
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
-	"cwc/cmd/faas"
 	"cwc/handlers/user"
 	"fmt"
 
@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 func Execute(version string) {
 	cli_version = version
 	err := rootCmd.Execute()
-	if err != nil {
+	if nil != err {
 		os.Exit(1)
 	}
 

@@ -30,7 +30,5 @@ This command takes no arguments`,
 }
 
 func init() {
-
 	LsCmd.Flags().StringVarP(&userId, "user", "u", "", "The user id")
-
 }

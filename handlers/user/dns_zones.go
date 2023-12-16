@@ -8,7 +8,7 @@ import (
 
 func HandleListDnsZones() {
 	dns_zones, err := client.GetDnsZones()
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 

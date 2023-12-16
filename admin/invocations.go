@@ -8,13 +8,13 @@ import (
 
 func (c *Client) GetAllInvocations() (*[]Invocation, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/faas/invocations"), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	response := InvocationsResponse{}
 	err = json.NewDecoder(body).Decode(&response)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	return &response.Results, nil
@@ -22,13 +22,13 @@ func (c *Client) GetAllInvocations() (*[]Invocation, error) {
 
 func (c *Client) GetInvocationInvokerById(id string) (*InvocationInvoker, error) {
 	body, err := c.httpRequest(fmt.Sprintf("/admin/faas/invocation/%s/invoker", id), "GET", bytes.Buffer{})
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	response := InvocationInvoker{}
 	err = json.NewDecoder(body).Decode(&response)
 
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 

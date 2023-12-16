@@ -4,23 +4,24 @@ import (
 	"cwc/admin"
 	"cwc/utils"
 	"fmt"
+	"io/ioutil"
 	"os"
-	"github.com/olekukonko/tablewriter"
 	"os/exec"
-    "io/ioutil"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 func HandleAddEnvironment(name *string, path *string, roles *string, is_private *bool, description *string, subdomains *string, logo_url *string) {
 	added_environment := &admin.Environment{
-		Name:        *name,
-		Path:        *path,
-		Roles:       *roles,
-		IsPrivate:   *is_private,
-		Description: *description,
-		SubDomains:  *subdomains,
-		LogUrl:     *logo_url,
+		Name:                *name,
+		Path:                *path,
+		Roles:               *roles,
+		IsPrivate:           *is_private,
+		Description:         *description,
+		SubDomains:          *subdomains,
+		LogUrl:              *logo_url,
 		EnvironmentTemplate: "",
-		DocTemplate: "",
+		DocTemplate:         "",
 	}
 	// prompt for environment template
 	fmt.Print("Do you want to add environment template? [Y/N]: ")
@@ -37,28 +38,29 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		// Create a temporary file with a specific name and path
 		tempFileName := "temp-code-editor.txt"
 		_, err := os.Create(tempFileName)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("Error creating temporary file: %s\n", err)
 			os.Exit(1)
 		}
 		defer os.Remove(tempFileName)
-	
+
 		// Prompt the user to write code in the editor
 		fmt.Printf("Please write your code in the text editor that opens. Save and close the editor when done.\n")
-	
+
 		cmd := exec.Command(editorCommand, tempFileName)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-	
-		if err := cmd.Run(); err != nil {
+
+		err = cmd.Run()
+		if nil != err {
 			fmt.Printf("Error opening the text editor: %s\n", err)
 			os.Exit(1)
 		}
-	
+
 		// Read the code from the temporary file
 		codeBytes, err := ioutil.ReadFile(tempFileName)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("Error reading code from the text editor: %s\n", err)
 			os.Exit(1)
 		}
@@ -81,7 +83,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		// Create a temporary file with a specific name and path
 		tempFileName := "temp-code-editor.txt"
 		_, err := os.Create(tempFileName)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("Error creating temporary file: %s\n", err)
 			os.Exit(1)
 		}
@@ -95,14 +97,15 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
-		if err := cmd.Run(); err != nil {
+		err = cmd.Run()
+		if nil != err {
 			fmt.Printf("Error opening the text editor: %s\n", err)
 			os.Exit(1)
 		}
 
 		// Read the code from the temporary file
 		codeBytes, err := ioutil.ReadFile(tempFileName)
-		if err != nil {
+		if nil != err {
 			fmt.Printf("Error reading code from the text editor: %s\n", err)
 			os.Exit(1)
 		}
@@ -112,7 +115,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 
 	client, err := admin.NewClient()
 	created_env, err := client.AdminAddEnvironment(*added_environment)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -136,7 +139,7 @@ func HandleDeleteEnvironment(id *string) {
 
 	client, err := admin.NewClient()
 	err = client.AdminDeleteEnvironment(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -148,7 +151,7 @@ func HandleGetEnvironments(pretty *bool) {
 	client, err := admin.NewClient()
 	environments, err := client.GetAllEnvironments()
 
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -168,7 +171,7 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	client, err := admin.NewClient()
 
 	environment, err := client.GetEnvironment(*id)
-	if err != nil {
+	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
@@ -190,17 +193,16 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 
 }
 
-
 func displayEnvironmentsAsTable(environments []admin.Environment) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Name", "Path", "Description", "Subdomains", "Is Private" })
+	table.SetHeader([]string{"ID", "Name", "Path", "Description", "Subdomains", "Is Private"})
 
 	if len(environments) == 0 {
 		fmt.Println("No environments found")
 	} else {
 		for _, environment := range environments {
 			table.Append([]string{
-				fmt.Sprintf("%d", environment.Id), 
+				fmt.Sprintf("%d", environment.Id),
 				environment.Name,
 				environment.Path,
 				environment.Description,

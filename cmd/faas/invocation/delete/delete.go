@@ -8,24 +8,24 @@ import (
 )
 
 var (
-	invocationId   string
+	invocationId string
 )
 
 var DeleteCmd = &cobra.Command{
-	Use:  "delete",
+	Use:   "delete",
 	Short: "Delete a particular invocation",
 	Long: `This command lets you delete a particular invocation.
 To use this command you have to provide the invocation ID that you want to delete.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleDeleteInvocation(&invocationId)
 	},
-
 }
 
 func init() {
 	DeleteCmd.Flags().StringVarP(&invocationId, "invocation", "i", "", "The invocation id")
 
-	if err := DeleteCmd.MarkFlagRequired("invocation"); err != nil {
+	err := DeleteCmd.MarkFlagRequired("invocation")
+	if nil != err {
 		fmt.Println(err)
 	}
 }

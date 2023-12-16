@@ -13,17 +13,17 @@ func (c *Client) SendPrompt(model string, message string) (*PromptResponse, erro
 	}
 
 	err := json.NewEncoder(&buf).Encode(prompt)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 	respBody, err := c.httpRequest("/ai/prompt", "POST", buf)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 
 	response := &PromptResponse{}
 	err = json.NewDecoder(respBody).Decode(response)
-	if err != nil {
+	if nil != err {
 		return nil, err
 	}
 
