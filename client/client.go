@@ -53,11 +53,13 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.ReadCloser, err error) {
 	req, err := http.NewRequest(method, c.requestPath(path), &body)
+	if nil != err {
+		return nil, err
+	}
 
 	user_token := getUserToken()
 
 	req.Header.Set("X-Auth-Token", user_token)
-
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)

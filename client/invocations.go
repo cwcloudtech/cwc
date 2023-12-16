@@ -72,13 +72,15 @@ func (c *Client) DeleteInvocationById(invocationId string) error {
 	if nil != err {
 		return err
 	}
+
 	return nil
 }
 
 func (c *Client) TruncateInvocations() error {
-	_, err := c.httpRequest(fmt.Sprintf("/faas/invocations"), "DELETE", bytes.Buffer{})
+	_, err := c.httpRequest("/faas/invocations", "DELETE", bytes.Buffer{})
 	if nil != err {
 		return err
 	}
+
 	return nil
 }
