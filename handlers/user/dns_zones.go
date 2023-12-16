@@ -11,11 +11,10 @@ func HandleListDnsZones() {
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
-
 	}
+
 	for _, dns_zone := range dns_zones.Zones {
 		fmt.Printf("%v\n", dns_zone)
 
 	}
-	return
 }

@@ -38,22 +38,27 @@ func (c *Client) AddInvocation(content InvocationAddContent) (*Invocation, error
 	if len(content.Args) == 0 {
 		content.Args = []Argument{}
 	}
+
 	invocation := &AddInvocationBody{
 		Content: content,
 	}
+
 	err := json.NewEncoder(&buf).Encode(invocation)
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/faas/invocation"), "POST", buf)
+
+	respBody, err := c.httpRequest("/faas/invocation", "POST", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	created_invocation := &Invocation{}
 	err = json.NewDecoder(respBody).Decode(created_invocation)
 	if nil != err {
 		return nil, err
 	}
+
 	return created_invocation, nil
 }
 

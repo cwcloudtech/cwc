@@ -69,7 +69,6 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 			project, err = c.GetProjectById(*project_id)
 		} else if *project_name != "" {
 			project, err = c.GetProjectByName(*project_name)
-
 		} else {
 			project, err = c.GetProjectByUrl(*project_url)
 		}
@@ -85,6 +84,4 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 			utils.PrintRow(*project)
 		}
 	}
-
-	return
 }

@@ -74,13 +74,9 @@ func HandleGetRegistries() {
 	} else {
 		utils.PrintMultiRow(admin.Project{}, *registries)
 	}
-
-	return
-
 }
 
 func HandleGetRegistry(id *string) {
-
 	client, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -88,16 +84,14 @@ func HandleGetRegistry(id *string) {
 	}
 
 	registry, err := client.GetRegistry(*id)
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(registry)
 	} else {
 		utils.PrintRow(*registry)
 	}
-	return
-
 }

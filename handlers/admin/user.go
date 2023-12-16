@@ -20,11 +20,13 @@ type User struct {
 }
 
 func HandleGetUsers() {
-
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	responseUsers, err := client.GetAllUsers()
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -36,38 +38,41 @@ func HandleGetUsers() {
 	} else {
 		utils.PrintMultiRow(admin.User{}, responseUsers.Result)
 	}
-	return
-
 }
 
 func HandleGetUser(id *string) {
-
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	responseUser, err := client.GetUser(*id)
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
 	user := responseUser.Result
-
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(user)
 	} else {
 		utils.PrintRow(user)
 	}
-
 }
 
 func HandleDeleteUser(id *string) {
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	err = client.DeleteUser(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("User %v successfully deleted\n", *id)
 }

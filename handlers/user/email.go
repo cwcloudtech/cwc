@@ -25,5 +25,4 @@ func HandleSendEmail(from *string, to *string, bcc *string, subject *string, con
 	} else {
 		utils.PrintRow(*email)
 	}
-
 }

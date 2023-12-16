@@ -114,23 +114,29 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	}
 
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	created_env, err := client.AdminAddEnvironment(*added_environment)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_env)
 	} else {
 		fmt.Printf("Environment %s successfully created\n", created_env.Name)
-		fmt.Printf("➤ ID: %d\n", created_env.Id)
-		fmt.Printf("➤ Name: %s\n", created_env.Name)
-		fmt.Printf("➤ Path: %s\n", created_env.Path)
-		fmt.Printf("➤ Description: %s\n", created_env.Description)
-		fmt.Printf("➤ Subdomains: %s\n", created_env.SubDomains)
-		fmt.Printf("➤ Is Private: %t\n", created_env.IsPrivate)
-		fmt.Printf("➤ Roles: %s\n", created_env.Roles)
-		fmt.Printf(("➤ Environment Logo URL: %s\n"), created_env.LogUrl)
+		fmt.Printf("  ➤ ID: %d\n", created_env.Id)
+		fmt.Printf("  ➤ Name: %s\n", created_env.Name)
+		fmt.Printf("  ➤ Path: %s\n", created_env.Path)
+		fmt.Printf("  ➤ Description: %s\n", created_env.Description)
+		fmt.Printf("  ➤ Subdomains: %s\n", created_env.SubDomains)
+		fmt.Printf("  ➤ Is Private: %t\n", created_env.IsPrivate)
+		fmt.Printf("  ➤ Roles: %s\n", created_env.Roles)
+		fmt.Printf((" ➤ Environment Logo URL: %s\n"), created_env.LogUrl)
 	}
 
 }
@@ -158,39 +164,39 @@ func HandleGetEnvironments(pretty *bool) {
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(environments)
+	} else if *pretty {
+		displayEnvironmentsAsTable(*environments)
 	} else {
-		if *pretty {
-			displayEnvironmentsAsTable(*environments)
-		} else {
-			utils.PrintMultiRow(admin.Environment{}, *environments)
-		}
+		utils.PrintMultiRow(admin.Environment{}, *environments)
 	}
 }
 
 func HandleGetEnvironment(id *string, pretty *bool) {
 	client, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	environment, err := client.GetEnvironment(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
+	} else if *pretty {
+		fmt.Printf("  ➤ ID: %d\n", environment.Id)
+		fmt.Printf("  ➤ Name: %s\n", environment.Name)
+		fmt.Printf("  ➤ Path: %s\n", environment.Path)
+		fmt.Printf("  ➤ Description: %s\n", environment.Description)
+		fmt.Printf("  ➤ Subdomains: %s\n", environment.SubDomains)
+		fmt.Printf("  ➤ Is Private: %t\n", environment.IsPrivate)
+		fmt.Printf("  ➤ Roles: %s\n", environment.Roles)
 	} else {
-		if *pretty {
-			fmt.Printf("➤ ID: %d\n", environment.Id)
-			fmt.Printf("➤ Name: %s\n", environment.Name)
-			fmt.Printf("➤ Path: %s\n", environment.Path)
-			fmt.Printf("➤ Description: %s\n", environment.Description)
-			fmt.Printf("➤ Subdomains: %s\n", environment.SubDomains)
-			fmt.Printf("➤ Is Private: %t\n", environment.IsPrivate)
-			fmt.Printf("➤ Roles: %s\n", environment.Roles)
-		} else {
-			utils.PrintRow(environment)
-		}
+		utils.PrintRow(environment)
 	}
-
 }
 
 func displayEnvironmentsAsTable(environments []admin.Environment) {

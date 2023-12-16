@@ -10,11 +10,13 @@ import (
 )
 
 func HandleGetEnvironments(pretty *bool) {
-
 	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	environments, err := c.GetAllEnvironments()
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -34,20 +36,25 @@ func HandleGetEnvironments(pretty *bool) {
 
 func HandleGetEnvironment(id *string, pretty *bool) {
 	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	environment, err := c.GetEnvironment(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
 	} else {
 		if *pretty {
-			fmt.Printf("➤ ID: %d\n", environment.Id)
-			fmt.Printf("➤ Name: %s\n", environment.Name)
-			fmt.Printf("➤ Path: %s\n", environment.Path)
-			fmt.Printf("➤ Description: %s\n", environment.Description)
+			fmt.Printf("  ➤ ID: %d\n", environment.Id)
+			fmt.Printf("  ➤ Name: %s\n", environment.Name)
+			fmt.Printf("  ➤ Path: %s\n", environment.Path)
+			fmt.Printf("  ➤ Description: %s\n", environment.Description)
 		} else {
 			utils.PrintRow(environment)
 		}

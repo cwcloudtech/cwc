@@ -19,15 +19,19 @@ func (c *Client) AdminAddBucket(user_email string, name string, reg_type string)
 	if nil != err {
 		return nil, err
 	}
+
 	respBody, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s/%s/provision", c.provider, c.region), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	created_bucket := &Bucket{}
+
 	err = json.NewDecoder(respBody).Decode(created_bucket)
 	if nil != err {
 		return nil, err
 	}
+
 	return created_bucket, nil
 }
 
@@ -36,12 +40,14 @@ func (c *Client) GetAllBuckets() (*[]Bucket, error) {
 	if nil != err {
 		return nil, err
 	}
-	buckets := []Bucket{}
-	err = json.NewDecoder(body).Decode(&buckets)
 
+	buckets := []Bucket{}
+
+	err = json.NewDecoder(body).Decode(&buckets)
 	if nil != err {
 		return nil, err
 	}
+
 	return &buckets, nil
 }
 
@@ -50,11 +56,13 @@ func (c *Client) GetBucket(bucket_id string) (*Bucket, error) {
 	if nil != err {
 		return nil, err
 	}
+
 	bucket := &Bucket{}
 	err = json.NewDecoder(body).Decode(bucket)
 	if nil != err {
 		return nil, err
 	}
+
 	return bucket, nil
 }
 
@@ -85,6 +93,7 @@ func (c *Client) UpdateBucket(id string, email string) error {
 	if nil != err {
 		return err
 	}
+
 	return nil
 }
 
@@ -93,5 +102,6 @@ func (c *Client) DeleteBucket(bucketId string) error {
 	if nil != err {
 		return err
 	}
+
 	return nil
 }

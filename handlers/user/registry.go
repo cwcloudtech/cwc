@@ -47,7 +47,6 @@ func HandleGetRegistries() {
 	}
 
 	registries, err := c.GetAllRegistries()
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -58,8 +57,6 @@ func HandleGetRegistries() {
 	} else {
 		utils.PrintMultiRow(client.Registry{}, *registries)
 	}
-
-	return
 }
 
 func HandleGetRegistry(id *string) {
@@ -70,7 +67,6 @@ func HandleGetRegistry(id *string) {
 	}
 
 	registry, err := c.GetRegistry(*id)
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -81,6 +77,4 @@ func HandleGetRegistry(id *string) {
 	} else {
 		utils.PrintRow(*registry)
 	}
-
-	return
 }

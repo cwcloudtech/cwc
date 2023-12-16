@@ -49,9 +49,10 @@ func HandleGetFunctionOwner(id *string, pretty *bool) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	if *pretty {
-		fmt.Printf("➤ ID: %s\n", strconv.Itoa(owner.Id))
-		fmt.Printf("➤ Username: %s\n", owner.Username)
+		fmt.Printf("  ➤ ID: %s\n", strconv.Itoa(owner.Id))
+		fmt.Printf("  ➤ Username: %s\n", owner.Username)
 	} else {
 		utils.PrintRow(*owner)
 	}
@@ -90,24 +91,22 @@ func HandleGetInvocations(pretty *bool) {
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocations)
+	} else if *pretty {
+		displayInvocationsAsTable(*invocations)
 	} else {
-		if *pretty {
-			displayInvocationsAsTable(*invocations)
-		} else {
-			var invocationsDisplay []admin.InvocationDisplay
-			for i, invocation := range *invocations {
-				invocationsDisplay = append(invocationsDisplay, admin.InvocationDisplay{
-					Id:          invocation.Id,
-					Invoker_id:  invocation.Invoker_id,
-					Function_id: invocation.Content.Function_id,
-					State:       invocation.Content.State,
-					Created_at:  invocation.Created_at,
-					Updated_at:  invocation.Updated_at,
-				})
-				invocationsDisplay[i].Id = invocation.Id
-			}
-			utils.PrintMultiRow(admin.InvocationDisplay{}, invocationsDisplay)
+		var invocationsDisplay []admin.InvocationDisplay
+		for i, invocation := range *invocations {
+			invocationsDisplay = append(invocationsDisplay, admin.InvocationDisplay{
+				Id:          invocation.Id,
+				Invoker_id:  invocation.Invoker_id,
+				Function_id: invocation.Content.Function_id,
+				State:       invocation.Content.State,
+				Created_at:  invocation.Created_at,
+				Updated_at:  invocation.Updated_at,
+			})
+			invocationsDisplay[i].Id = invocation.Id
 		}
+		utils.PrintMultiRow(admin.InvocationDisplay{}, invocationsDisplay)
 	}
 }
 
@@ -120,8 +119,8 @@ func HandleGetInvocationInvoker(id *string, pretty *bool) {
 	}
 
 	if *pretty {
-		fmt.Printf("➤ ID: %s\n", strconv.Itoa(invoker.Id))
-		fmt.Printf("➤ Username: %s\n", invoker.Username)
+		fmt.Printf("  ➤ ID: %s\n", strconv.Itoa(invoker.Id))
+		fmt.Printf("  ➤ Username: %s\n", invoker.Username)
 	} else {
 		utils.PrintRow(*invoker)
 	}
@@ -189,8 +188,8 @@ func HandleGetTriggerOwner(id *string, pretty *bool) {
 	}
 
 	if *pretty {
-		fmt.Printf("➤ ID: %s\n", strconv.Itoa(owner.Id))
-		fmt.Printf("➤ Username: %s\n", owner.Username)
+		fmt.Printf("  ➤ ID: %s\n", strconv.Itoa(owner.Id))
+		fmt.Printf("  ➤ Username: %s\n", owner.Username)
 	} else {
 		utils.PrintRow(*owner)
 	}

@@ -17,8 +17,6 @@ func HandleListProviders() {
 	for _, available_provider := range providers.Providers {
 		fmt.Printf("%v\n", available_provider.Name)
 	}
-
-	return
 }
 
 func HandlerGetDefaultProvider() {

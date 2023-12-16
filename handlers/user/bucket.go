@@ -14,21 +14,23 @@ func HandleDeleteBucket(id *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	err = client.DeleteBucket(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
 func HandleUpdateBucket(id *string) {
-
 	client, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	err = client.UpdateBucket(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -39,7 +41,6 @@ func HandleUpdateBucket(id *string) {
 }
 
 func HandleGetBuckets() {
-
 	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -47,7 +48,6 @@ func HandleGetBuckets() {
 	}
 
 	buckets, err := c.GetAllBuckets()
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -58,12 +58,9 @@ func HandleGetBuckets() {
 	} else {
 		utils.PrintMultiRow(admin.Bucket{}, *buckets)
 	}
-
-	return
 }
 
 func HandleGetBucket(id *string) {
-
 	c, err := client.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -71,7 +68,6 @@ func HandleGetBucket(id *string) {
 	}
 
 	bucket, err := c.GetBucket(*id)
-
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -82,6 +78,4 @@ func HandleGetBucket(id *string) {
 	} else {
 		utils.PrintRow(*bucket)
 	}
-
-	return
 }

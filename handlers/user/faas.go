@@ -23,7 +23,7 @@ func HandleGetLanguages(pretty *bool) {
 	if *pretty {
 		fmt.Printf("Available languages:\n")
 		for _, available_language := range languages.Languages {
-			fmt.Printf("➤ %v\n", available_language)
+			fmt.Printf("  ➤ %v\n", available_language)
 		}
 	} else {
 		fmt.Printf("%s\n", strings.Join(languages.Languages, "\n"))
@@ -36,15 +36,15 @@ func HandleGetTriggerKinds(pretty *bool) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	if *pretty {
 		fmt.Printf("Available trigger kinds:\n")
 		for _, available_triggerKind := range triggerKinds.TriggerKinds {
-			fmt.Printf("➤ %v\n", available_triggerKind)
+			fmt.Printf("  ➤ %v\n", available_triggerKind)
 		}
 	} else {
 		fmt.Printf("%s\n", strings.Join(triggerKinds.TriggerKinds, "\n"))
 	}
-
 }
 
 func HandleGetFunctions(pretty *bool) {
@@ -74,6 +74,7 @@ func HandleGetFunctions(pretty *bool) {
 				})
 				functionsDisplay[i].Id = function.Id
 			}
+
 			utils.PrintMultiRow(client.FunctionDisplay{}, functionsDisplay)
 		}
 	}
@@ -91,16 +92,16 @@ func HandleGetFunction(id *string, pretty *bool) {
 		utils.PrintJson(function)
 	} else {
 		if *pretty {
-			fmt.Printf("➤ ID: %s\n", function.Id)
-			fmt.Printf("➤ Public: %t\n", function.Is_public)
-			fmt.Printf("➤ Name: %s\n", function.Content.Name)
-			fmt.Printf("➤ Language: %s\n", function.Content.Language)
-			fmt.Printf("➤ Args: %s\n", strings.Join(function.Content.Args, ", "))
-			fmt.Printf("➤ Regexp: %s\n", function.Content.Regexp)
-			fmt.Printf("➤ Callback URL: %s\n", function.Content.Callback_url)
-			fmt.Printf("➤ Callback Authorization Header: %s\n", function.Content.Callback_authorization_header)
-			fmt.Printf("➤ Created At: %s\n", function.Created_at)
-			fmt.Printf("➤ Updated At: %s\n", function.Updated_at)
+			fmt.Printf("  ➤ ID: %s\n", function.Id)
+			fmt.Printf("  ➤ Public: %t\n", function.Is_public)
+			fmt.Printf("  ➤ Name: %s\n", function.Content.Name)
+			fmt.Printf("  ➤ Language: %s\n", function.Content.Language)
+			fmt.Printf("  ➤ Args: %s\n", strings.Join(function.Content.Args, ", "))
+			fmt.Printf("  ➤ Regexp: %s\n", function.Content.Regexp)
+			fmt.Printf("  ➤ Callback URL: %s\n", function.Content.Callback_url)
+			fmt.Printf("  ➤ Callback Authorization Header: %s\n", function.Content.Callback_authorization_header)
+			fmt.Printf("  ➤ Created At: %s\n", function.Created_at)
+			fmt.Printf("  ➤ Updated At: %s\n", function.Updated_at)
 		} else {
 			var functionDisplay client.FunctionDisplay
 			functionDisplay.Id = function.Id
@@ -145,6 +146,7 @@ func HandleDeleteFunction(id *string) {
 		fmt.Printf("failed: %s\n", delete_err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Function successfully deleted\n")
 }
 
@@ -414,24 +416,31 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		if updated_function.Content.Language != "" {
 			function.Content.Language = updated_function.Content.Language
 		}
+
 		if updated_function.Content.Regexp != "" {
 			function.Content.Regexp = updated_function.Content.Regexp
 		}
+
 		if updated_function.Content.Callback_url != "" {
 			function.Content.Callback_url = updated_function.Content.Callback_url
 		}
+
 		if updated_function.Content.Callback_authorization_header != "" {
 			function.Content.Callback_authorization_header = updated_function.Content.Callback_authorization_header
 		}
+
 		if updated_function.Content.Name != "" {
 			function.Content.Name = updated_function.Content.Name
 		}
+
 		if updated_function.Is_public {
 			function.Is_public = updated_function.Is_public
 		}
+
 		if len(updated_function.Content.Args) > 0 {
 			function.Content.Args = updated_function.Content.Args
 		}
+
 		if updated_function.Content.Code != "" {
 			function.Content.Code = updated_function.Content.Code
 		}
@@ -442,11 +451,13 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Function successfully updated\n")
 }
 
 func HandleGetInvocations(pretty *bool) {
 	c, _ := client.NewClient()
+
 	invocations, err := c.GetAllInvocations()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -455,24 +466,23 @@ func HandleGetInvocations(pretty *bool) {
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocations)
+	} else if *pretty {
+		displayInvocationsAsTable(*invocations)
 	} else {
-		if *pretty {
-			displayInvocationsAsTable(*invocations)
-		} else {
-			var invocationsDisplay []client.InvocationDisplay
-			for i, invocation := range *invocations {
-				invocationsDisplay = append(invocationsDisplay, client.InvocationDisplay{
-					Id:          invocation.Id,
-					Invoker_id:  invocation.Invoker_id,
-					Function_id: invocation.Content.Function_id,
-					State:       invocation.Content.State,
-					Created_at:  invocation.Created_at,
-					Updated_at:  invocation.Updated_at,
-				})
-				invocationsDisplay[i].Id = invocation.Id
-			}
-			utils.PrintMultiRow(client.InvocationDisplay{}, invocationsDisplay)
+		var invocationsDisplay []client.InvocationDisplay
+		for i, invocation := range *invocations {
+			invocationsDisplay = append(invocationsDisplay, client.InvocationDisplay{
+				Id:          invocation.Id,
+				Invoker_id:  invocation.Invoker_id,
+				Function_id: invocation.Content.Function_id,
+				State:       invocation.Content.State,
+				Created_at:  invocation.Created_at,
+				Updated_at:  invocation.Updated_at,
+			})
+			invocationsDisplay[i].Id = invocation.Id
 		}
+
+		utils.PrintMultiRow(client.InvocationDisplay{}, invocationsDisplay)
 	}
 }
 
@@ -486,24 +496,22 @@ func HandleGetInvocation(id *string, pretty *bool) {
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocation)
+	} else if *pretty {
+		fmt.Printf("  ➤ ID: %s\n", invocation.Id)
+		fmt.Printf("  ➤ Invoker ID: %d\n", invocation.Invoker_id)
+		fmt.Printf("  ➤ Function ID: %s\n", invocation.Content.Function_id)
+		fmt.Printf("  ➤ State: %s\n", invocation.Content.State)
+		fmt.Printf("  ➤ Created At: %s\n", invocation.Created_at)
+		fmt.Printf("  ➤ Updated At: %s\n", invocation.Updated_at)
 	} else {
-		if *pretty {
-			fmt.Printf("➤ ID: %s\n", invocation.Id)
-			fmt.Printf("➤ Invoker ID: %d\n", invocation.Invoker_id)
-			fmt.Printf("➤ Function ID: %s\n", invocation.Content.Function_id)
-			fmt.Printf("➤ State: %s\n", invocation.Content.State)
-			fmt.Printf("➤ Created At: %s\n", invocation.Created_at)
-			fmt.Printf("➤ Updated At: %s\n", invocation.Updated_at)
-		} else {
-			var invocationDisplay client.InvocationDisplay
-			invocationDisplay.Id = invocation.Id
-			invocationDisplay.Invoker_id = invocation.Invoker_id
-			invocationDisplay.Function_id = invocation.Content.Function_id
-			invocationDisplay.State = invocation.Content.State
-			invocationDisplay.Created_at = invocation.Created_at
-			invocationDisplay.Updated_at = invocation.Updated_at
-			utils.PrintRow(invocationDisplay)
-		}
+		var invocationDisplay client.InvocationDisplay
+		invocationDisplay.Id = invocation.Id
+		invocationDisplay.Invoker_id = invocation.Invoker_id
+		invocationDisplay.Function_id = invocation.Content.Function_id
+		invocationDisplay.State = invocation.Content.State
+		invocationDisplay.Created_at = invocation.Created_at
+		invocationDisplay.Updated_at = invocation.Updated_at
+		utils.PrintRow(invocationDisplay)
 	}
 }
 
@@ -527,7 +535,7 @@ func displayInvocationsAsTable(invocations []client.Invocation) {
 	table.Render() // Render the table
 }
 
-func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool) {
+func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, pretty *bool) {
 	c, _ := client.NewClient()
 	var id = &content.Function_id
 	function, _ := c.GetFunctionById(*id)
@@ -555,16 +563,23 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 			}
 		}
 	}
+
 	created_invocation, err := c.AddInvocation(*content)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Invocation successfully created !\n")
-	fmt.Printf("  ➤ ID: %s\n", created_invocation.Id)
-	fmt.Printf("  ➤ Created At: %s\n", created_invocation.Created_at)
-	fmt.Printf("  ➤ Updated At: %s\n", created_invocation.Updated_at)
 
+	if client.GetDefaultFormat() == "json" {
+		utils.PrintJson(created_invocation)
+	} else if *pretty {
+		fmt.Printf("Invocation successfully created !\n")
+		fmt.Printf("  ➤ ID: %s\n", created_invocation.Id)
+		fmt.Printf("  ➤ Created At: %s\n", created_invocation.Created_at)
+		fmt.Printf("  ➤ Updated At: %s\n", created_invocation.Updated_at)
+	} else {
+		utils.PrintRow(*created_invocation)
+	}
 }
 
 func HandleDeleteInvocation(id *string) {
@@ -574,6 +589,7 @@ func HandleDeleteInvocation(id *string) {
 		fmt.Printf("failed: %s\n", delete_err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Invocation successfully deleted\n")
 }
 
@@ -597,25 +613,23 @@ func HandleGetTriggers(pretty *bool) {
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggers)
+	} else if *pretty {
+		displayTriggersAsTable(*triggers)
 	} else {
-		if *pretty {
-			displayTriggersAsTable(*triggers)
-		} else {
-			var triggersDisplay []client.TriggerDisplay
-			for i, trigger := range *triggers {
-				triggersDisplay = append(triggersDisplay, client.TriggerDisplay{
-					Id:          trigger.Id,
-					Function_id: trigger.Content.Function_id,
-					Kind:        trigger.Kind,
-					Name:        trigger.Content.Name,
-					Cron_expr:   trigger.Content.Cron_expr,
-					Created_at:  trigger.Created_at,
-					Updated_at:  trigger.Updated_at,
-				})
-				triggersDisplay[i].Id = trigger.Id
-			}
-			utils.PrintMultiRow(client.TriggerDisplay{}, triggersDisplay)
+		var triggersDisplay []client.TriggerDisplay
+		for i, trigger := range *triggers {
+			triggersDisplay = append(triggersDisplay, client.TriggerDisplay{
+				Id:          trigger.Id,
+				Function_id: trigger.Content.Function_id,
+				Kind:        trigger.Kind,
+				Name:        trigger.Content.Name,
+				Cron_expr:   trigger.Content.Cron_expr,
+				Created_at:  trigger.Created_at,
+				Updated_at:  trigger.Updated_at,
+			})
+			triggersDisplay[i].Id = trigger.Id
 		}
+		utils.PrintMultiRow(client.TriggerDisplay{}, triggersDisplay)
 	}
 }
 
@@ -631,13 +645,13 @@ func HandleGetTrigger(id *string, pretty *bool) {
 		utils.PrintJson(trigger)
 	} else {
 		if *pretty {
-			fmt.Printf("➤ ID: %s\n", trigger.Id)
-			fmt.Printf("➤ Function ID: %s\n", trigger.Content.Function_id)
-			fmt.Printf("➤ Kind: %s\n", trigger.Kind)
-			fmt.Printf("➤ Name: %s\n", trigger.Content.Name)
-			fmt.Printf("➤ Cron Expr: %s\n", trigger.Content.Cron_expr)
-			fmt.Printf("➤ Created At: %s\n", trigger.Created_at)
-			fmt.Printf("➤ Updated At: %s\n", trigger.Updated_at)
+			fmt.Printf("  ➤ ID: %s\n", trigger.Id)
+			fmt.Printf("  ➤ Function ID: %s\n", trigger.Content.Function_id)
+			fmt.Printf("  ➤ Kind: %s\n", trigger.Kind)
+			fmt.Printf("  ➤ Name: %s\n", trigger.Content.Name)
+			fmt.Printf("  ➤ Cron Expr: %s\n", trigger.Content.Cron_expr)
+			fmt.Printf("  ➤ Created At: %s\n", trigger.Created_at)
+			fmt.Printf("  ➤ Updated At: %s\n", trigger.Updated_at)
 		} else {
 			var triggerDisplay client.TriggerDisplay
 			triggerDisplay.Id = trigger.Id
