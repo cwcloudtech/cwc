@@ -12,6 +12,7 @@ var (
 	trigger         client.Trigger
 	argumentsValues []string
 	interactive     bool = false
+	pretty          bool = false
 )
 
 var CreateCmd = &cobra.Command{
@@ -19,13 +20,14 @@ var CreateCmd = &cobra.Command{
 	Short: "Create a trigger in the cloud",
 	Long:  `This command lets you create a trigger in the cloud.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleAddTrigger(&trigger, &argumentsValues, &interactive)
+		user.HandleAddTrigger(&trigger, &argumentsValues, &interactive, &pretty)
 	},
 }
 
 func init() {
 	CreateCmd.Flags().StringVarP(&trigger.Content.Function_id, "function_id", "f", "", "The trigger function id")
 	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
+	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 	CreateCmd.Flags().StringVarP(&trigger.Content.Name, "name", "n", "", "The trigger name")
 	CreateCmd.Flags().StringVarP(&trigger.Kind, "kind", "k", "", "The trigger kind")
 	CreateCmd.Flags().StringVarP(&trigger.Content.Cron_expr, "cron_expr", "c", "", "The trigger cron expression")

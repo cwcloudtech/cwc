@@ -179,8 +179,10 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 			function.Content.Args = []string{}
 		}
 
+		c, _ := client.NewClient()
+
 		// assign the code template after choosing the language
-		code_template, err := client.GetFunctionCodeTemplate(function.Content.Args, function.Content.Language)
+		code_template, err := c.GetFunctionCodeTemplate(function.Content.Args, function.Content.Language)
 		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
@@ -241,7 +243,8 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		fmt.Printf("code: %s\n", function.Content.Code)
 	}
 
-	created_function, err := client.AddFunction(*function)
+	c, _ := client.NewClient()
+	created_function, err := c.AddFunction(*function)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
