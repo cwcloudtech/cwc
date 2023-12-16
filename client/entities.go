@@ -145,3 +145,164 @@ type Provider struct {
 type AvailableProviders struct {
 	Providers []Provider `json:"providers"`
 }
+
+type LanguagesResponse struct {
+	Languages []string `json:"languages"`
+}
+
+type TriggerKindsResponse struct {
+	TriggerKinds []string `json:"kinds"`
+}
+
+type FunctionContent struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+	Language string `json:"language"`
+	Args []string `json:"args"`
+	Regexp string `json:"regexp"`
+	Callback_url string `json:"callback_url"`
+	Callback_authorization_header string `json:"callback_authorization_header"`
+}
+
+type Function struct {
+	Id          string    `json:"id"`
+	Owner_id	int    `json:"owner_id"`
+	Is_public   bool   `json:"is_public"`
+	Content FunctionContent `json:"content"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type FunctionDisplay struct {
+	Id          string    `json:"id"`
+	Owner_id	int    `json:"owner_id"`
+	Is_public   bool   `json:"is_public"`
+	Name string `json:"name"`
+	Language string `json:"language"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type FunctionsResponse struct {
+	Status  string     `json:"status"`
+	Code   int        `json:"code"`
+	StartIndex int `json:"start_index"`
+	MaxIndex int `json:"max_index"`
+    Results []Function `json:"results"`
+}
+
+type AddFunctionBody struct {
+	Is_public bool `json:"is_public"`
+	Content FunctionContent `json:"content"`
+}
+
+type UpdateFunctionBody struct {
+	Id 		string    `json:"id"`
+	Is_public bool `json:"is_public"`
+	Content FunctionContent `json:"content"`
+}
+
+type FunctionCodeTemplate struct {
+	Args []string `json:"args"`
+	Language string `json:"language"`
+}
+
+type FunctionCodeTemplateResponse struct {
+	Status string `json:"status"`
+	Code int `json:"code"`
+	Template string `json:"template"`
+}
+
+type Argument struct {
+	Key string `json:"key"`
+	Value string `json:"value"`
+}
+
+type InvocationContent struct {
+	Args []Argument `json:"args"`
+	State string `json:"state"`
+	Result string `json:"result"`
+	User_id string `json:"user_id"`
+	Function_id string `json:"function_id"`
+}
+
+type Invocation struct {
+	Id          string    `json:"id"`
+	Invoker_id	int    `json:"invoker_id"`
+	Updated_at  string `json:"updated_at"`
+	Content InvocationContent `json:"content"`
+	Created_at string `json:"created_at"`
+}
+
+type InvocationDisplay struct {
+	Id          string    `json:"id"`
+	Invoker_id	int    `json:"invoker_id"`
+	Function_id string `json:"function_id"`
+	State string `json:"state"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type InvocationsResponse struct {
+	Status  string     `json:"status"`
+	Code   int        `json:"code"`
+	StartIndex int `json:"start_index"`
+	MaxIndex int `json:"max_index"`
+	Results []Invocation `json:"results"`
+}
+
+type InvocationAddContent struct {
+	Args []Argument `json:"args"`
+	Function_id string `json:"function_id"`
+}
+
+type AddInvocationBody struct {
+	Content InvocationAddContent `json:"content"`
+}
+
+type InvocationUpdate struct {
+	Id          string    `json:"id"`
+	Invoker_id	int    `json:"invoker_id"`
+	Content InvocationContent `json:"content"`
+	Invoker_username string `json:"invoker_username"`
+}
+
+type TriggerContent struct {
+	Args []Argument `json:"args"`
+	Name string `json:"name"`
+	Cron_expr string `json:"cron_expr"`
+	Function_id string `json:"function_id"`
+}
+
+type Trigger struct {
+	Id          string    `json:"id"`
+	Kind 	  string `json:"kind"`
+	Owner_id	int    `json:"owner_id"`
+	Content TriggerContent `json:"content"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type TriggerDisplay struct {
+	Id          string    `json:"id"`
+	Kind 	  string `json:"kind"`
+	Owner_id	int    `json:"owner_id"`
+	Name string `json:"name"`
+	Cron_expr string `json:"cron_expr"`
+	Function_id string `json:"function_id"`
+	Created_at string `json:"created_at"`
+	Updated_at  string `json:"updated_at"`
+}
+
+type TriggersResponse struct {
+	Status  string     `json:"status"`
+	Code   int        `json:"code"`
+	StartIndex int `json:"start_index"`
+	MaxIndex int `json:"max_index"`
+	Results []Trigger `json:"results"`
+}
+
+type AddTriggerBody struct {
+	Kind string `json:"kind"`
+	Content TriggerContent `json:"content"`
+}

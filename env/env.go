@@ -1,5 +1,5 @@
 package env
 
 var (
-	API_URL = "https://cloud-api.comwork.io"
+	API_URL = "https://ppd.cloud-api.comwork.io"
 )

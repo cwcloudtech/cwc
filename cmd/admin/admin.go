@@ -11,6 +11,7 @@ import (
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
 	"cwc/cmd/admin/user"
+	"cwc/cmd/admin/faas"
 
 	"github.com/spf13/cobra"
 )
@@ -34,4 +35,5 @@ func init() {
 	AdminCmd.AddCommand(instance.InstanceCmd)
 	AdminCmd.AddCommand(user.UserCmd)
 	AdminCmd.AddCommand(email.EmailCmd)
+	AdminCmd.AddCommand(faas.FaasCmd)
 }
