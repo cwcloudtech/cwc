@@ -552,12 +552,19 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 		os.Exit(1)
 	}
 
+	var invocationDisplay client.InvocationDisplay
+	invocationDisplay.Id = created_invocation.Id
+	invocationDisplay.State = created_invocation.Content.State
+	invocationDisplay.Created_at = created_invocation.Created_at
+	invocationDisplay.Updated_at = created_invocation.Updated_at
+	invocationDisplay.Function_id = created_invocation.Content.Function_id
+
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(*created_invocation)
 	} else if *pretty {
-		utils.PrintPretty("Invocation successfully created", *created_invocation)
+		utils.PrintPretty("Invocation successfully created", invocationDisplay)
 	} else {
-		utils.PrintRow(*created_invocation)
+		utils.PrintRow(invocationDisplay)
 	}
 }
 

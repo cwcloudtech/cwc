@@ -61,7 +61,10 @@ func PrintPretty(firstLine string, class interface{}) {
 	values := reflect.ValueOf(class)
 	typesOf := values.Type()
 	for i := 0; i < values.NumField(); i++ {
-		fmt.Println("  ➤ " + typesOf.Field(i).Name + ": " + fmt.Sprintf("%v\t", values.Field(i).Interface()))
+		v := values.Field(i).Interface()
+		if nil != v && v != "" && v != 0 {
+			fmt.Println("  ➤ " + typesOf.Field(i).Name + ": " + fmt.Sprintf("%v\t", v))
+		}
 	}
 }
 
