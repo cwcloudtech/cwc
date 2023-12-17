@@ -62,9 +62,12 @@ func PrintPretty(firstLine string, class interface{}) {
 	typesOf := values.Type()
 	for i := 0; i < values.NumField(); i++ {
 		v := values.Field(i).Interface()
-		if nil != v && v != "" && v != 0 {
-			fmt.Println("  ➤ " + typesOf.Field(i).Name + ": " + fmt.Sprintf("%v\t", v))
+		if nil == v || v == "" || v == 0 {
+			continue
 		}
+
+		k := strings.Replace(typesOf.Field(i).Name, "_", " ", -1)
+		fmt.Printf("  ➤ %s: %v\n", k, v)
 	}
 }
 
