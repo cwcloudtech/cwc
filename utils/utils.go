@@ -36,10 +36,7 @@ func PromptUserForValue() string {
 
 func PrintJson(class interface{}) {
 	marchal_class, err := json.Marshal(class)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	ExitIfError(err)
 
 	fmt.Printf("%s\n", JsonPrettyPrint(string(marchal_class)))
 }
@@ -116,4 +113,19 @@ func JsonPrettyPrint(in string) string {
 	}
 
 	return out.String()
+}
+
+func ExitIfError(err error) {
+	ExitIfErrorWithMsg("Error", err)
+}
+
+func ExitIfErrorWithMsg(msg string, err error) {
+	ExitIfNeeded(fmt.Sprintf("%s: %s", msg, err), nil != err)
+}
+
+func ExitIfNeeded(msg string, exit bool) {
+	if exit {
+		fmt.Println(msg)
+		os.Exit(1)
+	}
 }

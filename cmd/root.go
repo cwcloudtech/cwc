@@ -18,10 +18,10 @@ import (
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
 	"cwc/handlers/user"
+	"cwc/utils"
 	"fmt"
 
 	"cwc/cmd/registry"
-	"os"
 
 	"github.com/spf13/cobra"
 	"moul.io/banner"
@@ -54,10 +54,7 @@ var rootCmd = &cobra.Command{
 func Execute(version string) {
 	cli_version = version
 	err := rootCmd.Execute()
-	if nil != err {
-		os.Exit(1)
-	}
-
+	utils.ExitIfError(err)
 }
 
 func init() {

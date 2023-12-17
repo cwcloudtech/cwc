@@ -11,16 +11,10 @@ import (
 
 func HandleGetFunctions(pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	functions, err := c.GetAllFunctions()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(functions)
@@ -47,16 +41,10 @@ func HandleGetFunctions(pretty *bool) {
 
 func HandleGetFunctionOwner(id *string, pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	owner, err := c.GetFunctionOwnerById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(owner)
@@ -92,16 +80,10 @@ func displayFunctionsAsTable(functions []admin.Function) {
 
 func HandleGetInvocations(pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	invocations, err := c.GetAllInvocations()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocations)
@@ -127,16 +109,10 @@ func HandleGetInvocations(pretty *bool) {
 
 func HandleGetInvocationInvoker(id *string, pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	invoker, err := c.GetInvocationInvokerById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(invoker)
@@ -169,16 +145,10 @@ func displayInvocationsAsTable(invocations []admin.Invocation) {
 
 func HandleGetTriggers(pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	triggers, err := c.GetAllTriggers()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggers)
@@ -206,16 +176,10 @@ func HandleGetTriggers(pretty *bool) {
 
 func HandleGetTriggerOwner(id *string, pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	owner, err := c.GetTriggerOwnerById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(owner)

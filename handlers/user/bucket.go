@@ -5,53 +5,34 @@ import (
 	"cwc/client"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleDeleteBucket(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.DeleteBucket(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
 func HandleUpdateBucket(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.UpdateBucket(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Bucket %v successfully updated\n", *id)
 }
 
 func HandleGetBuckets() {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	buckets, err := c.GetAllBuckets()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(buckets)
@@ -62,16 +43,10 @@ func HandleGetBuckets() {
 
 func HandleGetBucket(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	bucket, err := c.GetBucket(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(bucket)

@@ -4,21 +4,14 @@ import (
 	"cwc/client"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleAddProject(name *string, host *string, token *string, git_username *string, namespace *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	created_project, err := c.AddProject(*name, *host, *token, *git_username, *namespace)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_project)
@@ -29,29 +22,17 @@ func HandleAddProject(name *string, host *string, token *string, git_username *s
 
 func HandleDeleteProject(id *string, name *string, url *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if *id != "" {
 		err := c.DeleteProjectById(*id)
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 	} else if *name != "" {
 		err := c.DeleteProjectByName(*name)
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 	} else {
 		err := c.DeleteProjectByUrl(*url)
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 	}
 
 	fmt.Printf("project successfully deleted\n")
@@ -61,18 +42,11 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 	var err error
 
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if *project_id == "" && *project_name == "" && *project_url == "" {
 		projects, err := c.GetAllProjects()
-
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 
 		if client.GetDefaultFormat() == "json" {
 			utils.PrintJson(projects)
@@ -89,10 +63,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 			project, err = c.GetProjectByUrl(*project_url)
 		}
 
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 
 		if client.GetDefaultFormat() == "json" {
 			utils.PrintJson(project)

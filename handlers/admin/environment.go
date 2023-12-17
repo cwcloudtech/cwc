@@ -38,10 +38,8 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		// Create a temporary file with a specific name and path
 		tempFileName := "temp-code-editor.txt"
 		_, err := os.Create(tempFileName)
-		if nil != err {
-			fmt.Printf("Error creating temporary file: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfErrorWithMsg("Error creating temporary file", err)
+
 		defer os.Remove(tempFileName)
 
 		// Prompt the user to write code in the editor
@@ -53,17 +51,11 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		cmd.Stderr = os.Stderr
 
 		err = cmd.Run()
-		if nil != err {
-			fmt.Printf("Error opening the text editor: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 		// Read the code from the temporary file
 		codeBytes, err := ioutil.ReadFile(tempFileName)
-		if nil != err {
-			fmt.Printf("Error reading code from the text editor: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
 
 		added_environment.EnvironmentTemplate = string(codeBytes)
 	}
@@ -83,10 +75,8 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		// Create a temporary file with a specific name and path
 		tempFileName := "temp-code-editor.txt"
 		_, err := os.Create(tempFileName)
-		if nil != err {
-			fmt.Printf("Error creating temporary file: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfErrorWithMsg("Error creating temporary file", err)
+
 		defer os.Remove(tempFileName)
 
 		// Prompt the user to write code in the editor
@@ -98,32 +88,20 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		cmd.Stderr = os.Stderr
 
 		err = cmd.Run()
-		if nil != err {
-			fmt.Printf("Error opening the text editor: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 		// Read the code from the temporary file
 		codeBytes, err := ioutil.ReadFile(tempFileName)
-		if nil != err {
-			fmt.Printf("Error reading code from the text editor: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
 
 		added_environment.DocTemplate = string(codeBytes)
 	}
 
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	created_env, err := c.AdminAddEnvironment(*added_environment)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(*created_env)
@@ -134,32 +112,20 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 
 func HandleDeleteEnvironment(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.AdminDeleteEnvironment(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Environment %v successfully deleted\n", *id)
 }
 
 func HandleGetEnvironments(pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	environments, err := c.GetAllEnvironments()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(environments)
@@ -172,16 +138,10 @@ func HandleGetEnvironments(pretty *bool) {
 
 func HandleGetEnvironment(id *string, pretty *bool) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	environment, err := c.GetEnvironment(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)

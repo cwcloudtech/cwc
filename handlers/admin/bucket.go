@@ -4,21 +4,15 @@ import (
 	"cwc/admin"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	created_bucket, err := c.AdminAddBucket(*user_email, *name, *reg_type)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
+
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_bucket)
 	} else {
@@ -28,48 +22,30 @@ func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 
 func HandleDeleteBucket(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.DeleteBucket(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
 func HandleUpdateBucket(id *string, email *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.UpdateBucket(*id, *email)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Bucket %v successfully updated\n", *id)
 }
 
 func HandleGetBuckets() {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	buckets, err := c.GetAllBuckets()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(buckets)
@@ -80,16 +56,10 @@ func HandleGetBuckets() {
 
 func HandleGetBucket(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	bucket, err := c.GetBucket(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(bucket)

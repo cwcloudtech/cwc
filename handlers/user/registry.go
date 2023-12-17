@@ -4,53 +4,34 @@ import (
 	"cwc/client"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleDeleteRegistry(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.DeleteRegistry(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Registry %v successfully deleted\n", *id)
 }
 
 func HandleUpdateRegistry(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.UpdateRegistry(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Registry %v successfully updated\n", *id)
 }
 
 func HandleGetRegistries() {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	registries, err := c.GetAllRegistries()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(registries)
@@ -61,16 +42,10 @@ func HandleGetRegistries() {
 
 func HandleGetRegistry(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	registry, err := c.GetRegistry(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(registry)

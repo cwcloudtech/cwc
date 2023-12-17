@@ -3,22 +3,14 @@ package user
 import (
 	"cwc/client"
 	"cwc/utils"
-	"fmt"
-	"os"
 )
 
 func HandleGetModels() {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	email, err := c.GetModels()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(email)
@@ -29,16 +21,10 @@ func HandleGetModels() {
 
 func HandleSendPrompt(model *string, message *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	email, err := c.SendPrompt(*model, *message)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(email)

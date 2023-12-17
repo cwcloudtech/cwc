@@ -4,7 +4,6 @@ import (
 	"cwc/admin"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 type User struct {
@@ -21,16 +20,10 @@ type User struct {
 
 func HandleGetUsers() {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	responseUsers, err := c.GetAllUsers()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	users := responseUsers.Result
 	if admin.GetDefaultFormat() == "json" {
@@ -42,16 +35,10 @@ func HandleGetUsers() {
 
 func HandleGetUser(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	responseUser, err := c.GetUser(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	user := responseUser.Result
 	if admin.GetDefaultFormat() == "json" {
@@ -63,16 +50,10 @@ func HandleGetUser(id *string) {
 
 func HandleDeleteUser(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.DeleteUser(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("User %v successfully deleted\n", *id)
 }

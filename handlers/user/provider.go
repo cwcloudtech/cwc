@@ -4,15 +4,11 @@ import (
 	"cwc/client"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleListProviders() {
 	providers, err := client.GetProviders()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	for _, available_provider := range providers.Providers {
 		fmt.Printf("%v\n", available_provider.Name)
@@ -26,10 +22,7 @@ func HandlerGetDefaultProvider() {
 
 func HandlerSetDefaultProvider(value string) {
 	providers, err := client.GetProviders()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	available_providers := []string{}
 	for _, available_provider := range providers.Providers {
@@ -39,10 +32,7 @@ func HandlerSetDefaultProvider(value string) {
 		)
 	}
 
-	if !utils.StringInSlice(value, available_providers) {
-		fmt.Println("cwc: invalid provider value")
-		os.Exit(1)
-	}
+	utils.ExitIfNeeded("Invalid provider value", !utils.StringInSlice(value, available_providers))
 
 	client.SetDefaultProvider(value)
 	fmt.Printf("Default provider = %v\n", value)

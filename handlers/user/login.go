@@ -2,17 +2,14 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleLogin(access_key *string, secret_key *string) {
 	client, _ := client.NewClient()
 	err := client.UserLogin(*access_key, *secret_key)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("You are successfully logged in\n")
 }

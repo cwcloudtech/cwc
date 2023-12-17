@@ -2,16 +2,13 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleListDnsZones() {
 	dns_zones, err := client.GetDnsZones()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	for _, dns_zone := range dns_zones.Zones {
 		fmt.Printf("%v\n", dns_zone)

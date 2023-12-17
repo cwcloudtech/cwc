@@ -4,21 +4,15 @@ import (
 	"cwc/admin"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	created_registry, err := c.AdminAddRegistry(*user_email, *name, *reg_type)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
+
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_registry)
 	} else {
@@ -28,48 +22,30 @@ func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
 
 func HandleDeleteRegistry(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.DeleteRegistry(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Registry %v successfully deleted\n", *id)
 }
 
 func HandleUpdateRegistry(id *string, email *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	err = c.UpdateRegistry(*id, *email)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Registry %v successfully updated\n", *id)
 }
 
 func HandleGetRegistries() {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	registries, err := c.GetAllRegistries()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(registries)
@@ -80,16 +56,10 @@ func HandleGetRegistries() {
 
 func HandleGetRegistry(id *string) {
 	c, err := admin.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	registry, err := c.GetRegistry(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if admin.GetDefaultFormat() == "json" {
 		utils.PrintJson(registry)

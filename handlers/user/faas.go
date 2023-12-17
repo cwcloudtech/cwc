@@ -15,10 +15,7 @@ import (
 
 func HandleGetLanguages(pretty *bool) {
 	languages, err := client.GetLanguages()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(languages)
@@ -31,10 +28,7 @@ func HandleGetLanguages(pretty *bool) {
 
 func HandleGetTriggerKinds(pretty *bool) {
 	triggerKinds, err := client.GetTriggerKinds()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggerKinds)
@@ -47,16 +41,10 @@ func HandleGetTriggerKinds(pretty *bool) {
 
 func HandleGetFunctions(pretty *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	functions, err := c.GetAllFunctions()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(functions)
@@ -83,16 +71,10 @@ func HandleGetFunctions(pretty *bool) {
 
 func HandleGetFunction(id *string, pretty *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	function, err := c.GetFunctionById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	var functionDisplay client.FunctionDisplay
 	functionDisplay.Id = function.Id
@@ -137,26 +119,17 @@ func displayFunctionsAsTable(functions []client.Function) {
 
 func HandleDeleteFunction(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
-	delete_err := c.DeleteFunctionById(*id)
-	if nil != delete_err {
-		fmt.Printf("failed: %s\n", delete_err)
-		os.Exit(1)
-	}
+	err = c.DeleteFunctionById(*id)
+	utils.ExitIfError(err)
 
 	fmt.Printf("Function successfully deleted\n")
 }
 
 func HandleAddFunction(function *client.Function, interactive *bool, pretty *bool) {
 	language_response, err := client.GetLanguages()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	isLanguageAllowed := false
 	for _, allowedLang := range language_response.Languages {
@@ -166,10 +139,7 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		}
 	}
 
-	if !isLanguageAllowed {
-		fmt.Printf("Invalid language. Allowed languages are: %s\n", strings.Join(language_response.Languages, ", "))
-		os.Exit(1)
-	}
+	utils.ExitIfNeeded(fmt.Sprintf("Invalid language. Allowed languages are: %s", strings.Join(language_response.Languages, ", ")), !isLanguageAllowed)
 
 	if *interactive {
 		// Prompt for Regexp
@@ -199,17 +169,11 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		}
 
 		c, err := client.NewClient()
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 
 		// assign the code template after choosing the language
 		code_template, err := c.GetFunctionCodeTemplate(function.Content.Args, function.Content.Language)
-		if nil != err {
-			fmt.Printf("failed: %s\n", err)
-			os.Exit(1)
-		}
+		utils.ExitIfError(err)
 
 		fmt.Print("Do you want to add code? [Y/N]: ")
 		var addCode string
@@ -225,19 +189,14 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 			// Create a temporary file with a specific name and path
 			tempFileName := "temp-code-editor.txt"
 			tempFile, err := os.Create(tempFileName)
-			if nil != err {
-				fmt.Printf("Error creating temporary file: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error creating temporary file", err)
+
 			defer tempFile.Close()
 			defer os.Remove(tempFileName)
 
 			// Write the code_template to the temporary file
 			_, err = tempFile.WriteString(*code_template)
-			if nil != err {
-				fmt.Printf("Error writing code_template to the temporary file: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error writing code_template to the temporary file", err)
 
 			// Prompt the user to write code in the editor
 			fmt.Printf("Please write your code in the text editor that opens. Save and close the editor when done.\n")
@@ -248,17 +207,11 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 			cmd.Stderr = os.Stderr
 
 			err = cmd.Run()
-			if nil != err {
-				fmt.Printf("Error opening the text editor: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 			// Read the code from the temporary file
 			codeBytes, err := ioutil.ReadFile(tempFileName)
-			if nil != err {
-				fmt.Printf("Error reading code from the text editor: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
 
 			function.Content.Code = string(codeBytes)
 		}
@@ -267,16 +220,10 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 	}
 
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	created_function, err := c.AddFunction(*function)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_function)
@@ -289,22 +236,13 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 
 func HandleUpdateFunction(id *string, updated_function *client.Function, interactive *bool) {
 	language_response, err := client.GetLanguages()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	function, err := c.GetFunctionById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	isLanguageAllowed := false
 
@@ -322,10 +260,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 			}
 		}
 
-		if !isLanguageAllowed {
-			fmt.Printf("Invalid language. Allowed languages are: %s\n", strings.Join(language_response.Languages, ", "))
-			os.Exit(1)
-		}
+		utils.ExitIfNeeded(fmt.Sprintf("Allowed languages are: %s", strings.Join(language_response.Languages, ", ")), !isLanguageAllowed)
 
 		// Prompt for Regexp
 		fmt.Printf("Current regexp: %s\n", function.Content.Regexp)
@@ -353,7 +288,9 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		} else {
 			fmt.Print("Current function status: Private\n")
 		}
+
 		fmt.Print("Do you want to make the change the function status? [Y/N]: ")
+
 		var answer string
 		fmt.Scanln(&answer)
 		if answer == "y" || answer == "Y" {
@@ -387,19 +324,13 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 			// Create a temporary file with a specific name and path
 			tempFileName := "temp-code-editor-update.txt"
 			tempFile, err := os.Create(tempFileName)
-			if nil != err {
-				fmt.Printf("Error creating temporary file: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error creating temporary file", err)
 
 			defer os.Remove(tempFileName)
 
 			// Write the current code to the temporary file
 			_, err = tempFile.WriteString(function.Content.Code)
-			if nil != err {
-				fmt.Printf("Error writing current code to the temporary file: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error writing current code to the temporary file", err)
 
 			// Prompt the user to edit the code in the editor
 			fmt.Printf("Please update your code in the text editor that opens. Save and close the editor when done.\n")
@@ -410,17 +341,11 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 			cmd.Stderr = os.Stderr
 
 			err = cmd.Run()
-			if nil != err {
-				fmt.Printf("Error opening the text editor: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 			// Read the updated code from the temporary file
 			updatedCodeBytes, err := ioutil.ReadFile(tempFileName)
-			if nil != err {
-				fmt.Printf("Error reading updated code from the text editor: %s\n", err)
-				os.Exit(1)
-			}
+			utils.ExitIfErrorWithMsg("Error reading updated code from the text editor", err)
 
 			// Update the function's code with the edited code
 			function.Content.Code = string(updatedCodeBytes)
@@ -461,26 +386,17 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 	}
 
 	_, err = c.UpdateFunction(*function)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	fmt.Printf("Function successfully updated\n")
 }
 
 func HandleGetInvocations(pretty *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	invocations, err := c.GetAllInvocations()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocations)
@@ -506,16 +422,10 @@ func HandleGetInvocations(pretty *bool) {
 
 func HandleGetInvocation(id *string, pretty *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	invocation, err := c.GetInvocationById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	var invocationDisplay client.InvocationDisplay
 	invocationDisplay.Id = invocation.Id
@@ -556,10 +466,7 @@ func displayInvocationsAsTable(invocations []client.Invocation) {
 
 func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, pretty *bool, synchronous *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	var id = &content.Function_id
 	function, _ := c.GetFunctionById(*id)
@@ -577,10 +484,7 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 			}
 		}
 	} else {
-		if len(*argument_values) != len(args) {
-			fmt.Printf("Invalid number of arguments. Expected %d arguments, got %d\n", len(args), len(*argument_values))
-			os.Exit(1)
-		}
+		utils.ExitIfNeeded(fmt.Sprintf("Invalid number of arguments. Expected %d arguments, got %d", len(args), len(*argument_values)), len(*argument_values) != len(args))
 
 		if len(args) > 0 {
 			for i, arg := range args {
@@ -590,10 +494,7 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 	}
 
 	created_invocation, err := c.AddInvocation(*content, *synchronous)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	var invocationDisplay client.InvocationDisplay
 	invocationDisplay.Id = created_invocation.Id
@@ -613,48 +514,30 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 
 func HandleDeleteInvocation(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
-	delete_err := c.DeleteInvocationById(*id)
-	if nil != delete_err {
-		fmt.Printf("failed: %s\n", delete_err)
-		os.Exit(1)
-	}
+	err = c.DeleteInvocationById(*id)
+	utils.ExitIfError(err)
 
 	fmt.Printf("Invocation successfully deleted\n")
 }
 
 func HandleTruncateInvocations() {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
-	truncate_err := c.TruncateInvocations()
-	if nil != truncate_err {
-		fmt.Printf("failed: %s\n", truncate_err)
-		os.Exit(1)
-	}
+	err = c.TruncateInvocations()
+	utils.ExitIfError(err)
 
 	fmt.Printf("Invocations successfully truncated\n")
 }
 
 func HandleGetTriggers(pretty *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	triggers, err := c.GetAllTriggers()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggers)
@@ -680,16 +563,10 @@ func HandleGetTriggers(pretty *bool) {
 
 func HandleGetTrigger(id *string, pretty *bool) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	trigger, err := c.GetTriggerById(*id)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(trigger)
@@ -763,10 +640,7 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 			}
 		}
 
-		if !isTriggerKindAllowed {
-			fmt.Printf("Invalid trigger kind. Allowed trigger kinds are: %s\n", strings.Join(triggerKinds.TriggerKinds, ", "))
-			os.Exit(1)
-		}
+		utils.ExitIfNeeded(fmt.Sprintf("Invalid trigger kind. Allowed trigger kinds are: %s", strings.Join(triggerKinds.TriggerKinds, ", ")), !isTriggerKindAllowed)
 
 		// Prompt for trigger name
 		fmt.Printf("Enter Trigger name: ")
@@ -789,10 +663,7 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 			}
 		}
 	} else {
-		if len(*argument_values) != len(args) {
-			fmt.Printf("Invalid number of arguments. Expected %d arguments, got %d\n", len(args), len(*argument_values))
-			os.Exit(1)
-		}
+		utils.ExitIfNeeded(fmt.Sprintf("Invalid number of arguments. Expected %d arguments, got %d\n", len(args), len(*argument_values)), len(*argument_values) != len(args))
 
 		if len(*argument_values) > 0 {
 			for i, arg := range args {
@@ -802,16 +673,10 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 	}
 
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	created_trigger, err := c.AddTrigger(*trigger)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_trigger)
@@ -824,32 +689,20 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 
 func HandleDeleteTrigger(id *string) {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
-	delete_err := c.DeleteTriggerById(*id)
-	if nil != delete_err {
-		fmt.Printf("failed: %s\n", delete_err)
-		os.Exit(1)
-	}
+	err = c.DeleteTriggerById(*id)
+	utils.ExitIfError(err)
 
 	fmt.Printf("Trigger successfully deleted\n")
 }
 
 func HandleTruncateTriggers() {
 	c, err := client.NewClient()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
-	truncate_err := c.TruncateTriggers()
-	if nil != truncate_err {
-		fmt.Printf("failed: %s\n", truncate_err)
-		os.Exit(1)
-	}
+	err = c.TruncateTriggers()
+	utils.ExitIfError(err)
 
 	fmt.Printf("Triggers successfully truncated\n")
 }

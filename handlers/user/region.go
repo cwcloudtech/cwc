@@ -4,15 +4,11 @@ import (
 	"cwc/client"
 	"cwc/utils"
 	"fmt"
-	"os"
 )
 
 func HandleListRegions() {
 	provider_regions, err := client.GetProviderRegions()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	for _, available_region := range provider_regions.Regions {
 		fmt.Printf("%v\n", available_region.Name)
@@ -26,10 +22,7 @@ func HandlerGetDefaultRegion() {
 
 func HandlerSetDefaultRegion(value string) {
 	provider_regions, err := client.GetProviderRegions()
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+	utils.ExitIfError(err)
 
 	available_regions := []string{}
 	for _, available_region := range provider_regions.Regions {
@@ -39,10 +32,7 @@ func HandlerSetDefaultRegion(value string) {
 		)
 	}
 
-	if !utils.StringInSlice(value, available_regions) {
-		fmt.Println("cwc: invalid region value")
-		os.Exit(1)
-	}
+	utils.ExitIfNeeded("Invalid region", !utils.StringInSlice(value, available_regions))
 
 	client.SetDefaultRegion(value)
 	fmt.Printf("Default region = %v\n", value)
