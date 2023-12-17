@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+func IsNotBlank(str string) bool {
+	return strings.TrimSpace(str) != ""
+}
+
 func StringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
@@ -130,7 +134,7 @@ func ExitIfErrorWithMsg(msg string, err error) {
 
 func ExitIfNeeded(msg string, exit bool) {
 	if exit {
-		if msg != "" {
+		if IsNotBlank(msg) {
 			fmt.Println(msg)
 		}
 		os.Exit(1)

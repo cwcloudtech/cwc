@@ -352,23 +352,23 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		}
 	} else {
 		// If interactive mode is not enabled, update only the fields that are not empty
-		if updated_function.Content.Language != "" {
+		if utils.IsNotBlank(updated_function.Content.Language) {
 			function.Content.Language = updated_function.Content.Language
 		}
 
-		if updated_function.Content.Regexp != "" {
+		if utils.IsNotBlank(updated_function.Content.Regexp) {
 			function.Content.Regexp = updated_function.Content.Regexp
 		}
 
-		if updated_function.Content.Callback_url != "" {
+		if utils.IsNotBlank(updated_function.Content.Callback_url) {
 			function.Content.Callback_url = updated_function.Content.Callback_url
 		}
 
-		if updated_function.Content.Callback_authorization_header != "" {
+		if utils.IsNotBlank(updated_function.Content.Callback_authorization_header) {
 			function.Content.Callback_authorization_header = updated_function.Content.Callback_authorization_header
 		}
 
-		if updated_function.Content.Name != "" {
+		if utils.IsNotBlank(updated_function.Content.Name) {
 			function.Content.Name = updated_function.Content.Name
 		}
 
@@ -380,7 +380,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 			function.Content.Args = updated_function.Content.Args
 		}
 
-		if updated_function.Content.Code != "" {
+		if utils.IsNotBlank(updated_function.Content.Code) {
 			function.Content.Code = updated_function.Content.Code
 		}
 	}

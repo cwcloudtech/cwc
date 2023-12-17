@@ -24,10 +24,10 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
-	if *id != "" {
+	if utils.IsNotBlank(*id) {
 		err := c.AdminDeleteProjectById(*id)
 		utils.ExitIfError(err)
-	} else if *name != "" {
+	} else if utils.IsNotBlank(*name) {
 		err := c.AdminDeleteProjectByName(*name)
 		utils.ExitIfError(err)
 	} else {
@@ -58,9 +58,9 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 	}
 
 	project := &admin.Project{}
-	if *project_id != "" {
+	if utils.IsNotBlank(*project_id) {
 		project, err = c.AdminGetProjectById(*project_id)
-	} else if *project_name != "" {
+	} else if utils.IsNotBlank(*project_name) {
 		project, err = c.AdminGetProjectByName(*project_name)
 	} else {
 		project, err = c.AdminGetProjectByUrl(*project_url)
