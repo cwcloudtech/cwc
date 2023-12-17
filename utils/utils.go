@@ -120,9 +120,7 @@ func ExitIfError(err error) {
 }
 
 func ExitIfErrorWithouMsg(err error) {
-	if nil != err {
-		os.Exit(1)
-	}
+	ExitIfNeeded("", nil != err)
 }
 
 func ExitIfErrorWithMsg(msg string, err error) {
@@ -131,7 +129,9 @@ func ExitIfErrorWithMsg(msg string, err error) {
 
 func ExitIfNeeded(msg string, exit bool) {
 	if exit {
-		fmt.Println(msg)
+		if msg != "" {
+			fmt.Println(msg)
+		}
 		os.Exit(1)
 	}
 }
