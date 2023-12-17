@@ -5,7 +5,7 @@ import (
 	"cwc/utils"
 )
 
-func HandleGetModels() {
+func HandleGetModels(pretty *bool) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
@@ -14,8 +14,10 @@ func HandleGetModels() {
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(models)
+	} else if *pretty {
+		utils.PrintPrettyArray("Available models", models.Models)
 	} else {
-		utils.PrintRow(*models)
+		utils.PrintArray(models.Models)
 	}
 }
 
