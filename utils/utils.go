@@ -144,3 +144,12 @@ func ExitIfNeeded(msg string, exit bool) {
 		os.Exit(1)
 	}
 }
+
+func GetSystemEditor() string {
+	editorCommand := os.Getenv("EDITOR")
+	if IsBlank(editorCommand) {
+		editorCommand = "vi"
+	}
+
+	return editorCommand
+}

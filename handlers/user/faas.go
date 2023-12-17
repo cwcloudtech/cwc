@@ -180,11 +180,7 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		fmt.Scanln(&addCode)
 
 		if addCode == "y" || addCode == "Y" {
-			var editorCommand string
-			editorCommand = os.Getenv("EDITOR")
-			if utils.IsBlank(editorCommand) {
-				editorCommand = "vi" // Use 'vi' as the default editor
-			}
+			editorCommand := utils.GetSystemEditor()
 
 			// Create a temporary file with a specific name and path
 			tempFileName := "temp-code-editor.txt"
@@ -315,11 +311,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		fmt.Scanln(&updateCode)
 
 		if updateCode == "y" || updateCode == "Y" {
-			var editorCommand string
-			editorCommand = os.Getenv("EDITOR")
-			if utils.IsBlank(editorCommand) {
-				editorCommand = "vi" // Use 'vi' as the default editor
-			}
+			editorCommand := utils.GetSystemEditor()
 
 			// Create a temporary file with a specific name and path
 			tempFileName := "temp-code-editor-update.txt"

@@ -29,11 +29,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	fmt.Scanln(&add_env_template)
 
 	if add_env_template == "Y" || add_env_template == "y" {
-		var editorCommand string
-		editorCommand = os.Getenv("EDITOR")
-		if utils.IsBlank(editorCommand) {
-			editorCommand = "vi"
-		}
+		editorCommand := utils.GetSystemEditor()
 
 		// Create a temporary file with a specific name and path
 		tempFileName := "temp-code-editor.txt"
@@ -66,11 +62,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	fmt.Scanln(&add_doc_template)
 
 	if add_doc_template == "Y" || add_doc_template == "y" {
-		var editorCommand string
-		editorCommand = os.Getenv("EDITOR")
-		if utils.IsBlank(editorCommand) {
-			editorCommand = "vi"
-		}
+		editorCommand := utils.GetSystemEditor()
 
 		// Create a temporary file with a specific name and path
 		tempFileName := "temp-code-editor.txt"
