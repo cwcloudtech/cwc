@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"cwc/env"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -104,11 +105,10 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		}
 	}
 
-	return nil, fmt.Errorf("Unhandled status code: %d", resp.StatusCode)
+	return nil, fmt.Errorf("unhandled status code: %d", resp.StatusCode)
 }
 
 func (c *Client) requestPath(path string) string {
-
 	default_api_version := "v1"
 	hostname := GetDefaultEndpoint()
 	return fmt.Sprintf("%s/%s%s", hostname, default_api_version, path)
@@ -116,47 +116,33 @@ func (c *Client) requestPath(path string) string {
 
 func addUserCredentials(access_key string, secret_key string) {
 	dirname, err := os.UserHomeDir()
+	utils.ExitIfError(err)
 
-	if nil != err {
-		log.Fatal(err)
+	cwc_path := fmt.Sprintf("%s/.cwc", dirname)
+	credentials_path := fmt.Sprintf("%s/credentials", cwc_path)
 
+	if _, err := os.Stat(cwc_path); os.IsNotExist(err) {
+		err := os.Mkdir(cwc_path, os.ModePerm)
+		utils.ExitIfError(err)
 	}
-	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
-		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
-		if nil != err {
-			log.Fatal(err)
-		}
-	}
-	f, err := os.Create(dirname + "/.cwc/credentials")
-	if nil != err {
-		log.Fatal(err)
 
-	}
-	_, err = f.WriteString("cwc_access_key = " + access_key + "\n")
+	f, err := os.Create(credentials_path)
+	utils.ExitIfError(err)
 
-	if nil != err {
-		log.Fatal(err)
+	_, err = f.WriteString(fmt.Sprintf("cwc_access_key = %s\n", access_key))
+	utils.ExitIfError(err)
 
-	}
-	_, err = f.WriteString("cwc_secret_key = " + secret_key + "\n")
-
-	if nil != err {
-		log.Fatal(err)
-
-	}
+	_, err = f.WriteString(fmt.Sprintf("cwc_secret_key = %s\n", secret_key))
+	utils.ExitIfError(err)
 }
 
 func getUserToken() string {
 	dirname, err := os.UserHomeDir()
+	utils.ExitIfError(err)
 
-	if nil != err {
-		return ""
-	}
-
-	content, err := ioutil.ReadFile(dirname + "/.cwc/credentials")
-	if nil != err {
-		return ""
-	}
+	credentials_path := fmt.Sprintf("%s/.cwc/credentials", dirname)
+	content, err := ioutil.ReadFile(credentials_path)
+	utils.ExitIfError(err)
 
 	file_content := string(content)
 	secret_key := GetValueFromFile(file_content, "cwc_secret_key")
@@ -166,7 +152,6 @@ func getUserToken() string {
 func GetDefaultRegion() string {
 	dirname, err := os.UserHomeDir()
 	if nil != err {
-
 		return "fr-par"
 	}
 
