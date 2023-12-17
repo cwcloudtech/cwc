@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"net/http"
 	"os"
 	"strings"
@@ -120,7 +120,7 @@ func getUserToken() string {
 	}
 
 	credentials_path := fmt.Sprintf("%s/.cwc/credentials", dirname)
-	content, err := ioutil.ReadFile(credentials_path)
+	content, err := os.ReadFile(credentials_path)
 	if nil != err {
 		return ""
 	}
@@ -137,7 +137,7 @@ func GetDefaultRegion() string {
 	}
 
 	configDir := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := ioutil.ReadFile(configDir)
+	content, err := os.ReadFile(configDir)
 	if nil != err {
 		return "fr-par"
 	}
@@ -166,7 +166,7 @@ func GetDefaultFormat() string {
 	}
 
 	configDir := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := ioutil.ReadFile(configDir)
+	content, err := os.ReadFile(configDir)
 	if nil != err {
 		return ""
 	}
@@ -183,7 +183,7 @@ func GetDefaultProvider() string {
 	}
 
 	configDir := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := ioutil.ReadFile(configDir)
+	content, err := os.ReadFile(configDir)
 	if nil != err {
 		return ""
 	}
@@ -201,7 +201,7 @@ func GetDefaultEndpoint() string {
 	}
 
 	configDir := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := ioutil.ReadFile(configDir)
+	content, err := os.ReadFile(configDir)
 	if nil != err {
 		return default_endpoint
 	}
@@ -254,7 +254,7 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 		}
 	}
 
-	file_content, err := ioutil.ReadFile(file_path)
+	file_content, err := os.ReadFile(file_path)
 	utils.ExitIfError(err)
 
 	if utils.IsBlank(GetValueFromFile(string(file_content), key)) {
@@ -273,7 +273,7 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	utils.ExitIfError(err)
 
 	file_path := fmt.Sprintf("%s/.cwc/%s", dirname, file)
-	file_output, err := ioutil.ReadFile(file_path)
+	file_output, err := os.ReadFile(file_path)
 	utils.ExitIfError(err)
 
 	file_content := string(file_output)
@@ -285,6 +285,6 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	}
 
 	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile(file_path, []byte(output), 0644)
+	err = os.WriteFile(file_path, []byte(output), fs.FileMode(0644))
 	utils.ExitIfError(err)
 }

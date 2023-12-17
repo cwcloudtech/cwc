@@ -5,7 +5,6 @@ import (
 	"cwc/client"
 	"cwc/utils"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -206,7 +205,7 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 			utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 			// Read the code from the temporary file
-			codeBytes, err := ioutil.ReadFile(tempFileName)
+			codeBytes, err := os.ReadFile(tempFileName)
 			utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
 
 			function.Content.Code = string(codeBytes)
@@ -336,7 +335,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 			utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 			// Read the updated code from the temporary file
-			updatedCodeBytes, err := ioutil.ReadFile(tempFileName)
+			updatedCodeBytes, err := os.ReadFile(tempFileName)
 			utils.ExitIfErrorWithMsg("Error reading updated code from the text editor", err)
 
 			// Update the function's code with the edited code

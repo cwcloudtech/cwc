@@ -4,7 +4,6 @@ import (
 	"cwc/admin"
 	"cwc/utils"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 
@@ -50,7 +49,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 		// Read the code from the temporary file
-		codeBytes, err := ioutil.ReadFile(tempFileName)
+		codeBytes, err := os.ReadFile(tempFileName)
 		utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
 
 		added_environment.EnvironmentTemplate = string(codeBytes)
@@ -83,7 +82,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		utils.ExitIfErrorWithMsg("Error opening the text editor", err)
 
 		// Read the code from the temporary file
-		codeBytes, err := ioutil.ReadFile(tempFileName)
+		codeBytes, err := os.ReadFile(tempFileName)
 		utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
 
 		added_environment.DocTemplate = string(codeBytes)
