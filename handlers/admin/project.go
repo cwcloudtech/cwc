@@ -35,7 +35,7 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 		utils.ExitIfError(err)
 	}
 
-	fmt.Printf("project successfully deleted\n")
+	fmt.Println("Project successfully deleted")
 }
 
 func HandleGetProjects(project_id *string, project_name *string, project_url *string) {

@@ -11,5 +11,5 @@ func HandleLogin(access_key *string, secret_key *string) {
 	err := client.UserLogin(*access_key, *secret_key)
 	utils.ExitIfError(err)
 
-	fmt.Printf("You are successfully logged in\n")
+	fmt.Println("You are successfully logged in")
 }

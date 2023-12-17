@@ -519,7 +519,7 @@ func HandleDeleteInvocation(id *string) {
 	err = c.DeleteInvocationById(*id)
 	utils.ExitIfError(err)
 
-	fmt.Printf("Invocation successfully deleted\n")
+	fmt.Println("Invocation successfully deleted")
 }
 
 func HandleTruncateInvocations() {
@@ -529,7 +529,7 @@ func HandleTruncateInvocations() {
 	err = c.TruncateInvocations()
 	utils.ExitIfError(err)
 
-	fmt.Printf("Invocations successfully truncated\n")
+	fmt.Println("Invocations successfully truncated")
 }
 
 func HandleGetTriggers(pretty *bool) {
@@ -694,7 +694,7 @@ func HandleDeleteTrigger(id *string) {
 	err = c.DeleteTriggerById(*id)
 	utils.ExitIfError(err)
 
-	fmt.Printf("Trigger successfully deleted\n")
+	fmt.Println("Trigger successfully deleted")
 }
 
 func HandleTruncateTriggers() {
@@ -704,5 +704,5 @@ func HandleTruncateTriggers() {
 	err = c.TruncateTriggers()
 	utils.ExitIfError(err)
 
-	fmt.Printf("Triggers successfully truncated\n")
+	fmt.Println("Triggers successfully truncated")
 }
