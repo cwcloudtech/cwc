@@ -2,6 +2,7 @@ package admin
 
 import (
 	"bytes"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 )
@@ -66,7 +67,7 @@ func (c *Client) UpdateRegistry(id string, email string) error {
 		UpdateCreds: updateCreds,
 	}
 
-	if len(email) > 0 && valid(email) {
+	if utils.IsValidEmail(email) {
 		updateCreds = false
 	}
 
@@ -79,6 +80,7 @@ func (c *Client) UpdateRegistry(id string, email string) error {
 	if nil != err {
 		return err
 	}
+
 	return nil
 }
 
@@ -87,5 +89,6 @@ func (c *Client) DeleteRegistry(registry_id string) error {
 	if nil != err {
 		return err
 	}
+
 	return nil
 }

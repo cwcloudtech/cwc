@@ -5,17 +5,27 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/mail"
 	"os"
 	"reflect"
 	"strings"
 )
 
 func IsNotBlank(str string) bool {
-	return strings.TrimSpace(str) != ""
+	return len(str) > 0 && strings.TrimSpace(str) != ""
 }
 
 func IsBlank(str string) bool {
 	return !IsNotBlank(str)
+}
+
+func IsValidEmail(email string) bool {
+	if IsBlank(email) {
+		return false
+	}
+
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
 
 func StringInSlice(a string, list []string) bool {

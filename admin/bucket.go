@@ -2,9 +2,9 @@ package admin
 
 import (
 	"bytes"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
-	"net/mail"
 )
 
 func (c *Client) AdminAddBucket(user_email string, name string, reg_type string) (*Bucket, error) {
@@ -66,11 +66,6 @@ func (c *Client) GetBucket(bucket_id string) (*Bucket, error) {
 	return bucket, nil
 }
 
-func valid(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
-
 func (c *Client) UpdateBucket(id string, email string) error {
 	buf := bytes.Buffer{}
 	var updateCreds bool = true
@@ -80,7 +75,7 @@ func (c *Client) UpdateBucket(id string, email string) error {
 		UpdateCreds: updateCreds,
 	}
 
-	if len(email) > 0 && valid(email) {
+	if utils.IsValidEmail(email) {
 		updateCreds = false
 	}
 
