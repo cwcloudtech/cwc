@@ -53,7 +53,7 @@ func PrintHeader(class interface{}) {
 }
 
 func PrintPretty(firstLine string, class interface{}) {
-	fmt.Println(firstLine + ":")
+	fmt.Printf("%s:\n", firstLine)
 
 	values := reflect.ValueOf(class)
 	typesOf := values.Type()
@@ -69,7 +69,7 @@ func PrintPretty(firstLine string, class interface{}) {
 }
 
 func PrintPrettyArray(firstLine string, lst []string) {
-	fmt.Println(firstLine + ":")
+	fmt.Printf("%s:\n", firstLine)
 
 	for _, elem := range lst {
 		fmt.Printf("  ➤ %v\n", elem)
