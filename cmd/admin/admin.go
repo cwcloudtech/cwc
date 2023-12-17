@@ -1,17 +1,14 @@
-/*
-Copyright © 2022 comwork.io contact@comwork.io
-*/
 package admin
 
 import (
 	"cwc/cmd/admin/bucket"
 	"cwc/cmd/admin/email"
 	"cwc/cmd/admin/environment"
+	"cwc/cmd/admin/faas"
 	"cwc/cmd/admin/instance"
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
 	"cwc/cmd/admin/user"
-	"cwc/cmd/admin/faas"
 
 	"github.com/spf13/cobra"
 )

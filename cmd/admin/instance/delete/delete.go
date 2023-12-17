@@ -1,6 +1,3 @@
-/*
-Copyright © 2022 comwork.io contact@comwork.io
-*/
 package delete
 
 import (

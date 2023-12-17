@@ -1,6 +1,3 @@
-/*
-Copyright © 2022 comwork.io contact@comwork.io
-*/
 package cmd
 
 import (
@@ -74,5 +71,4 @@ func init() {
 	rootCmd.AddCommand(dnszones.DnsZonesCmd)
 	rootCmd.AddCommand(configure.ConfigureCmd)
 	rootCmd.AddCommand(faas.FaasCmd)
-
 }
