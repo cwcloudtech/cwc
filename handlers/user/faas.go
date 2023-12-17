@@ -388,7 +388,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 	_, err = c.UpdateFunction(*function)
 	utils.ExitIfError(err)
 
-	fmt.Printf("Function successfully updated\n")
+	fmt.Println("Function successfully updated")
 }
 
 func HandleGetInvocations(pretty *bool) {
