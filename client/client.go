@@ -180,7 +180,6 @@ func SetDefaultProvider(provider string) {
 func GetDefaultProvider() string {
 	dirname, err := os.UserHomeDir()
 	if nil != err {
-
 		return ""
 	}
 
@@ -197,11 +196,15 @@ func GetDefaultProvider() string {
 
 func GetDefaultFormat() string {
 	dirname, err := os.UserHomeDir()
-	utils.ExitIfError(err)
+	if nil != err {
+		return ""
+	}
 
 	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
 	content, err := ioutil.ReadFile(config_path)
-	utils.ExitIfError(err)
+	if nil != err {
+		return ""
+	}
 
 	file_content := string(content)
 	format := GetValueFromFile(file_content, "format")
