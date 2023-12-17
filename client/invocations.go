@@ -53,7 +53,7 @@ func (c *Client) AddInvocation(content InvocationAddContent, synchronous bool) (
 
 	endpoint := "/faas/invocation"
 	if synchronous {
-		endpoint = endpoint + "/sync"
+		endpoint = fmt.Sprintf("%s/sync", endpoint)
 	}
 
 	respBody, err := c.httpRequest(endpoint, "POST", buf)
