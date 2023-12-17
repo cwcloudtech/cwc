@@ -9,13 +9,13 @@ func HandleGetModels() {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
-	email, err := c.GetModels()
+	models, err := c.GetModels()
 	utils.ExitIfError(err)
 
 	if client.GetDefaultFormat() == "json" {
-		utils.PrintJson(email)
+		utils.PrintJson(models)
 	} else {
-		utils.PrintRow(*email)
+		utils.PrintRow(*models)
 	}
 }
 
