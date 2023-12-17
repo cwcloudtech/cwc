@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -97,14 +96,14 @@ func addUserCredentials(access_key string, secret_key string) {
 	dirname, err := os.UserHomeDir()
 	utils.ExitIfError(err)
 
-	cwcDir := fmt.Sprintf("%s/.cwc", dirname)
-	if _, err := os.Stat(cwcDir); os.IsNotExist(err) {
-		err := os.Mkdir(cwcDir, os.ModePerm)
+	cwc_path := fmt.Sprintf("%s/.cwc", dirname)
+	if _, err := os.Stat(cwc_path); os.IsNotExist(err) {
+		err := os.Mkdir(cwc_path, os.ModePerm)
 		utils.ExitIfError(err)
 	}
 
-	credentialsDir := fmt.Sprintf("%s/credentials", cwcDir)
-	f, err := os.Create(credentialsDir)
+	credentials_path := fmt.Sprintf("%s/credentials", cwc_path)
+	f, err := os.Create(credentials_path)
 	utils.ExitIfError(err)
 
 	_, err = f.WriteString(fmt.Sprintf("cwc_access_key = %s\n", access_key))
@@ -118,8 +117,8 @@ func getUserToken() string {
 	dirname, err := os.UserHomeDir()
 	utils.ExitIfError(err)
 
-	credentialsDir := fmt.Sprintf("%s/.cwc/credentials", dirname)
-	content, err := ioutil.ReadFile(credentialsDir)
+	credentials_path := fmt.Sprintf("%s/.cwc/credentials", dirname)
+	content, err := ioutil.ReadFile(credentials_path)
 	utils.ExitIfError(err)
 
 	file_content := string(content)
@@ -236,24 +235,29 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 	dirname, err := os.UserHomeDir()
 	utils.ExitIfError(err)
 
-	if _, err := os.Stat(dirname + "/.cwc"); os.IsNotExist(err) {
-		err := os.Mkdir(dirname+"/.cwc", os.ModePerm)
-		if nil != err {
-			log.Fatal(err)
-		}
-		os.Create(dirname + "/.cwc/" + filename)
+	dir_path := fmt.Sprintf("%s/.cwc", dirname)
+	file_path := fmt.Sprintf("%s/%s", dir_path, filename)
+	config_path := fmt.Sprintf("%s/config", file_path)
+
+	if _, err := os.Stat(dir_path); os.IsNotExist(err) {
+		err := os.Mkdir(dir_path, os.ModePerm)
+		utils.ExitIfError(err)
+
+		os.Create(file_path)
 	} else {
-		if _, err := os.Stat(dirname + "/.cwc/" + filename); os.IsNotExist(err) {
-			os.Create(dirname + "/.cwc/config")
+		if _, err := os.Stat(file_path); os.IsNotExist(err) {
+			os.Create(config_path)
 		}
 	}
 
-	file_content, err := ioutil.ReadFile(dirname + "/.cwc/" + filename)
+	file_content, err := ioutil.ReadFile(file_path)
+	utils.ExitIfError(err)
+
 	if GetValueFromFile(string(file_content), key) == "" {
-		config_file, err := os.OpenFile(dirname+"/.cwc/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		config_file, err := os.OpenFile(file_path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		utils.ExitIfError(err)
 
-		_, err = config_file.WriteString(key + " = " + value + "\n")
+		_, err = config_file.WriteString(fmt.Sprintf("%s = %s\n", key, value))
 		utils.ExitIfError(err)
 	} else {
 		SetValueToKeyInFile(filename, key, value)
@@ -264,7 +268,8 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	dirname, err := os.UserHomeDir()
 	utils.ExitIfError(err)
 
-	file_output, err := ioutil.ReadFile(dirname + "/.cwc/" + file)
+	file_path := fmt.Sprintf("%s/.cwc/%s", dirname, file)
+	file_output, err := ioutil.ReadFile(file_path)
 	utils.ExitIfError(err)
 
 	file_content := string(file_output)
@@ -276,6 +281,6 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	}
 
 	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.cwc/%s", dirname, file), []byte(output), 0644)
+	err = ioutil.WriteFile(file_path, []byte(output), 0644)
 	utils.ExitIfError(err)
 }
