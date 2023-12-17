@@ -14,6 +14,10 @@ func IsNotBlank(str string) bool {
 	return strings.TrimSpace(str) != ""
 }
 
+func IsBlank(str string) bool {
+	return !IsNotBlank(str)
+}
+
 func StringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {

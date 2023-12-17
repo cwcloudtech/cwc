@@ -44,7 +44,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
-	if *project_id == "" && *project_name == "" && *project_url == "" {
+	if utils.IsBlank(*project_id) && utils.IsBlank(*project_name) && utils.IsBlank(*project_url) {
 		projects, err := c.GetAllProjects()
 		utils.ExitIfError(err)
 

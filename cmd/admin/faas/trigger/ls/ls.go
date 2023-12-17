@@ -2,6 +2,7 @@ package ls
 
 import (
 	"cwc/handlers/admin"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +18,7 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available triggers in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if *&triggerId == "" {
+		if utils.IsBlank(triggerId) {
 			admin.HandleGetTriggers(&pretty)
 		} else {
 			admin.HandleGetTriggerOwner(&triggerId, &pretty)

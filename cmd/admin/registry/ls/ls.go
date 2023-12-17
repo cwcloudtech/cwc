@@ -2,6 +2,7 @@ package ls
 
 import (
 	"cwc/handlers/admin"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -17,9 +18,7 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available registries in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		if *&registryId == "" {
-
+		if utils.IsBlank(registryId) {
 			admin.HandleGetRegistries()
 		} else {
 			admin.HandleGetRegistry(&registryId)

@@ -2,6 +2,7 @@ package ls
 
 import (
 	"cwc/handlers/admin"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -17,8 +18,7 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list the available environment in the cloud that can be associeted to an instance
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if *&userId == "" {
-
+		if utils.IsBlank(userId) {
 			admin.HandleGetUsers()
 		} else {
 			admin.HandleGetUser(&userId)

@@ -182,7 +182,7 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		if addCode == "y" || addCode == "Y" {
 			var editorCommand string
 			editorCommand = os.Getenv("EDITOR")
-			if editorCommand == "" {
+			if utils.IsBlank(editorCommand) {
 				editorCommand = "vi" // Use 'vi' as the default editor
 			}
 
@@ -317,7 +317,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		if updateCode == "y" || updateCode == "Y" {
 			var editorCommand string
 			editorCommand = os.Getenv("EDITOR")
-			if editorCommand == "" {
+			if utils.IsBlank(editorCommand) {
 				editorCommand = "vi" // Use 'vi' as the default editor
 			}
 

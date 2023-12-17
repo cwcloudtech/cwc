@@ -31,7 +31,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	if add_env_template == "Y" || add_env_template == "y" {
 		var editorCommand string
 		editorCommand = os.Getenv("EDITOR")
-		if editorCommand == "" {
+		if utils.IsBlank(editorCommand) {
 			editorCommand = "vi"
 		}
 
@@ -68,7 +68,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	if add_doc_template == "Y" || add_doc_template == "y" {
 		var editorCommand string
 		editorCommand = os.Getenv("EDITOR")
-		if editorCommand == "" {
+		if utils.IsBlank(editorCommand) {
 			editorCommand = "vi"
 		}
 

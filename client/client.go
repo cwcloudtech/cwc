@@ -19,9 +19,9 @@ func NewClient() (*Client, error) {
 	provider := GetDefaultProvider()
 	err := error(nil)
 
-	if provider == "" {
+	if utils.IsBlank(provider) {
 		err = fmt.Errorf("default provider is not set")
-	} else if region == "" {
+	} else if utils.IsBlank(region) {
 		err = fmt.Errorf("default region is not set")
 	}
 
@@ -84,8 +84,8 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		}
 		errorResponse := ErrorResponse{}
 		json.NewDecoder(respBody).Decode(&errorResponse)
-		if errorResponse.Error == "" {
-			return nil, fmt.Errorf(fmt.Sprintf("Client error with status %d", resp.StatusCode))
+		if utils.IsBlank(errorResponse.Error) {
+			return nil, fmt.Errorf("Client error with status %d", resp.StatusCode)
 		} else {
 			return nil, fmt.Errorf(errorResponse.Error)
 		}
@@ -98,8 +98,8 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		}
 		errorResponse := ErrorResponse{}
 		json.NewDecoder(respBody).Decode(&errorResponse)
-		if errorResponse.Error == "" {
-			return nil, fmt.Errorf(fmt.Sprintf("Server error with status %d", resp.StatusCode))
+		if utils.IsBlank(errorResponse.Error) {
+			return nil, fmt.Errorf("server error with status %d", resp.StatusCode)
 		} else {
 			return nil, fmt.Errorf(errorResponse.Error)
 		}
@@ -230,7 +230,7 @@ func GetDefaultEndpoint() string {
 
 	file_content := string(content)
 	endpoint := GetValueFromFile(file_content, "endpoint")
-	if endpoint == "" {
+	if utils.IsBlank(endpoint) {
 		return default_endpoint
 	}
 
@@ -250,7 +250,7 @@ func GetValueFromFile(content_file string, key string) string {
 		}
 	}
 
-	if requested_line == "" {
+	if utils.IsBlank(requested_line) {
 		return ""
 	}
 
@@ -280,7 +280,7 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 	file_content, err := ioutil.ReadFile(file_path)
 	utils.ExitIfError(err)
 
-	if GetValueFromFile(string(file_content), key) == "" {
+	if utils.IsBlank(GetValueFromFile(string(file_content), key)) {
 		config_file, err := os.OpenFile(file_path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		utils.ExitIfError(err)
 

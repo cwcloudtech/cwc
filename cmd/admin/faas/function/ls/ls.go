@@ -2,6 +2,7 @@ package ls
 
 import (
 	"cwc/handlers/admin"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -18,7 +19,7 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if *&functionId == "" {
+		if utils.IsBlank(functionId) {
 			admin.HandleGetFunctions(&pretty)
 		} else {
 			admin.HandleGetFunctionOwner(&functionId, &pretty)
