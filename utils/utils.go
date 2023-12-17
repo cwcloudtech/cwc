@@ -101,7 +101,7 @@ func PrintMultiRow(type_class interface{}, class interface{}) {
 		v := reflect.Indirect(s.Index(i))
 		valuesMsg := ""
 		for i := 0; i < v.NumField(); i++ {
-			valuesMsg = valuesMsg + fmt.Sprintf("%v\t", v.Field(i).Interface())
+			valuesMsg = fmt.Sprintf("%s%v\t", valuesMsg, v.Field(i).Interface())
 		}
 
 		fmt.Println(valuesMsg)
