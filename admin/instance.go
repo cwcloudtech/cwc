@@ -52,15 +52,18 @@ func (c *Client) AdminAddInstance(user_email string, instance_name string, proje
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s/%s/%s/provision/%s", c.provider, c.region, instance.Zone, instance.Environment), "POST", buf)
+
+	resp_body, err := c.httpRequest(fmt.Sprintf("/admin/instance/%s/%s/%s/provision/%s", c.provider, c.region, instance.Zone, instance.Environment), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	created_instance := &Instance{}
-	err = json.NewDecoder(respBody).Decode(created_instance)
+	err = json.NewDecoder(resp_body).Decode(created_instance)
 	if nil != err {
 		return nil, err
 	}
+
 	return created_instance, nil
 }
 

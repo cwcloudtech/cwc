@@ -6,13 +6,13 @@ import (
 )
 
 func (c *Client) GetModels() (*ModelsResponse, error) {
-	respBody, err := c.httpRequest("/ai/models", "GET", bytes.Buffer{})
+	resp_body, err := c.httpRequest("/ai/models", "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}
 
 	response := &ModelsResponse{}
-	err = json.NewDecoder(respBody).Decode(response)
+	err = json.NewDecoder(resp_body).Decode(response)
 	if nil != err {
 		return nil, err
 	}

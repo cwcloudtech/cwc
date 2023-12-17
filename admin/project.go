@@ -22,12 +22,12 @@ func (c *Client) AdminAddProject(user_email string, project_name string, host st
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/admin/project"), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/admin/project"), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 	created_project := &Project{}
-	err = json.NewDecoder(respBody).Decode(created_project)
+	err = json.NewDecoder(resp_body).Decode(created_project)
 	if nil != err {
 		return nil, err
 	}

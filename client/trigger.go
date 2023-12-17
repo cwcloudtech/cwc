@@ -75,12 +75,12 @@ func (c *Client) AddTrigger(trigger Trigger) (*Trigger, error) {
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/faas/trigger"), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/faas/trigger"), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 	created_trigger := &Trigger{}
-	err = json.NewDecoder(respBody).Decode(created_trigger)
+	err = json.NewDecoder(resp_body).Decode(created_trigger)
 	if nil != err {
 		return nil, err
 	}

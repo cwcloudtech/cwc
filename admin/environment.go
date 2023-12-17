@@ -12,15 +12,18 @@ func (c *Client) AdminAddEnvironment(environment Environment) (*Environment, err
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/admin/environment"), "POST", buf)
+
+	resp_body, err := c.httpRequest("/admin/environment", "POST", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	created_env := &Environment{}
-	err = json.NewDecoder(respBody).Decode(created_env)
+	err = json.NewDecoder(resp_body).Decode(created_env)
 	if nil != err {
 		return nil, err
 	}
+
 	return created_env, nil
 }
 
@@ -33,16 +36,17 @@ func (c *Client) AdminDeleteEnvironment(env_id string) error {
 }
 
 func (c *Client) GetAllEnvironments() (*[]Environment, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/admin/environment/all"), "GET", bytes.Buffer{})
+	body, err := c.httpRequest("/admin/environment/all", "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}
+
 	environments := []Environment{}
 	err = json.NewDecoder(body).Decode(&environments)
-
 	if nil != err {
 		return nil, err
 	}
+
 	return &environments, nil
 }
 
@@ -51,10 +55,12 @@ func (c *Client) GetEnvironment(env_id string) (*Environment, error) {
 	if nil != err {
 		return nil, err
 	}
+
 	environment := &Environment{}
 	err = json.NewDecoder(body).Decode(environment)
 	if nil != err {
 		return nil, err
 	}
+
 	return environment, nil
 }

@@ -19,12 +19,12 @@ func (c *Client) AdminAddRegistry(user_email string, name string, reg_type strin
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s/%s/provision", c.provider, c.region), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/admin/registry/%s/%s/provision", c.provider, c.region), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 	created_registry := &Registry{}
-	err = json.NewDecoder(respBody).Decode(created_registry)
+	err = json.NewDecoder(resp_body).Decode(created_registry)
 	if nil != err {
 		return nil, err
 	}

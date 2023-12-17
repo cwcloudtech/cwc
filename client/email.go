@@ -19,13 +19,13 @@ func (c *Client) SendEmail(from string, to string, bcc string, subject string, c
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest("/email", "POST", buf)
+	resp_body, err := c.httpRequest("/email", "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 
 	response := &EmailResponse{}
-	err = json.NewDecoder(respBody).Decode(response)
+	err = json.NewDecoder(resp_body).Decode(response)
 	if nil != err {
 		return nil, err
 	}

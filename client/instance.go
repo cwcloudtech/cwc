@@ -51,15 +51,18 @@ func (c *Client) AddInstance(instance_name string, project_id int, project_name 
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s/provision/%s", c.provider, c.region, instance.Zone, instance.Environment), "POST", buf)
+
+	resp_body, err := c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s/provision/%s", c.provider, c.region, instance.Zone, instance.Environment), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	created_instance := &Instance{}
-	err = json.NewDecoder(respBody).Decode(created_instance)
+	err = json.NewDecoder(resp_body).Decode(created_instance)
 	if nil != err {
 		return nil, err
 	}
+
 	return created_instance, nil
 }
 
@@ -100,15 +103,18 @@ func (c *Client) AttachInstance(project_id int, playbook string, instance_size s
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/instance/%s/attach/%v", c.region, instance.ProjectId), "POST", buf)
+
+	resp_body, err := c.httpRequest(fmt.Sprintf("/instance/%s/attach/%v", c.region, instance.ProjectId), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	created_instance := &Instance{}
-	err = json.NewDecoder(respBody).Decode(created_instance)
+	err = json.NewDecoder(resp_body).Decode(created_instance)
 	if nil != err {
 		return nil, err
 	}
+
 	return created_instance, nil
 }
 

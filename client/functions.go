@@ -40,12 +40,12 @@ func (c *Client) AddFunction(function Function) (*Function, error) {
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/faas/function"), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/faas/function"), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 	created_function := &Function{}
-	err = json.NewDecoder(respBody).Decode(created_function)
+	err = json.NewDecoder(resp_body).Decode(created_function)
 	if nil != err {
 		return nil, err
 	}
@@ -67,19 +67,23 @@ func (c *Client) UpdateFunction(function Function) (*Function, error) {
 		Is_public: function.Is_public,
 		Content:   function.Content,
 	}
+
 	err := json.NewEncoder(&buf).Encode(function)
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/faas/function/%s", updated_function.Id), "PUT", buf)
+
+	resp_body, err := c.httpRequest(fmt.Sprintf("/faas/function/%s", updated_function.Id), "PUT", buf)
 	if nil != err {
 		return nil, err
 	}
+
 	returned_function := &Function{}
-	err = json.NewDecoder(respBody).Decode(returned_function)
+	err = json.NewDecoder(resp_body).Decode(returned_function)
 	if nil != err {
 		return nil, err
 	}
+
 	return returned_function, nil
 }
 
@@ -93,12 +97,12 @@ func (c *Client) GetFunctionCodeTemplate(args []string, language string) (*strin
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/faas/template"), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/faas/template"), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 	functionCodeTemplateResponse := &FunctionCodeTemplateResponse{}
-	err = json.NewDecoder(respBody).Decode(functionCodeTemplateResponse)
+	err = json.NewDecoder(resp_body).Decode(functionCodeTemplateResponse)
 	if nil != err {
 		return nil, err
 	}

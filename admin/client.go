@@ -68,14 +68,14 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 	}
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		respBody := new(bytes.Buffer)
-		_, err := respBody.ReadFrom(resp.Body)
+		resp_body := new(bytes.Buffer)
+		_, err := resp_body.ReadFrom(resp.Body)
 		if nil != err {
 			return nil, fmt.Errorf("an error occured")
 		}
 
 		errorResponse := ErrorResponse{}
-		json.NewDecoder(respBody).Decode(&errorResponse)
+		json.NewDecoder(resp_body).Decode(&errorResponse)
 		if utils.IsBlank(errorResponse.Error) {
 			return nil, fmt.Errorf("request failed with status %d", resp.StatusCode)
 		} else {

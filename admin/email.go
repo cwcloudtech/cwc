@@ -21,13 +21,13 @@ func (c *Client) AdminSendEmail(from string, to string, bcc string, subject stri
 		return nil, err
 	}
 
-	respBody, err := c.httpRequest("/admin/email", "POST", buf)
+	resp_body, err := c.httpRequest("/admin/email", "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 
 	response := &EmailResponse{}
-	err = json.NewDecoder(respBody).Decode(response)
+	err = json.NewDecoder(resp_body).Decode(response)
 	if nil != err {
 		return nil, err
 	}

@@ -21,12 +21,12 @@ func (c *Client) AddProject(project_name string, host string, token string, git_
 	if nil != err {
 		return nil, err
 	}
-	respBody, err := c.httpRequest(fmt.Sprintf("/project"), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/project"), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 	created_project := &Project{}
-	err = json.NewDecoder(respBody).Decode(created_project)
+	err = json.NewDecoder(resp_body).Decode(created_project)
 	if nil != err {
 		return nil, err
 	}

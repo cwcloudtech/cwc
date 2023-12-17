@@ -20,14 +20,14 @@ func (c *Client) AdminAddBucket(user_email string, name string, reg_type string)
 		return nil, err
 	}
 
-	respBody, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s/%s/provision", c.provider, c.region), "POST", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/admin/bucket/%s/%s/provision", c.provider, c.region), "POST", buf)
 	if nil != err {
 		return nil, err
 	}
 
 	created_bucket := &Bucket{}
 
-	err = json.NewDecoder(respBody).Decode(created_bucket)
+	err = json.NewDecoder(resp_body).Decode(created_bucket)
 	if nil != err {
 		return nil, err
 	}

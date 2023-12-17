@@ -56,7 +56,7 @@ func (c *Client) AddInvocation(content InvocationAddContent, synchronous bool) (
 		endpoint = fmt.Sprintf("%s/sync", endpoint)
 	}
 
-	respBody, err := c.httpRequest(endpoint, "POST", buf)
+	resp_body, err := c.httpRequest(endpoint, "POST", buf)
 	if nil != err {
 		return nil, err
 	}
@@ -65,10 +65,10 @@ func (c *Client) AddInvocation(content InvocationAddContent, synchronous bool) (
 
 	if synchronous {
 		synchronous_invocation := &SyncronousInvocation{}
-		err = json.NewDecoder(respBody).Decode(synchronous_invocation)
+		err = json.NewDecoder(resp_body).Decode(synchronous_invocation)
 		created_invocation = &synchronous_invocation.Invocation
 	} else {
-		err = json.NewDecoder(respBody).Decode(created_invocation)
+		err = json.NewDecoder(resp_body).Decode(created_invocation)
 	}
 
 	if nil != err {
