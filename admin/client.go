@@ -77,7 +77,7 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		errorResponse := ErrorResponse{}
 		json.NewDecoder(respBody).Decode(&errorResponse)
 		if utils.IsBlank(errorResponse.Error) {
-			return nil, fmt.Errorf(fmt.Sprintf("Request failed with status %d", resp.StatusCode))
+			return nil, fmt.Errorf("request failed with status %d", resp.StatusCode)
 		} else {
 			return nil, fmt.Errorf(errorResponse.Error)
 		}
