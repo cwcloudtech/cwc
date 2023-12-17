@@ -49,7 +49,7 @@ func PrintHeader(class interface{}) {
 	typesOf := values.Type()
 	headerMsg := ""
 	for i := 0; i < values.NumField(); i++ {
-		headerMsg = headerMsg + typesOf.Field(i).Name + "\t"
+		headerMsg = fmt.Sprintf("%s%s\t", headerMsg, typesOf.Field(i).Name)
 	}
 
 	fmt.Println(headerMsg)
@@ -88,7 +88,7 @@ func PrintRow(class interface{}) {
 	values := reflect.ValueOf(class)
 	valuesMsg := ""
 	for i := 0; i < values.NumField(); i++ {
-		valuesMsg = valuesMsg + fmt.Sprintf("%v\t", values.Field(i).Interface())
+		valuesMsg = fmt.Sprintf("%s%v\t", valuesMsg, values.Field(i).Interface())
 	}
 
 	fmt.Println(valuesMsg)
