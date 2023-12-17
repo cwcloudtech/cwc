@@ -119,6 +119,12 @@ func ExitIfError(err error) {
 	ExitIfErrorWithMsg("Error", err)
 }
 
+func ExitIfErrorWithouMsg(err error) {
+	if nil != err {
+		os.Exit(1)
+	}
+}
+
 func ExitIfErrorWithMsg(msg string, err error) {
 	ExitIfNeeded(fmt.Sprintf("%s: %s", msg, err), nil != err)
 }

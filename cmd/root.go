@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 func Execute(version string) {
 	cli_version = version
 	err := rootCmd.Execute()
-	utils.ExitIfError(err)
+	utils.ExitIfErrorWithouMsg(err)
 }
 
 func init() {
