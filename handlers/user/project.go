@@ -8,7 +8,12 @@ import (
 )
 
 func HandleAddProject(name *string, host *string, token *string, git_username *string, namespace *string) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	created_project, err := c.AddProject(*name, *host, *token, *git_username, *namespace)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -23,7 +28,12 @@ func HandleAddProject(name *string, host *string, token *string, git_username *s
 }
 
 func HandleDeleteProject(id *string, name *string, url *string) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	if *id != "" {
 		err := c.DeleteProjectById(*id)
 		if nil != err {
@@ -48,8 +58,14 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 }
 
 func HandleGetProjects(project_id *string, project_name *string, project_url *string) {
-	c, _ := client.NewClient()
 	var err error
+
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	if *project_id == "" && *project_name == "" && *project_url == "" {
 		projects, err := c.GetAllProjects()
 

@@ -8,13 +8,13 @@ import (
 )
 
 func HandleDeleteInstance(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.AdminDeleteInstance(*id)
+	err = c.AdminDeleteInstance(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -24,13 +24,13 @@ func HandleDeleteInstance(id *string) {
 }
 
 func HandleRefreshInstance(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.AdminRefreshInstance(*id)
+	err = c.AdminRefreshInstance(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -40,13 +40,13 @@ func HandleRefreshInstance(id *string) {
 }
 
 func HandleAddInstance(user_email *string, name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	created_instance, err := client.AdminAddInstance(*user_email, *name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
+	created_instance, err := c.AdminAddInstance(*user_email, *name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -60,13 +60,13 @@ func HandleAddInstance(user_email *string, name *string, project_id *int, projec
 }
 
 func HandleUpdateInstance(id *string, status *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.AdminUpdateInstance(*id, *status)
+	err = c.AdminUpdateInstance(*id, *status)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -76,13 +76,13 @@ func HandleUpdateInstance(id *string, status *string) {
 }
 
 func HandleGetInstances() {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	instances, err := client.AdminGetAllInstances()
+	instances, err := c.AdminGetAllInstances()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -96,13 +96,13 @@ func HandleGetInstances() {
 }
 
 func HandleGetInstance(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	instance, err := client.GetInstance(*id)
+	instance, err := c.GetInstance(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

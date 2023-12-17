@@ -8,13 +8,13 @@ import (
 )
 
 func HandleAddBucket(user_email *string, name *string, reg_type *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	created_bucket, err := client.AdminAddBucket(*user_email, *name, *reg_type)
+	created_bucket, err := c.AdminAddBucket(*user_email, *name, *reg_type)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -27,45 +27,45 @@ func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 }
 
 func HandleDeleteBucket(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	err = client.DeleteBucket(*id)
+
+	err = c.DeleteBucket(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
 func HandleUpdateBucket(id *string, email *string) {
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
-	admin, err := admin.NewClient()
+	err = c.UpdateBucket(*id, *email)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	err = admin.UpdateBucket(*id, *email)
-	if nil != err {
-		fmt.Printf("failed: %s\n", err)
-		os.Exit(1)
-	}
+
 	fmt.Printf("Bucket %v successfully updated\n", *id)
-
 }
 
 func HandleGetBuckets() {
-
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	buckets, err := client.GetAllBuckets()
-
+	buckets, err := c.GetAllBuckets()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -76,20 +76,16 @@ func HandleGetBuckets() {
 	} else {
 		utils.PrintMultiRow(admin.Bucket{}, *buckets)
 	}
-
-	return
 }
 
 func HandleGetBucket(id *string) {
-
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	bucket, err := client.GetBucket(*id)
-
+	bucket, err := c.GetBucket(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -100,6 +96,4 @@ func HandleGetBucket(id *string) {
 	} else {
 		utils.PrintRow(*bucket)
 	}
-
-	return
 }

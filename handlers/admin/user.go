@@ -20,13 +20,13 @@ type User struct {
 }
 
 func HandleGetUsers() {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	responseUsers, err := client.GetAllUsers()
+	responseUsers, err := c.GetAllUsers()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -41,13 +41,13 @@ func HandleGetUsers() {
 }
 
 func HandleGetUser(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	responseUser, err := client.GetUser(*id)
+	responseUser, err := c.GetUser(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -62,13 +62,13 @@ func HandleGetUser(id *string) {
 }
 
 func HandleDeleteUser(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.DeleteUser(*id)
+	err = c.DeleteUser(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

@@ -15,6 +15,5 @@ func HandleListDnsZones() {
 
 	for _, dns_zone := range dns_zones.Zones {
 		fmt.Printf("%v\n", dns_zone)
-
 	}
 }

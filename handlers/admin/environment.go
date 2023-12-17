@@ -113,13 +113,13 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 		added_environment.DocTemplate = string(codeBytes)
 	}
 
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	created_env, err := client.AdminAddEnvironment(*added_environment)
+	created_env, err := c.AdminAddEnvironment(*added_environment)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -133,13 +133,13 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 }
 
 func HandleDeleteEnvironment(id *string) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	err = client.AdminDeleteEnvironment(*id)
+	err = c.AdminDeleteEnvironment(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -149,14 +149,13 @@ func HandleDeleteEnvironment(id *string) {
 }
 
 func HandleGetEnvironments(pretty *bool) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	environments, err := client.GetAllEnvironments()
-
+	environments, err := c.GetAllEnvironments()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -172,13 +171,13 @@ func HandleGetEnvironments(pretty *bool) {
 }
 
 func HandleGetEnvironment(id *string, pretty *bool) {
-	client, err := admin.NewClient()
+	c, err := admin.NewClient()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
-	environment, err := client.GetEnvironment(*id)
+	environment, err := c.GetEnvironment(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)

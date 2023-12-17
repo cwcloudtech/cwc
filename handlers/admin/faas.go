@@ -10,10 +10,15 @@ import (
 )
 
 func HandleGetFunctions(pretty *bool) {
-	client, _ := admin.NewClient()
-	functions, err := client.GetAllFunctions()
+	c, err := admin.NewClient()
 	if nil != err {
-		fmt.Println(err)
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	functions, err := c.GetAllFunctions()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -35,12 +40,18 @@ func HandleGetFunctions(pretty *bool) {
 			})
 			functionsDisplay[i].Id = function.Id
 		}
+
 		utils.PrintMultiRow(admin.FunctionDisplay{}, functionsDisplay)
 	}
 }
 
 func HandleGetFunctionOwner(id *string, pretty *bool) {
-	c, _ := admin.NewClient()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	owner, err := c.GetFunctionOwnerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -80,8 +91,13 @@ func displayFunctionsAsTable(functions []admin.Function) {
 }
 
 func HandleGetInvocations(pretty *bool) {
-	client, _ := admin.NewClient()
-	invocations, err := client.GetAllInvocations()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	invocations, err := c.GetAllInvocations()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -104,12 +120,18 @@ func HandleGetInvocations(pretty *bool) {
 			})
 			invocationsDisplay[i].Id = invocation.Id
 		}
+
 		utils.PrintMultiRow(admin.InvocationDisplay{}, invocationsDisplay)
 	}
 }
 
 func HandleGetInvocationInvoker(id *string, pretty *bool) {
-	c, _ := admin.NewClient()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	invoker, err := c.GetInvocationInvokerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -146,8 +168,13 @@ func displayInvocationsAsTable(invocations []admin.Invocation) {
 }
 
 func HandleGetTriggers(pretty *bool) {
-	client, _ := admin.NewClient()
-	triggers, err := client.GetAllTriggers()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
+	triggers, err := c.GetAllTriggers()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
@@ -172,12 +199,18 @@ func HandleGetTriggers(pretty *bool) {
 			})
 			triggersDisplay[i].Id = trigger.Id
 		}
+
 		utils.PrintMultiRow(admin.TriggerDisplay{}, triggersDisplay)
 	}
 }
 
 func HandleGetTriggerOwner(id *string, pretty *bool) {
-	c, _ := admin.NewClient()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	owner, err := c.GetTriggerOwnerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)

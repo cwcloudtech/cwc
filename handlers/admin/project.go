@@ -8,7 +8,12 @@ import (
 )
 
 func HandleAddProject(user_email *string, name *string, host *string, token *string, git_username *string, namespace *string) {
-	c, _ := admin.NewClient()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	created_project, err := c.AdminAddProject(*user_email, *name, *host, *token, *git_username, *namespace)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -23,21 +28,26 @@ func HandleAddProject(user_email *string, name *string, host *string, token *str
 }
 
 func HandleDeleteProject(id *string, name *string, url *string) {
-	admin, _ := admin.NewClient()
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	if *id != "" {
-		err := admin.AdminDeleteProjectById(*id)
+		err := c.AdminDeleteProjectById(*id)
 		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
 	} else if *name != "" {
-		err := admin.AdminDeleteProjectByName(*name)
+		err := c.AdminDeleteProjectByName(*name)
 		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
 		}
 	} else {
-		err := admin.AdminDeleteProjectByUrl(*url)
+		err := c.AdminDeleteProjectByUrl(*url)
 		if nil != err {
 			fmt.Printf("failed: %s\n", err)
 			os.Exit(1)
@@ -48,8 +58,13 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 }
 
 func HandleGetProjects(project_id *string, project_name *string, project_url *string) {
-	c, _ := admin.NewClient()
 	var err error
+
+	c, err := admin.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	if *project_id == "" && *project_name == "" && *project_url == "" {
 		projects, err := c.AdminGetAllProjects()

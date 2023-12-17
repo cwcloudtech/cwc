@@ -36,8 +36,8 @@ func HandleUpdateBucket(id *string) {
 		fmt.Printf("failed: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Bucket %v successfully updated\n", *id)
 
+	fmt.Printf("Bucket %v successfully updated\n", *id)
 }
 
 func HandleGetBuckets() {

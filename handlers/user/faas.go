@@ -46,7 +46,12 @@ func HandleGetTriggerKinds(pretty *bool) {
 }
 
 func HandleGetFunctions(pretty *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	functions, err := c.GetAllFunctions()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -77,7 +82,12 @@ func HandleGetFunctions(pretty *bool) {
 }
 
 func HandleGetFunction(id *string, pretty *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	function, err := c.GetFunctionById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -126,7 +136,12 @@ func displayFunctionsAsTable(functions []client.Function) {
 }
 
 func HandleDeleteFunction(id *string) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	delete_err := c.DeleteFunctionById(*id)
 	if nil != delete_err {
 		fmt.Printf("failed: %s\n", delete_err)
@@ -183,7 +198,11 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 			function.Content.Args = []string{}
 		}
 
-		c, _ := client.NewClient()
+		c, err := client.NewClient()
+		if nil != err {
+			fmt.Printf("failed: %s\n", err)
+			os.Exit(1)
+		}
 
 		// assign the code template after choosing the language
 		code_template, err := c.GetFunctionCodeTemplate(function.Content.Args, function.Content.Language)
@@ -247,7 +266,12 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 		fmt.Printf("code: %s\n", function.Content.Code)
 	}
 
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	created_function, err := c.AddFunction(*function)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -270,7 +294,12 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		os.Exit(1)
 	}
 
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	function, err := c.GetFunctionById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -441,7 +470,11 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 }
 
 func HandleGetInvocations(pretty *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
 
 	invocations, err := c.GetAllInvocations()
 	if nil != err {
@@ -472,7 +505,12 @@ func HandleGetInvocations(pretty *bool) {
 }
 
 func HandleGetInvocation(id *string, pretty *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	invocation, err := c.GetInvocationById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -517,7 +555,12 @@ func displayInvocationsAsTable(invocations []client.Invocation) {
 }
 
 func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, pretty *bool, synchronous *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	var id = &content.Function_id
 	function, _ := c.GetFunctionById(*id)
 	args := function.Content.Args
@@ -569,7 +612,12 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 }
 
 func HandleDeleteInvocation(id *string) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	delete_err := c.DeleteInvocationById(*id)
 	if nil != delete_err {
 		fmt.Printf("failed: %s\n", delete_err)
@@ -580,7 +628,12 @@ func HandleDeleteInvocation(id *string) {
 }
 
 func HandleTruncateInvocations() {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	truncate_err := c.TruncateInvocations()
 	if nil != truncate_err {
 		fmt.Printf("failed: %s\n", truncate_err)
@@ -591,7 +644,12 @@ func HandleTruncateInvocations() {
 }
 
 func HandleGetTriggers(pretty *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	triggers, err := c.GetAllTriggers()
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -621,7 +679,12 @@ func HandleGetTriggers(pretty *bool) {
 }
 
 func HandleGetTrigger(id *string, pretty *bool) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	trigger, err := c.GetTriggerById(*id)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -689,6 +752,7 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 		for _, available_triggerKind := range triggerKinds.TriggerKinds {
 			fmt.Printf("  ➤ %v\n", available_triggerKind)
 		}
+
 		fmt.Printf("Trigger kind: ")
 		scanner.Scan()
 		trigger.Kind = scanner.Text()
@@ -698,6 +762,7 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 				break
 			}
 		}
+
 		if !isTriggerKindAllowed {
 			fmt.Printf("Invalid trigger kind. Allowed trigger kinds are: %s\n", strings.Join(triggerKinds.TriggerKinds, ", "))
 			os.Exit(1)
@@ -728,6 +793,7 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 			fmt.Printf("Invalid number of arguments. Expected %d arguments, got %d\n", len(args), len(*argument_values))
 			os.Exit(1)
 		}
+
 		if len(*argument_values) > 0 {
 			for i, arg := range args {
 				trigger.Content.Args = append(trigger.Content.Args, client.Argument{Key: arg, Value: (*argument_values)[i]})
@@ -735,7 +801,12 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 		}
 	}
 
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	created_trigger, err := c.AddTrigger(*trigger)
 	if nil != err {
 		fmt.Printf("failed: %s\n", err)
@@ -752,7 +823,12 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 }
 
 func HandleDeleteTrigger(id *string) {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	delete_err := c.DeleteTriggerById(*id)
 	if nil != delete_err {
 		fmt.Printf("failed: %s\n", delete_err)
@@ -763,7 +839,12 @@ func HandleDeleteTrigger(id *string) {
 }
 
 func HandleTruncateTriggers() {
-	c, _ := client.NewClient()
+	c, err := client.NewClient()
+	if nil != err {
+		fmt.Printf("failed: %s\n", err)
+		os.Exit(1)
+	}
+
 	truncate_err := c.TruncateTriggers()
 	if nil != truncate_err {
 		fmt.Printf("failed: %s\n", truncate_err)

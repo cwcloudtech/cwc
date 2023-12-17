@@ -107,6 +107,7 @@ func PrintMultiRow(type_class interface{}, class interface{}) {
 		fmt.Println(valuesMsg)
 	}
 }
+
 func JsonPrettyPrint(in string) string {
 	var out bytes.Buffer
 	err := json.Indent(&out, []byte(in), "", "\t")
