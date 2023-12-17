@@ -502,6 +502,7 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 	invocationDisplay.Created_at = created_invocation.Created_at
 	invocationDisplay.Updated_at = created_invocation.Updated_at
 	invocationDisplay.Function_id = created_invocation.Content.Function_id
+	invocationDisplay.Result = created_invocation.Content.Result
 
 	if client.GetDefaultFormat() == "json" {
 		utils.PrintJson(*created_invocation)

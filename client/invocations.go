@@ -62,7 +62,15 @@ func (c *Client) AddInvocation(content InvocationAddContent, synchronous bool) (
 	}
 
 	created_invocation := &Invocation{}
-	err = json.NewDecoder(respBody).Decode(created_invocation)
+
+	if synchronous {
+		synchronous_invocation := &SyncronousInvocation{}
+		err = json.NewDecoder(respBody).Decode(synchronous_invocation)
+		created_invocation = &synchronous_invocation.Invocation
+	} else {
+		err = json.NewDecoder(respBody).Decode(created_invocation)
+	}
+
 	if nil != err {
 		return nil, err
 	}

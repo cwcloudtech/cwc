@@ -1,4 +1,4 @@
-ackage registry
+package registry
 
 import (
 	"cwc/cmd/registry/delete"

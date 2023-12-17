@@ -64,7 +64,7 @@ func PrintPretty(firstLine string, class interface{}) {
 		}
 
 		k := strings.Replace(typesOf.Field(i).Name, "_", " ", -1)
-		fmt.Printf("  ➤ %s: %v\n", k, v)
+		fmt.Printf("  ➤ %s: %s\n", k, strings.TrimSpace(fmt.Sprintf("%v", v)))
 	}
 }
 
@@ -85,7 +85,8 @@ func PrintRow(class interface{}) {
 	values := reflect.ValueOf(class)
 	valuesMsg := ""
 	for i := 0; i < values.NumField(); i++ {
-		valuesMsg = fmt.Sprintf("%s%v\t", valuesMsg, values.Field(i).Interface())
+		v := values.Field(i).Interface()
+		valuesMsg = fmt.Sprintf("%s%v\t", valuesMsg, strings.TrimSpace(fmt.Sprintf("%v", v)))
 	}
 
 	fmt.Println(valuesMsg)

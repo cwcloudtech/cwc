@@ -234,6 +234,12 @@ type Invocation struct {
 	Created_at string            `json:"created_at"`
 }
 
+type SyncronousInvocation struct {
+	Status     string     `json:"status"`
+	Code       int        `json:"code"`
+	Invocation Invocation `json:"entity"`
+}
+
 type InvocationDisplay struct {
 	Id          string `json:"id"`
 	Invoker_id  int    `json:"invoker_id"`
@@ -241,6 +247,7 @@ type InvocationDisplay struct {
 	State       string `json:"state"`
 	Created_at  string `json:"created_at"`
 	Updated_at  string `json:"updated_at"`
+	Result      string `json:"result"`
 }
 
 type InvocationsResponse struct {
