@@ -115,11 +115,15 @@ func addUserCredentials(access_key string, secret_key string) {
 
 func getUserToken() string {
 	dirname, err := os.UserHomeDir()
-	utils.ExitIfError(err)
+	if nil != err {
+		return ""
+	}
 
 	credentials_path := fmt.Sprintf("%s/.cwc/credentials", dirname)
 	content, err := ioutil.ReadFile(credentials_path)
-	utils.ExitIfError(err)
+	if nil != err {
+		return ""
+	}
 
 	file_content := string(content)
 	secret_key := GetValueFromFile(file_content, "cwc_secret_key")
