@@ -8,8 +8,8 @@ import (
 
 var FunctionCmd = &cobra.Command{
 	Use:   "function",
-	Short: "Manage your functions in the cloud",
-	Long: `This command lets you manage your functions in the cloud.
+	Short: "Manage your serverless functions in the cloud",
+	Long: `This command lets you Manage your serverless functions in the cloud.
 Several actions are associated with this command such listing your available functions`,
 
 	Run: func(cmd *cobra.Command, args []string) {
