@@ -7,12 +7,21 @@ import (
 	"fmt"
 )
 
-func HandleListRegions() {
+func HandleListRegions(pretty *bool) {
 	provider_regions, err := client.GetProviderRegions()
 	utils.ExitIfError(err)
 
+	var region_names []string
 	for _, available_region := range provider_regions.Regions {
-		fmt.Printf("%v\n", available_region.Name)
+		region_names = append(region_names, available_region.Name)
+	}
+
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPrettyArray("Available regions", region_names)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(provider_regions.Regions)
+	} else {
+		utils.PrintArray(region_names)
 	}
 }
 
