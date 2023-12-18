@@ -9,7 +9,7 @@ import (
 
 var (
 	userId string
-	pretty bool
+	pretty bool = false
 )
 
 // lsCmd represents the ls command

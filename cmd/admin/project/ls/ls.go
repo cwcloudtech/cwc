@@ -10,7 +10,7 @@ var (
 	projectId   string
 	projectName string
 	projectUrl  string
-	pretty      bool
+	pretty      bool = false
 )
 
 // lsCmd represents the ls command
