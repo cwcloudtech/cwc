@@ -20,7 +20,7 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if utils.IsBlank(registryId) {
-			user.HandleGetRegistries()
+			user.HandleGetRegistries(&pretty)
 		} else {
 			user.HandleGetRegistry(&registryId, &pretty)
 		}
