@@ -11,12 +11,14 @@ func (c *Client) GetAllBuckets() (*[]Bucket, error) {
 	if nil != err {
 		return nil, err
 	}
+
 	buckets := []Bucket{}
 	err = json.NewDecoder(body).Decode(&buckets)
 
 	if nil != err {
 		return nil, err
 	}
+
 	return &buckets, nil
 }
 

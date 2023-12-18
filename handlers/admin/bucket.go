@@ -55,14 +55,16 @@ func HandleGetBuckets() {
 	}
 }
 
-func HandleGetBucket(id *string) {
+func HandleGetBucket(id *string, pretty *bool) {
 	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
 	bucket, err := c.GetBucket(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Bucket informations", *bucket)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(bucket)
 	} else {
 		utils.PrintRow(*bucket)

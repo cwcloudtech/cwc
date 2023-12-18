@@ -9,6 +9,7 @@ import (
 
 var (
 	bucketId string
+	pretty   bool
 )
 
 // lsCmd represents the ls command
@@ -21,11 +22,12 @@ This command takes no arguments`,
 		if utils.IsBlank(bucketId) {
 			admin.HandleGetBuckets()
 		} else {
-			admin.HandleGetBucket(&bucketId)
+			admin.HandleGetBucket(&bucketId, &pretty)
 		}
 	},
 }
 
 func init() {
 	LsCmd.Flags().StringVarP(&bucketId, "bucket", "b", "", "The bucket id")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }
