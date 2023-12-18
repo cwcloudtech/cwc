@@ -5,6 +5,9 @@ import (
 	"cwc/config"
 	"cwc/utils"
 	"fmt"
+	"os"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 func HandleAddProject(user_email *string, name *string, host *string, token *string, git_username *string, namespace *string) {
@@ -39,7 +42,7 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 	fmt.Println("Project successfully deleted")
 }
 
-func HandleGetProjects(project_id *string, project_name *string, project_url *string) {
+func HandleGetProjects(project_id *string, project_name *string, project_url *string, pretty *bool) {
 	var err error
 
 	c, err := admin.NewClient()
@@ -49,7 +52,9 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 		projects, err := c.AdminGetAllProjects()
 		utils.ExitIfError(err)
 
-		if config.GetDefaultFormat() == "json" {
+		if config.IsPrettyFormatExpected(pretty) {
+			displayProjectsAsTable(*projects)
+		} else if config.GetDefaultFormat() == "json" {
 			utils.PrintJson(projects)
 		} else {
 			utils.PrintMultiRow(admin.Project{}, *projects)
@@ -69,9 +74,31 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Project's informations", *project)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(project)
 	} else {
 		utils.PrintRow(*project)
 	}
+}
+
+func displayProjectsAsTable(projects []admin.Project) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "Name", "URL", "Created at"})
+
+	if len(projects) == 0 {
+		fmt.Println("No users found")
+	} else {
+		for _, project := range projects {
+			table.Append([]string{
+				fmt.Sprintf("%d", project.Id),
+				project.Name,
+				project.Url,
+				project.CreatedAt,
+			})
+		}
+	}
+
+	table.Render()
 }
