@@ -63,7 +63,7 @@ func HandleGetBucket(id *string, pretty *bool) {
 	utils.ExitIfError(err)
 
 	if config.IsPrettyFormatExpected(pretty) {
-		utils.PrintPretty("Bucket informations", *bucket)
+		utils.PrintPretty("Bucket's informations", *bucket)
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(bucket)
 	} else {

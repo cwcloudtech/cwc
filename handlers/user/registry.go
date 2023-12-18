@@ -41,14 +41,16 @@ func HandleGetRegistries() {
 	}
 }
 
-func HandleGetRegistry(id *string) {
+func HandleGetRegistry(id *string, pretty *bool) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
 	registry, err := c.GetRegistry(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Registry's informations", *registry)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(registry)
 	} else {
 		utils.PrintRow(*registry)

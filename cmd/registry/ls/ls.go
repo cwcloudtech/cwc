@@ -9,6 +9,7 @@ import (
 
 var (
 	registryId string
+	pretty     bool
 )
 
 // lsCmd represents the ls command
@@ -21,11 +22,12 @@ This command takes no arguments`,
 		if utils.IsBlank(registryId) {
 			user.HandleGetRegistries()
 		} else {
-			user.HandleGetRegistry(&registryId)
+			user.HandleGetRegistry(&registryId, &pretty)
 		}
 	},
 }
 
 func init() {
 	LsCmd.Flags().StringVarP(&registryId, "registry", "r", "", "The registry id")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }
