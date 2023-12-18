@@ -2,10 +2,6 @@ package client
 
 import "net/http"
 
-type ErrorResponse struct {
-	Error string `json:"error"`
-}
-
 type UpdateInstanceRequest struct {
 	Status string `json:"status"`
 }
@@ -14,10 +10,12 @@ type LoginBody struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
 type ReponseLogin struct {
 	Token     string `json:"token"`
 	Confirmed bool   `json:"confirmed"`
 }
+
 type Client struct {
 	region     string
 	provider   string
@@ -44,6 +42,7 @@ type Dns_zones struct {
 type InstancesTypes struct {
 	Types []string `json:"types"`
 }
+
 type Instance struct {
 	Id            int    `json:"id"`
 	Name          string `json:"name"`
@@ -132,16 +131,20 @@ type AddProjectBody struct {
 	Namespace   string `json:"namespace"`
 	GitUsername string `json:"git_username"`
 }
+
 type ProviderRegion struct {
 	Name  string   `json:"name"`
 	Zones []string `json:"zones"`
 }
+
 type ProviderRegions struct {
 	Regions []ProviderRegion `json:"regions"`
 }
+
 type Provider struct {
 	Name string `json:"name"`
 }
+
 type AvailableProviders struct {
 	Providers []Provider `json:"providers"`
 }
