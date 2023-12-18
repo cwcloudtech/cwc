@@ -2,7 +2,7 @@ package login
 
 import (
 	"cwc/handlers/user"
-	"fmt"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -28,12 +28,8 @@ func init() {
 	LoginCmd.Flags().StringVarP(&secret_key, "secret_key", "s", "", "API secret key")
 
 	err := LoginCmd.MarkFlagRequired("access_key")
-	if nil != err {
-		fmt.Println(err)
-	}
+	utils.ExitIfError(err)
 
 	err = LoginCmd.MarkFlagRequired("secret_key")
-	if nil != err {
-		fmt.Println(err)
-	}
+	utils.ExitIfError(err)
 }
