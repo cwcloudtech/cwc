@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -13,7 +14,7 @@ func HandleAddProject(user_email *string, name *string, host *string, token *str
 	created_project, err := c.AdminAddProject(*user_email, *name, *host, *token, *git_username, *namespace)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_project)
 	} else {
 		utils.PrintRow(*created_project)
@@ -48,7 +49,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 		projects, err := c.AdminGetAllProjects()
 		utils.ExitIfError(err)
 
-		if admin.GetDefaultFormat() == "json" {
+		if config.GetDefaultFormat() == "json" {
 			utils.PrintJson(projects)
 		} else {
 			utils.PrintMultiRow(admin.Project{}, *projects)
@@ -68,7 +69,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(project)
 	} else {
 		utils.PrintRow(*project)

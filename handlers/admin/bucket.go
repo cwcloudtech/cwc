@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -13,7 +14,7 @@ func HandleAddBucket(user_email *string, name *string, reg_type *string) {
 	created_bucket, err := c.AdminAddBucket(*user_email, *name, *reg_type)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_bucket)
 	} else {
 		utils.PrintRow(*created_bucket)
@@ -47,7 +48,7 @@ func HandleGetBuckets() {
 	buckets, err := c.GetAllBuckets()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(buckets)
 	} else {
 		utils.PrintMultiRow(admin.Bucket{}, *buckets)
@@ -61,7 +62,7 @@ func HandleGetBucket(id *string) {
 	bucket, err := c.GetBucket(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(bucket)
 	} else {
 		utils.PrintRow(*bucket)

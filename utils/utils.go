@@ -163,19 +163,3 @@ func GetSystemEditor() string {
 
 	return editorCommand
 }
-
-func GetValueFromFile(content_file string, key string) string {
-	lines := strings.Split(content_file, "\n")
-	var requested_line string
-	for i, line := range lines {
-		if strings.Contains(line, key+" =") {
-			requested_line = lines[i]
-		}
-	}
-
-	if IsBlank(requested_line) {
-		return ""
-	}
-
-	return strings.Split(requested_line, " = ")[1]
-}

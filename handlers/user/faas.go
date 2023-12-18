@@ -3,6 +3,7 @@ package user
 import (
 	"bufio"
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 	"os"
@@ -16,7 +17,7 @@ func HandleGetLanguages(pretty *bool) {
 	languages, err := client.GetLanguages()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(languages)
 	} else if *pretty {
 		utils.PrintPrettyArray("Available languages", languages.Languages)
@@ -29,7 +30,7 @@ func HandleGetTriggerKinds(pretty *bool) {
 	triggerKinds, err := client.GetTriggerKinds()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggerKinds)
 	} else if *pretty {
 		utils.PrintPrettyArray("Available trigger kinds", triggerKinds.TriggerKinds)
@@ -45,7 +46,7 @@ func HandleGetFunctions(pretty *bool) {
 	functions, err := c.GetAllFunctions()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(functions)
 	} else if *pretty {
 		displayFunctionsAsTable(*functions)
@@ -84,7 +85,7 @@ func HandleGetFunction(id *string, pretty *bool) {
 	functionDisplay.Created_at = function.Created_at
 	functionDisplay.Updated_at = function.Updated_at
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(function)
 	} else if *pretty {
 		utils.PrintPretty("Found function", functionDisplay)
@@ -220,7 +221,7 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 	created_function, err := c.AddFunction(*function)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_function)
 	} else if *pretty {
 		utils.PrintPretty("Function successfully created", *created_function)
@@ -389,7 +390,7 @@ func HandleGetInvocations(pretty *bool) {
 	invocations, err := c.GetAllInvocations()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocations)
 	} else if *pretty {
 		displayInvocationsAsTable(*invocations)
@@ -426,7 +427,7 @@ func HandleGetInvocation(id *string, pretty *bool) {
 	invocationDisplay.Created_at = invocation.Created_at
 	invocationDisplay.Updated_at = invocation.Updated_at
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocation)
 	} else if *pretty {
 		utils.PrintPretty("Found invocation", invocationDisplay)
@@ -495,7 +496,7 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 	invocationDisplay.Function_id = created_invocation.Content.Function_id
 	invocationDisplay.Result = created_invocation.Content.Result
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(*created_invocation)
 	} else if *pretty {
 		utils.PrintPretty("Invocation successfully created", invocationDisplay)
@@ -531,7 +532,7 @@ func HandleGetTriggers(pretty *bool) {
 	triggers, err := c.GetAllTriggers()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggers)
 	} else if *pretty {
 		displayTriggersAsTable(*triggers)
@@ -560,7 +561,7 @@ func HandleGetTrigger(id *string, pretty *bool) {
 	trigger, err := c.GetTriggerById(*id)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(trigger)
 	} else {
 		var triggerDisplay client.TriggerDisplay
@@ -572,7 +573,7 @@ func HandleGetTrigger(id *string, pretty *bool) {
 		triggerDisplay.Created_at = trigger.Created_at
 		triggerDisplay.Updated_at = trigger.Updated_at
 
-		if client.GetDefaultFormat() == "json" {
+		if config.GetDefaultFormat() == "json" {
 			utils.PrintJson(trigger)
 		} else if *pretty {
 			utils.PrintPretty("Found trigger", triggerDisplay)
@@ -670,7 +671,7 @@ func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, intera
 	created_trigger, err := c.AddTrigger(*trigger)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_trigger)
 	} else if *pretty {
 		utils.PrintPretty("Trigger successfully created", *created_trigger)

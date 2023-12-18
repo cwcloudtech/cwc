@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -26,7 +27,7 @@ func HandleGetUsers() {
 	utils.ExitIfError(err)
 
 	users := responseUsers.Result
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(users)
 	} else {
 		utils.PrintMultiRow(admin.User{}, responseUsers.Result)
@@ -41,7 +42,7 @@ func HandleGetUser(id *string) {
 	utils.ExitIfError(err)
 
 	user := responseUser.Result
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(user)
 	} else {
 		utils.PrintRow(user)

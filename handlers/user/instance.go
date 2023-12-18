@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"flag"
 	"fmt"
@@ -58,7 +59,7 @@ func HandleGetInstances() {
 	instances, err := c.GetAllInstances()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instances)
 	} else {
 		utils.PrintMultiRow(client.Instance{}, *instances)
@@ -81,7 +82,7 @@ func HandleGetInstance(id *string) {
 	instance, err := c.GetInstance(*id)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instance)
 	} else {
 		utils.PrintRow(*instance)

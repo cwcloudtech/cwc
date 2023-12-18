@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -33,7 +34,7 @@ func HandleAddInstance(user_email *string, name *string, project_id *int, projec
 	created_instance, err := c.AdminAddInstance(*user_email, *name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_instance)
 	} else {
 		utils.PrintRow(*created_instance)
@@ -57,7 +58,7 @@ func HandleGetInstances() {
 	instances, err := c.AdminGetAllInstances()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instances)
 	} else {
 		utils.PrintMultiRow(admin.Instance{}, *instances)
@@ -71,7 +72,7 @@ func HandleGetInstance(id *string) {
 	instance, err := c.GetInstance(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instance)
 	} else {
 		utils.PrintRow(*instance)

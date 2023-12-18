@@ -1,9 +1,9 @@
 package configure
 
 import (
-	"cwc/client"
 	"cwc/cmd/configure/get"
 	"cwc/cmd/configure/set"
+	"cwc/config"
 	"cwc/handlers/user"
 
 	"cwc/utils"
@@ -20,21 +20,21 @@ var ConfigureCmd = &cobra.Command{
 The configure command takes no arguments it will prompt you for each default value`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			default_endpoint := client.GetDefaultEndpoint()
+			default_endpoint := config.GetDefaultEndpoint()
 			fmt.Printf("Default endpoint [%s]: ", default_endpoint)
 			new_endpoint := utils.PromptUserForValue()
 			if utils.IsNotBlank(new_endpoint) {
 				user.HandlerSetDefaultEndpoint(new_endpoint)
 			}
 
-			default_provider := client.GetDefaultProvider()
+			default_provider := config.GetDefaultProvider()
 			fmt.Printf("Default provider [%s]: ", default_provider)
 			new_default_provider := utils.PromptUserForValue()
 			if utils.IsNotBlank(new_default_provider) {
 				user.HandlerSetDefaultProvider(new_default_provider)
 			}
 
-			default_region := client.GetDefaultRegion()
+			default_region := config.GetDefaultRegion()
 			fmt.Printf("Default region [%s]: ", default_region)
 			new_default_region := utils.PromptUserForValue()
 
@@ -44,7 +44,7 @@ The configure command takes no arguments it will prompt you for each default val
 				user.HandlerSetDefaultRegion(default_region)
 			}
 
-			default_format := client.GetDefaultFormat()
+			default_format := config.GetDefaultFormat()
 			fmt.Printf("Default output format [%s]: ", default_format)
 			new_default_format := utils.PromptUserForValue()
 			if utils.IsNotBlank(new_default_format) {

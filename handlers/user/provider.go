@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -16,7 +17,7 @@ func HandleListProviders() {
 }
 
 func HandlerGetDefaultProvider() {
-	provider := client.GetDefaultProvider()
+	provider := config.GetDefaultProvider()
 	fmt.Printf("Default provider = %v\n", provider)
 }
 
@@ -34,6 +35,6 @@ func HandlerSetDefaultProvider(value string) {
 
 	utils.ExitIfNeeded("Invalid provider value", !utils.StringInSlice(value, available_providers))
 
-	client.SetDefaultProvider(value)
+	config.SetDefaultProvider(value)
 	fmt.Printf("Default provider = %v\n", value)
 }

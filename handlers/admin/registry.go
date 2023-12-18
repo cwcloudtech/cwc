@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -13,7 +14,7 @@ func HandleAddRegistry(user_email *string, name *string, reg_type *string) {
 	created_registry, err := c.AdminAddRegistry(*user_email, *name, *reg_type)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_registry)
 	} else {
 		utils.PrintRow(*created_registry)
@@ -47,7 +48,7 @@ func HandleGetRegistries() {
 	registries, err := c.GetAllRegistries()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(registries)
 	} else {
 		utils.PrintMultiRow(admin.Project{}, *registries)
@@ -61,7 +62,7 @@ func HandleGetRegistry(id *string) {
 	registry, err := c.GetRegistry(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(registry)
 	} else {
 		utils.PrintRow(*registry)

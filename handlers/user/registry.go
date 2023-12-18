@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -33,7 +34,7 @@ func HandleGetRegistries() {
 	registries, err := c.GetAllRegistries()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(registries)
 	} else {
 		utils.PrintMultiRow(client.Registry{}, *registries)
@@ -47,7 +48,7 @@ func HandleGetRegistry(id *string) {
 	registry, err := c.GetRegistry(*id)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(registry)
 	} else {
 		utils.PrintRow(*registry)

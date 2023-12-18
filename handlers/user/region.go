@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -16,7 +17,7 @@ func HandleListRegions() {
 }
 
 func HandlerGetDefaultRegion() {
-	region := client.GetDefaultRegion()
+	region := config.GetDefaultRegion()
 	fmt.Printf("Default region = %v\n", region)
 }
 
@@ -34,6 +35,6 @@ func HandlerSetDefaultRegion(value string) {
 
 	utils.ExitIfNeeded("Invalid region", !utils.StringInSlice(value, available_regions))
 
-	client.SetDefaultRegion(value)
+	config.SetDefaultRegion(value)
 	fmt.Printf("Default region = %v\n", value)
 }

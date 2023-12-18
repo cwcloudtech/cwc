@@ -3,6 +3,7 @@ package user
 import (
 	"cwc/admin"
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -34,7 +35,7 @@ func HandleGetBuckets() {
 	buckets, err := c.GetAllBuckets()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(buckets)
 	} else {
 		utils.PrintMultiRow(admin.Bucket{}, *buckets)
@@ -48,7 +49,7 @@ func HandleGetBucket(id *string) {
 	bucket, err := c.GetBucket(*id)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(bucket)
 	} else {
 		utils.PrintRow(*bucket)

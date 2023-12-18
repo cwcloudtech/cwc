@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 	"os"
@@ -16,7 +17,7 @@ func HandleGetFunctions(pretty *bool) {
 	functions, err := c.GetAllFunctions()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(functions)
 	} else if *pretty {
 		displayFunctionsAsTable(*functions)
@@ -46,7 +47,7 @@ func HandleGetFunctionOwner(id *string, pretty *bool) {
 	owner, err := c.GetFunctionOwnerById(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(owner)
 	} else if *pretty {
 		utils.PrintPretty("Owner found", *owner)
@@ -85,7 +86,7 @@ func HandleGetInvocations(pretty *bool) {
 	invocations, err := c.GetAllInvocations()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(invocations)
 	} else if *pretty {
 		displayInvocationsAsTable(*invocations)
@@ -114,7 +115,7 @@ func HandleGetInvocationInvoker(id *string, pretty *bool) {
 	invoker, err := c.GetInvocationInvokerById(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(invoker)
 	} else if *pretty {
 		utils.PrintPretty("Invoker found", *invoker)
@@ -150,7 +151,7 @@ func HandleGetTriggers(pretty *bool) {
 	triggers, err := c.GetAllTriggers()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(triggers)
 	} else if *pretty {
 		displayTriggersAsTable(*triggers)
@@ -181,7 +182,7 @@ func HandleGetTriggerOwner(id *string, pretty *bool) {
 	owner, err := c.GetTriggerOwnerById(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(owner)
 	} else if *pretty {
 		utils.PrintPretty("Owner found", *owner)

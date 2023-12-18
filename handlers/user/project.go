@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 )
@@ -13,7 +14,7 @@ func HandleAddProject(name *string, host *string, token *string, git_username *s
 	created_project, err := c.AddProject(*name, *host, *token, *git_username, *namespace)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_project)
 	} else {
 		utils.PrintRow(*created_project)
@@ -48,7 +49,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 		projects, err := c.GetAllProjects()
 		utils.ExitIfError(err)
 
-		if client.GetDefaultFormat() == "json" {
+		if config.GetDefaultFormat() == "json" {
 			utils.PrintJson(projects)
 		} else {
 			utils.PrintMultiRow(client.Project{}, *projects)
@@ -65,7 +66,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 
 		utils.ExitIfError(err)
 
-		if client.GetDefaultFormat() == "json" {
+		if config.GetDefaultFormat() == "json" {
 			utils.PrintJson(project)
 		} else {
 			utils.PrintRow(*project)

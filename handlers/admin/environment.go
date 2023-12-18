@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/admin"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 	"os"
@@ -94,7 +95,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	created_env, err := c.AdminAddEnvironment(*added_environment)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(*created_env)
 	} else {
 		utils.PrintPretty(fmt.Sprintf("Environment %s successfully created", created_env.Name), *created_env)
@@ -118,7 +119,7 @@ func HandleGetEnvironments(pretty *bool) {
 	environments, err := c.GetAllEnvironments()
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(environments)
 	} else if *pretty {
 		displayEnvironmentsAsTable(*environments)
@@ -134,7 +135,7 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	environment, err := c.GetEnvironment(*id)
 	utils.ExitIfError(err)
 
-	if admin.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
 	} else if *pretty {
 		utils.PrintPretty("Environment found", environment)

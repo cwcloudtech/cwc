@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 	"fmt"
 	"os"
@@ -16,7 +17,7 @@ func HandleGetEnvironments(pretty *bool) {
 	environments, err := c.GetAllEnvironments()
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(environments)
 	} else if *pretty {
 		displayEnvironmentsAsTable(*environments)
@@ -32,7 +33,7 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	environment, err := c.GetEnvironment(*id)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(environment)
 	} else if *pretty {
 		utils.PrintPretty("Environment found", *environment)

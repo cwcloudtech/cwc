@@ -2,6 +2,7 @@ package user
 
 import (
 	"cwc/client"
+	"cwc/config"
 	"cwc/utils"
 )
 
@@ -12,7 +13,7 @@ func HandleSendEmail(from *string, to *string, bcc *string, subject *string, con
 	email, err := c.SendEmail(*from, *to, *bcc, *subject, *content)
 	utils.ExitIfError(err)
 
-	if client.GetDefaultFormat() == "json" {
+	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(email)
 	} else {
 		utils.PrintRow(*email)

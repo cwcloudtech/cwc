@@ -2,13 +2,14 @@ package client
 
 import (
 	"bytes"
+	"cwc/config"
 	"cwc/utils"
 	"encoding/json"
 	"fmt"
 )
 
 func GetProviderRegions() (*ProviderRegions, error) {
-	provider := GetDefaultProvider()
+	provider := config.GetDefaultProvider()
 	if utils.IsBlank(provider) {
 		return nil, fmt.Errorf("provider is not set")
 	}
