@@ -20,7 +20,7 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if utils.IsBlank(bucketId) {
-			user.HandleGetBuckets()
+			user.HandleGetBuckets(&pretty)
 		} else {
 			user.HandleGetBucket(&bucketId, &pretty)
 		}

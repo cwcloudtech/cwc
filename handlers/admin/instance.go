@@ -62,7 +62,7 @@ func HandleGetInstances(pretty *bool) {
 	utils.ExitIfError(err)
 
 	if config.IsPrettyFormatExpected(pretty) {
-		displayInstanceAsTable(*instances)
+		displayInstancesAsTable(*instances)
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instances)
 	} else {
@@ -86,7 +86,7 @@ func HandleGetInstance(id *string, pretty *bool) {
 	}
 }
 
-func displayInstanceAsTable(instances []admin.Instance) {
+func displayInstancesAsTable(instances []admin.Instance) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"ID", "Name", "IP", "Type", "Created at"})
 
