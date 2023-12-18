@@ -70,12 +70,16 @@ func HandleGetInstances(pretty *bool) {
 	}
 }
 
-func HandleListInstancesTypes() {
-	instancesTypes, err := client.GetInstancesTypes()
+func HandleListInstancesTypes(pretty *bool) {
+	instances_types, err := client.GetInstancesTypes()
 	utils.ExitIfError(err)
 
-	for _, instance_type := range instancesTypes.Types {
-		fmt.Printf("%v\n", instance_type)
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPrettyArray("Types of instances available", instances_types.Types)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(instances_types)
+	} else {
+		utils.PrintArray(instances_types.Types)
 	}
 }
 
