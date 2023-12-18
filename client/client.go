@@ -40,7 +40,7 @@ func (c *Client) UserLogin(access_key string, secret_key string) error {
 		return err
 	}
 
-	_, err = c.httpRequest(fmt.Sprintf("/api_keys/verify"), "POST", buf)
+	_, err = c.httpRequest("/api_keys/verify", "POST", buf)
 	if nil != err {
 		return err
 	}
