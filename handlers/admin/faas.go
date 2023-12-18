@@ -17,10 +17,10 @@ func HandleGetFunctions(pretty *bool) {
 	functions, err := c.GetAllFunctions()
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(functions)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		displayFunctionsAsTable(*functions)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(functions)
 	} else {
 		var functionsDisplay []admin.FunctionDisplay
 		for i, function := range *functions {
@@ -47,10 +47,10 @@ func HandleGetFunctionOwner(id *string, pretty *bool) {
 	owner, err := c.GetFunctionOwnerById(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(owner)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Owner found", *owner)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(owner)
 	} else {
 		utils.PrintRow(*owner)
 	}
@@ -86,10 +86,10 @@ func HandleGetInvocations(pretty *bool) {
 	invocations, err := c.GetAllInvocations()
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(invocations)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		displayInvocationsAsTable(*invocations)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(invocations)
 	} else {
 		var invocationsDisplay []admin.InvocationDisplay
 		for i, invocation := range *invocations {
@@ -115,10 +115,10 @@ func HandleGetInvocationInvoker(id *string, pretty *bool) {
 	invoker, err := c.GetInvocationInvokerById(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(invoker)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Invoker found", *invoker)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(invoker)
 	} else {
 		utils.PrintRow(*invoker)
 	}
@@ -151,10 +151,10 @@ func HandleGetTriggers(pretty *bool) {
 	triggers, err := c.GetAllTriggers()
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(triggers)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		displayTriggersAsTable(*triggers)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(triggers)
 	} else {
 		var triggersDisplay []admin.TriggerDisplay
 		for i, trigger := range *triggers {
@@ -182,10 +182,10 @@ func HandleGetTriggerOwner(id *string, pretty *bool) {
 	owner, err := c.GetTriggerOwnerById(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(owner)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Owner found", *owner)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(owner)
 	} else {
 		utils.PrintRow(*owner)
 	}

@@ -61,6 +61,10 @@ func GetDefaultProvider() string {
 	return provider
 }
 
+func IsPrettyFormatExpected(pretty *bool) bool {
+	return *pretty || GetDefaultFormat() == "pretty"
+}
+
 func GetDefaultFormat() string {
 	dirname, err := os.UserHomeDir()
 	if nil != err {

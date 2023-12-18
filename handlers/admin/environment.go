@@ -119,10 +119,10 @@ func HandleGetEnvironments(pretty *bool) {
 	environments, err := c.GetAllEnvironments()
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(environments)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		displayEnvironmentsAsTable(*environments)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(environments)
 	} else {
 		utils.PrintMultiRow(admin.Environment{}, *environments)
 	}
@@ -135,10 +135,10 @@ func HandleGetEnvironment(id *string, pretty *bool) {
 	environment, err := c.GetEnvironment(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(environment)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Environment found", environment)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(environment)
 	} else {
 		utils.PrintRow(environment)
 	}

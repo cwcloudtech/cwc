@@ -13,10 +13,10 @@ func HandleGetModels(pretty *bool) {
 	models, err := c.GetModels()
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(models)
-	} else if *pretty {
+	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPrettyArray("Available models", models.Models)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(models)
 	} else {
 		utils.PrintArray(models.Models)
 	}
