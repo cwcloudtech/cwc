@@ -11,17 +11,17 @@ func HandleListRegions(pretty *bool) {
 	provider_regions, err := client.GetProviderRegions()
 	utils.ExitIfError(err)
 
-	var region_names []string
+	var names []string
 	for _, available_region := range provider_regions.Regions {
-		region_names = append(region_names, available_region.Name)
+		names = append(names, available_region.Name)
 	}
 
 	if config.IsPrettyFormatExpected(pretty) {
-		utils.PrintPrettyArray("Available regions", region_names)
+		utils.PrintPrettyArray("Available regions", names)
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(provider_regions.Regions)
 	} else {
-		utils.PrintArray(region_names)
+		utils.PrintArray(names)
 	}
 }
 

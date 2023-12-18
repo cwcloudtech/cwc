@@ -7,12 +7,21 @@ import (
 	"fmt"
 )
 
-func HandleListProviders() {
+func HandleListProviders(pretty *bool) {
 	providers, err := client.GetProviders()
 	utils.ExitIfError(err)
 
+	var names []string
 	for _, available_provider := range providers.Providers {
-		fmt.Printf("%v\n", available_provider.Name)
+		names = append(names, available_provider.Name)
+	}
+
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPrettyArray("Available providers", names)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(providers.Providers)
+	} else {
+		utils.PrintArray(names)
 	}
 }
 
