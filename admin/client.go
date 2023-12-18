@@ -126,7 +126,7 @@ func getUserToken() string {
 	}
 
 	file_content := string(content)
-	secret_key := GetValueFromFile(file_content, "cwc_secret_key")
+	secret_key := utils.GetValueFromFile(file_content, "cwc_secret_key")
 	return secret_key
 }
 
@@ -143,7 +143,7 @@ func GetDefaultRegion() string {
 	}
 
 	file_content := string(content)
-	region := GetValueFromFile(file_content, "region")
+	region := utils.GetValueFromFile(file_content, "region")
 	return region
 }
 
@@ -172,7 +172,7 @@ func GetDefaultFormat() string {
 	}
 
 	file_content := string(content)
-	format := GetValueFromFile(file_content, "format")
+	format := utils.GetValueFromFile(file_content, "format")
 	return format
 }
 
@@ -189,7 +189,7 @@ func GetDefaultProvider() string {
 	}
 
 	file_content := string(content)
-	provider := GetValueFromFile(file_content, "provider")
+	provider := utils.GetValueFromFile(file_content, "provider")
 	return provider
 }
 
@@ -207,7 +207,7 @@ func GetDefaultEndpoint() string {
 	}
 
 	file_content := string(content)
-	endpoint := GetValueFromFile(file_content, "endpoint")
+	endpoint := utils.GetValueFromFile(file_content, "endpoint")
 	if utils.IsBlank(endpoint) {
 		return default_endpoint
 	}
@@ -217,22 +217,6 @@ func GetDefaultEndpoint() string {
 
 func SetDefaultEndpoint(endpoint string) {
 	UpdateFileKeyValue("config", "endpoint", endpoint)
-}
-
-func GetValueFromFile(content_file string, key string) string {
-	lines := strings.Split(content_file, "\n")
-	var requested_line string
-	for i, line := range lines {
-		if strings.Contains(line, key+" =") {
-			requested_line = lines[i]
-		}
-	}
-
-	if utils.IsBlank(requested_line) {
-		return ""
-	}
-
-	return strings.Split(requested_line, " = ")[1]
 }
 
 func UpdateFileKeyValue(filename string, key string, value string) {
@@ -257,7 +241,7 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 	file_content, err := os.ReadFile(file_path)
 	utils.ExitIfError(err)
 
-	if utils.IsBlank(GetValueFromFile(string(file_content), key)) {
+	if utils.IsBlank(utils.GetValueFromFile(string(file_content), key)) {
 		config_file, err := os.OpenFile(file_path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		utils.ExitIfError(err)
 
