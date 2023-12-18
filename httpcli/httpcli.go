@@ -5,6 +5,7 @@ import (
 	"cwc/config"
 	"cwc/utils"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -20,9 +21,9 @@ func ConfigClient() (string, string, error) {
 	err := error(nil)
 
 	if utils.IsBlank(provider) {
-		err = fmt.Errorf("default provider is not set")
+		err = errors.New("default provider is not set")
 	} else if utils.IsBlank(region) {
-		err = fmt.Errorf("default region is not set")
+		err = errors.New("default region is not set")
 	}
 
 	return region, provider, err
@@ -53,25 +54,11 @@ func HttpRequest(cli *http.Client, path string, method string, body bytes.Buffer
 	switch {
 	case resp.StatusCode >= 200 && resp.StatusCode < 400:
 		return resp.Body, nil
-	case resp.StatusCode >= 400 && resp.StatusCode < 500:
+	case resp.StatusCode >= 400:
 		resp_body := new(bytes.Buffer)
 		_, err := resp_body.ReadFrom(resp.Body)
 		if nil != err {
-			return nil, fmt.Errorf("an error occurred")
-		}
-
-		errorResponse := ErrorResponse{}
-		json.NewDecoder(resp_body).Decode(&errorResponse)
-		if utils.IsBlank(errorResponse.Error) {
-			return nil, fmt.Errorf("client error with status %d", resp.StatusCode)
-		} else {
-			return nil, fmt.Errorf(errorResponse.Error)
-		}
-	case resp.StatusCode >= 500:
-		resp_body := new(bytes.Buffer)
-		_, err := resp_body.ReadFrom(resp.Body)
-		if nil != err {
-			return nil, fmt.Errorf("an error occurred")
+			return nil, errors.New("an error occurred")
 		}
 
 		errorResponse := ErrorResponse{}
@@ -79,7 +66,7 @@ func HttpRequest(cli *http.Client, path string, method string, body bytes.Buffer
 		if utils.IsBlank(errorResponse.Error) {
 			return nil, fmt.Errorf("server error with status %d", resp.StatusCode)
 		} else {
-			return nil, fmt.Errorf(errorResponse.Error)
+			return nil, errors.New(errorResponse.Error)
 		}
 	}
 
