@@ -9,6 +9,7 @@ import (
 
 var (
 	userId string
+	pretty bool
 )
 
 // lsCmd represents the ls command
@@ -19,13 +20,14 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if utils.IsBlank(userId) {
-			admin.HandleGetUsers()
+			admin.HandleGetUsers(&pretty)
 		} else {
-			admin.HandleGetUser(&userId)
+			admin.HandleGetUser(&userId, &pretty)
 		}
 	},
 }
 
 func init() {
 	LsCmd.Flags().StringVarP(&userId, "user", "u", "", "The user id")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }

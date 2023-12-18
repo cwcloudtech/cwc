@@ -5,6 +5,9 @@ import (
 	"cwc/config"
 	"cwc/utils"
 	"fmt"
+	"os"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 type User struct {
@@ -19,7 +22,7 @@ type User struct {
 	Billable           bool   `json:"billable"`
 }
 
-func HandleGetUsers() {
+func HandleGetUsers(pretty *bool) {
 	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
@@ -27,14 +30,17 @@ func HandleGetUsers() {
 	utils.ExitIfError(err)
 
 	users := responseUsers.Result
-	if config.GetDefaultFormat() == "json" {
+
+	if config.IsPrettyFormatExpected(pretty) {
+		displayUsersAsTable(users)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(users)
 	} else {
 		utils.PrintMultiRow(admin.User{}, responseUsers.Result)
 	}
 }
 
-func HandleGetUser(id *string) {
+func HandleGetUser(id *string, pretty *bool) {
 	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
@@ -42,7 +48,10 @@ func HandleGetUser(id *string) {
 	utils.ExitIfError(err)
 
 	user := responseUser.Result
-	if config.GetDefaultFormat() == "json" {
+
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("User's informations", user)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(user)
 	} else {
 		utils.PrintRow(user)
@@ -57,4 +66,25 @@ func HandleDeleteUser(id *string) {
 	utils.ExitIfError(err)
 
 	fmt.Printf("User %v successfully deleted\n", *id)
+}
+
+func displayUsersAsTable(users []admin.User) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "Email", "Is Admin", "Confirmed", "Billable"})
+
+	if len(users) == 0 {
+		fmt.Println("No users found")
+	} else {
+		for _, user := range users {
+			table.Append([]string{
+				fmt.Sprintf("%d", user.Id),
+				user.Email,
+				fmt.Sprintf("%t", user.IsAdmin),
+				fmt.Sprintf("%t", user.Confirmed),
+				fmt.Sprintf("%t", user.Billable),
+			})
+		}
+	}
+
+	table.Render()
 }
