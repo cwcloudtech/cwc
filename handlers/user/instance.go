@@ -7,6 +7,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 func HandleDeleteInstance(id *string) {
@@ -52,14 +54,16 @@ func HandleUpdateInstance(id *string, status *string) {
 	fmt.Printf("Instance %v successfully updated\n", *id)
 }
 
-func HandleGetInstances() {
+func HandleGetInstances(pretty *bool) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
 	instances, err := c.GetAllInstances()
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayInstanceAsTable(*instances)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instances)
 	} else {
 		utils.PrintMultiRow(client.Instance{}, *instances)
@@ -89,4 +93,25 @@ func HandleGetInstance(id *string, pretty *bool) {
 	} else {
 		utils.PrintRow(*instance)
 	}
+}
+
+func displayInstanceAsTable(instances []client.Instance) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "Name", "IP", "Type", "Created at"})
+
+	if len(instances) == 0 {
+		fmt.Println("No instances found")
+	} else {
+		for _, instance := range instances {
+			table.Append([]string{
+				fmt.Sprintf("%d", instance.Id),
+				instance.Name,
+				instance.Ip_address,
+				instance.Instance_type,
+				instance.CreatedAt,
+			})
+		}
+	}
+
+	table.Render()
 }

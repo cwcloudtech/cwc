@@ -20,7 +20,7 @@ var LsCmd = &cobra.Command{
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if utils.IsBlank(instanceId) {
-			user.HandleGetInstances()
+			user.HandleGetInstances(&pretty)
 		} else {
 			user.HandleGetInstance(&instanceId, &pretty)
 		}
