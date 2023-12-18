@@ -75,14 +75,16 @@ func HandleListInstancesTypes() {
 	}
 }
 
-func HandleGetInstance(id *string) {
+func HandleGetInstance(id *string, pretty *bool) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
 	instance, err := c.GetInstance(*id)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Instance's informations", *instance)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(instance)
 	} else {
 		utils.PrintRow(*instance)

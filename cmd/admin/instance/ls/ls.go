@@ -9,6 +9,7 @@ import (
 
 var (
 	instanceId string
+	pretty     bool
 )
 
 // lsCmd represents the ls command
@@ -21,7 +22,7 @@ This command takes no arguments`,
 		if utils.IsBlank(instanceId) {
 			admin.HandleGetInstances()
 		} else {
-			admin.HandleGetInstance(&instanceId)
+			admin.HandleGetInstance(&instanceId, &pretty)
 		}
 
 	},
@@ -29,4 +30,5 @@ This command takes no arguments`,
 
 func init() {
 	LsCmd.Flags().StringVarP(&instanceId, "instance", "i", "", "The instance id")
+	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }
