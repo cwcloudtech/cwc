@@ -55,4 +55,9 @@ func init() {
 	if nil != err {
 		fmt.Println(err)
 	}
+
+	err = CreateCmd.MarkFlagRequired("project_id")
+	if nil != err {
+		fmt.Println(err)
+	}
 }
