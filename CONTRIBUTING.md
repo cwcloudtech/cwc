@@ -1,14 +1,21 @@
 # Contribution Guidelines
+
 👋 Welcome to cwc CLI! We're thrilled that you're interested in contributing to our open-source project.
 
 ## Development
+
 ### Prerequisites
+
 - [golang](https://go.dev/doc/install)
+
 ### Run the project
+
 ```shell
 go run main.go
 ```
+
 This will run the main file.  
+
 Like the normal use of the CLI you can follow the previous command with flags and subcommands.
 
 ## Deliver a new release

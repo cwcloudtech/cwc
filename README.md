@@ -1,4 +1,5 @@
 # COMWORK CLOUD CLI
+
 👋 Welcome to cwc CLI!
 
 <p align="center">
@@ -10,6 +11,7 @@ It's pretty easy to ship into your IaC pipelines.
 You'll find everything you need in [our documentation](https://doc.cloud.comwork.io/docs/tutorials/api/cli).  
 
 ## Installation
+
 Choose the installation mode that suits your operating system and follow the instructions.
 
 ### Homebrew
@@ -96,4 +98,5 @@ cwc.exe
 * Gitlab mirror: https://gitlab.com/ineumann/cwc.git
 
 ## Contributions
+
 If you're interested in contributing to our project please check out [contributing section](./CONTRIBUTING.md).
