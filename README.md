@@ -1,7 +1,13 @@
 # COMWORK CLOUD CLI
-Welcome to `cwc CLI`!
+👋 Welcome to cwc CLI!
 
-This is a CLI written in go that will help you manipulate the [comwork cloud API](./README.md). It's pretty easy to ship into your IaC pipelines. You'll find everything you need in [our documentation](https://doc.cloud.comwork.io/docs/tutorials/api/cli).  
+<p align="center">
+    <img src="./img/command-line.png"/> <br/>
+</p>
+
+This is a CLI written in go that will help you work with [comwork cloud API](./README.md).  
+It's pretty easy to ship into your IaC pipelines.  
+You'll find everything you need in [our documentation](https://doc.cloud.comwork.io/docs/tutorials/api/cli).  
 
 ## Installation
 Choose the installation mode that suits your operating system and follow the instructions.
