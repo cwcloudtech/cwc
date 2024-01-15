@@ -84,9 +84,9 @@ type Registry struct {
 }
 
 type Email struct {
-	From      string `json:"from"`
+	From      *string `json:"from,omitempty"`
 	To        string `json:"to"`
-	Bcc       string `json:"bcc"`
+	Bcc       *string `json:"bcc,omitempty"`
 	Subject   string `json:"subject"`
 	Content   string `json:"content"`
 	Templated bool   `json:"templated"`

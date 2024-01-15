@@ -29,7 +29,7 @@ var EmailCmd = &cobra.Command{
 func init() {
 	EmailCmd.Flags().StringVarP(&from, "from", "f", "", "The expeditor email address")
 	EmailCmd.Flags().StringVarP(&to, "to", "t", "", "The recipient email address")
-	EmailCmd.Flags().StringVarP(&content, "bcc", "b", "", "Bcc email address")
+	EmailCmd.Flags().StringVarP(&bcc, "bcc", "b", "", "Bcc email address")
 	EmailCmd.Flags().StringVarP(&subject, "subject", "s", "", "The subject")
 	EmailCmd.Flags().StringVarP(&content, "content", "c", "", "The content")
 	EmailCmd.Flags().BoolVarP(&templated, "templated", "m", false, "Use the cwcloud's template")

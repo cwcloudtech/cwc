@@ -2,18 +2,25 @@ package admin
 
 import (
 	"bytes"
+	"cwc/utils"
 	"encoding/json"
 )
 
 func (c *Client) AdminSendEmail(from string, to string, bcc string, subject string, content string, templated bool) (*EmailResponse, error) {
 	buf := bytes.Buffer{}
 	email := Email{
-		From:      from,
 		To:        to,
-		Bcc:       bcc,
 		Subject:   subject,
 		Content:   content,
 		Templated: templated,
+	}
+
+	if !utils.IsBlank(from) {
+		email.From = &from
+	}
+
+	if !utils.IsBlank(bcc) {
+		email.Bcc = &bcc
 	}
 
 	err := json.NewEncoder(&buf).Encode(email)
