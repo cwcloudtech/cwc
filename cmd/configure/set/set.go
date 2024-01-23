@@ -20,4 +20,5 @@ func init() {
 	SetCmd.AddCommand(SetProviderCmd)
 	SetCmd.AddCommand(SetFormatCmd)
 	SetCmd.AddCommand(SetRegionCmd)
+	SetCmd.AddCommand(SetConfigCmd)
 }
