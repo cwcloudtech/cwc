@@ -182,7 +182,7 @@ func GetUserToken() string {
 		return ""
 	}
 
-	credentials_path := fmt.Sprintf("%s/.cwc/credentials", dirname)
+	credentials_path := fmt.Sprintf("%s/.cwc/config", dirname)
 	content, err := os.ReadFile(credentials_path)
 	if nil != err {
 		return ""
@@ -194,23 +194,6 @@ func GetUserToken() string {
 }
 
 func AddUserCredentials(access_key string, secret_key string) {
-	dirname, err := os.UserHomeDir()
-	utils.ExitIfError(err)
-
-	cwc_path := fmt.Sprintf("%s/.cwc", dirname)
-	credentials_path := fmt.Sprintf("%s/credentials", cwc_path)
-
-	if _, err := os.Stat(cwc_path); os.IsNotExist(err) {
-		err := os.Mkdir(cwc_path, os.ModePerm)
-		utils.ExitIfError(err)
-	}
-
-	f, err := os.Create(credentials_path)
-	utils.ExitIfError(err)
-
-	_, err = f.WriteString(fmt.Sprintf("cwc_access_key = %s\n", access_key))
-	utils.ExitIfError(err)
-
-	_, err = f.WriteString(fmt.Sprintf("cwc_secret_key = %s\n", secret_key))
-	utils.ExitIfError(err)
+	UpdateFileKeyValue("config", "cwc_access_key", access_key)
+	UpdateFileKeyValue("config", "cwc_secret_key", secret_key)
 }

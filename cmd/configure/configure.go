@@ -1,6 +1,7 @@
 package configure
 
 import (
+	"cwc/cmd/configure/ls"
 	"cwc/cmd/configure/get"
 	"cwc/cmd/configure/set"
 	"cwc/config"
@@ -58,4 +59,5 @@ func init() {
 	ConfigureCmd.DisableFlagsInUseLine = true
 	ConfigureCmd.AddCommand(set.SetCmd)
 	ConfigureCmd.AddCommand(get.GetCmd)
+	ConfigureCmd.AddCommand(ls.LsCmd)
 }
