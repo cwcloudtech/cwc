@@ -34,14 +34,24 @@ func HandleDeleteBucket(id *string) {
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
-func HandleUpdateBucket(id *string, email *string) {
+func HandleTransferBucketOwnership(id *string, email *string) {
 	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
 	err = c.UpdateBucket(*id, *email)
 	utils.ExitIfError(err)
 
-	fmt.Printf("Bucket %v successfully updated\n", *id)
+	fmt.Printf("Bucket with id %v successfully transferred to this email owner: %v\n", *id, *email)
+}
+
+func HandleRenewBucketCredentials(id *string) {
+	c, err := admin.NewClient()
+	utils.ExitIfError(err)
+
+	err = c.UpdateBucket(*id)
+	utils.ExitIfError(err)
+
+	fmt.Printf("Bucket with id %v successfully renewed\n", *id)
 }
 
 func HandleGetBuckets(pretty *bool) {

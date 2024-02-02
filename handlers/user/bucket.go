@@ -21,7 +21,7 @@ func HandleDeleteBucket(id *string) {
 	fmt.Printf("Bucket %v successfully deleted\n", *id)
 }
 
-func HandleUpdateBucket(id *string) {
+func HandleRenewBucket(id *string) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 

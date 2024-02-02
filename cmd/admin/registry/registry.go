@@ -4,7 +4,8 @@ import (
 	"cwc/cmd/admin/registry/create"
 	"cwc/cmd/admin/registry/delete"
 	"cwc/cmd/admin/registry/ls"
-	"cwc/cmd/admin/registry/update"
+	"cwc/cmd/admin/registry/renew"
+	"cwc/cmd/admin/registry/transfer"
 
 	"github.com/spf13/cobra"
 )
@@ -26,6 +27,7 @@ func init() {
 	RegistryCmd.AddCommand(ls.LsCmd)
 	RegistryCmd.AddCommand(ls.LsCmd)
 	RegistryCmd.AddCommand(create.CreateCmd)
-	RegistryCmd.AddCommand(update.UpdateCmd)
+	RegistryCmd.AddCommand(transfer.TransferCmd)
+	RegistryCmd.AddCommand(renew.RenewCmd)
 	RegistryCmd.AddCommand(delete.DeleteCmd)
 }

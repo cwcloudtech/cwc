@@ -3,7 +3,7 @@ package bucket
 import (
 	"cwc/cmd/bucket/delete"
 	"cwc/cmd/bucket/ls"
-	"cwc/cmd/bucket/update"
+	"cwc/cmd/bucket/renew"
 
 	"github.com/spf13/cobra"
 )
@@ -23,6 +23,6 @@ and listing your available buckets`,
 func init() {
 	BucketCmd.DisableFlagsInUseLine = true
 	BucketCmd.AddCommand(ls.LsCmd)
-	BucketCmd.AddCommand(update.UpdateCmd)
 	BucketCmd.AddCommand(delete.DeleteCmd)
+	BucketCmd.AddCommand(renew.RenewCmd)
 }

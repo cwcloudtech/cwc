@@ -20,7 +20,7 @@ func HandleDeleteRegistry(id *string) {
 	fmt.Printf("Registry %v successfully deleted\n", *id)
 }
 
-func HandleUpdateRegistry(id *string) {
+func HandleRenewRegistry(id *string) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
