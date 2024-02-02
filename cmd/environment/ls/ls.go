@@ -1,6 +1,7 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
 	"cwc/utils"
 
@@ -19,10 +20,16 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list the available environment in the cloud that can be associeted to an instance
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := client.NewClient()
+		utils.ExitIfError(err)
 		if utils.IsBlank(environmentId) {
-			user.HandleGetEnvironments(&pretty)
+			environments, err := c.GetAllEnvironments()
+			utils.ExitIfError(err)
+			user.HandleGetEnvironments(environments, &pretty)
 		} else {
-			user.HandleGetEnvironment(&environmentId, &pretty)
+			environment, err := c.GetEnvironment(*&environmentId)
+			utils.ExitIfError(err)
+			user.HandleGetEnvironment(environment, &pretty)
 		}
 	},
 }

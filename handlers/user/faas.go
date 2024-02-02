@@ -13,10 +13,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleGetLanguages(pretty *bool) {
-	languages, err := client.GetLanguages()
-	utils.ExitIfError(err)
-
+func HandleGetLanguages(languages *client.LanguagesResponse, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPrettyArray("Available languages", languages.Languages)
 	} else if config.GetDefaultFormat() == "json" {
@@ -26,10 +23,7 @@ func HandleGetLanguages(pretty *bool) {
 	}
 }
 
-func HandleGetTriggerKinds(pretty *bool) {
-	triggerKinds, err := client.GetTriggerKinds()
-	utils.ExitIfError(err)
-
+func HandleGetTriggerKinds(triggerKinds *client.TriggerKindsResponse, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPrettyArray("Available trigger kinds", triggerKinds.TriggerKinds)
 	} else if config.GetDefaultFormat() == "json" {
@@ -39,13 +33,7 @@ func HandleGetTriggerKinds(pretty *bool) {
 	}
 }
 
-func HandleGetFunctions(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	functions, err := c.GetAllFunctions()
-	utils.ExitIfError(err)
-
+func HandleGetFunctions(functions *[]client.Function, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayFunctionsAsTable(*functions)
 	} else if config.GetDefaultFormat() == "json" {
@@ -69,13 +57,7 @@ func HandleGetFunctions(pretty *bool) {
 	}
 }
 
-func HandleGetFunction(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	function, err := c.GetFunctionById(*id)
-	utils.ExitIfError(err)
-
+func HandleGetFunction(function *client.Function, pretty *bool) {
 	var functionDisplay client.FunctionDisplay
 	functionDisplay.Id = function.Id
 	functionDisplay.Owner_id = function.Owner_id
@@ -127,7 +109,7 @@ func HandleDeleteFunction(id *string) {
 	fmt.Printf("Function successfully deleted\n")
 }
 
-func HandleAddFunction(function *client.Function, interactive *bool, pretty *bool) {
+func PrepareAddFunction(function *client.Function, interactive *bool) (*client.Function, error) {
 	language_response, err := client.GetLanguages()
 	utils.ExitIfError(err)
 
@@ -220,13 +202,21 @@ func HandleAddFunction(function *client.Function, interactive *bool, pretty *boo
 
 	created_function, err := c.AddFunction(*function)
 	utils.ExitIfError(err)
+	return created_function, err
+}
 
+func HandleAddFunction(createdFunction *client.Function, pretty *bool) {
+	if createdFunction == nil {
+		// Handle the nil case to prevent panic
+		fmt.Println("Error: createdFunction is nil")
+		return
+	}
 	if config.IsPrettyFormatExpected(pretty) {
-		utils.PrintPretty("Function successfully created", *created_function)
+		utils.PrintPretty("Function successfully created", *createdFunction)
 	} else if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(created_function)
+		utils.PrintJson(*createdFunction)
 	} else {
-		utils.PrintRow(*created_function)
+		utils.PrintRow(*createdFunction)
 	}
 }
 
@@ -383,13 +373,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 	fmt.Println("Function successfully updated")
 }
 
-func HandleGetInvocations(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	invocations, err := c.GetAllInvocations()
-	utils.ExitIfError(err)
-
+func HandleGetInvocations(invocations *[]client.Invocation, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayInvocationsAsTable(*invocations)
 	} else if config.GetDefaultFormat() == "json" {
@@ -412,13 +396,7 @@ func HandleGetInvocations(pretty *bool) {
 	}
 }
 
-func HandleGetInvocation(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	invocation, err := c.GetInvocationById(*id)
-	utils.ExitIfError(err)
-
+func HandleGetInvocation(invocation *client.Invocation, pretty *bool) {
 	var invocationDisplay client.InvocationDisplay
 	invocationDisplay.Id = invocation.Id
 	invocationDisplay.Invoker_id = invocation.Invoker_id
@@ -456,7 +434,7 @@ func displayInvocationsAsTable(invocations []client.Invocation) {
 	table.Render() // Render the table
 }
 
-func HandleAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, pretty *bool, synchronous *bool) {
+func PrepareAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, synchronous *bool) (*client.Invocation, error) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
@@ -488,6 +466,10 @@ func HandleAddInvocation(content *client.InvocationAddContent, argument_values *
 	created_invocation, err := c.AddInvocation(*content, *synchronous)
 	utils.ExitIfError(err)
 
+	return created_invocation, err
+}
+
+func HandleAddInvocation(created_invocation *client.Invocation, pretty *bool) {
 	var invocationDisplay client.InvocationDisplay
 	invocationDisplay.Id = created_invocation.Id
 	invocationDisplay.State = created_invocation.Content.State
@@ -525,13 +507,7 @@ func HandleTruncateInvocations() {
 	fmt.Println("Invocations successfully truncated")
 }
 
-func HandleGetTriggers(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	triggers, err := c.GetAllTriggers()
-	utils.ExitIfError(err)
-
+func HandleGetTriggers(triggers *[]client.Trigger, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayTriggersAsTable(*triggers)
 	} else if config.GetDefaultFormat() == "json" {
@@ -554,13 +530,7 @@ func HandleGetTriggers(pretty *bool) {
 	}
 }
 
-func HandleGetTrigger(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	trigger, err := c.GetTriggerById(*id)
-	utils.ExitIfError(err)
-
+func HandleGetTrigger(trigger *client.Trigger, pretty *bool) {
 	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(trigger)
 	} else {

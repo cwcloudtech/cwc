@@ -30,13 +30,7 @@ func HandleRefreshInstance(id *string) {
 	fmt.Printf("Instance %v state successfully refreshed\n", *id)
 }
 
-func HandleAddInstance(user_email *string, name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	created_instance, err := c.AdminAddInstance(*user_email, *name, *project_id, *project_name, *project_url, *instance_type, *env, *zone, *dns_zone)
-	utils.ExitIfError(err)
-
+func HandleAddInstance(created_instance *admin.Instance,user_email *string, name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
 	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_instance)
 	} else {
@@ -54,13 +48,7 @@ func HandleUpdateInstance(id *string, status *string) {
 	fmt.Printf("Instance %v successfully updated\n", *id)
 }
 
-func HandleGetInstances(pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	instances, err := c.AdminGetAllInstances()
-	utils.ExitIfError(err)
-
+func HandleGetInstances(instances *[]admin.Instance, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayInstancesAsTable(*instances)
 	} else if config.GetDefaultFormat() == "json" {
@@ -70,13 +58,7 @@ func HandleGetInstances(pretty *bool) {
 	}
 }
 
-func HandleGetInstance(id *string, pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	instance, err := c.GetInstance(*id)
-	utils.ExitIfError(err)
-
+func HandleGetInstance(instance *admin.Instance, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Instance's informations", *instance)
 	} else if config.GetDefaultFormat() == "json" {

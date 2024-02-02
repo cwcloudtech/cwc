@@ -7,10 +7,7 @@ import (
 	"fmt"
 )
 
-func HandleListRegions(pretty *bool) {
-	provider_regions, err := client.GetProviderRegions()
-	utils.ExitIfError(err)
-
+func HandleListRegions(provider_regions *client.ProviderRegions, pretty *bool) {
 	var names []string
 	for _, available_region := range provider_regions.Regions {
 		names = append(names, available_region.Name)

@@ -6,13 +6,7 @@ import (
 	"cwc/utils"
 )
 
-func HandleGetModels(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	models, err := c.GetModels()
-	utils.ExitIfError(err)
-
+func HandleGetModels(models *client.ModelsResponse, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPrettyArray("Available models", models.Models)
 	} else if config.GetDefaultFormat() == "json" {
@@ -26,12 +20,12 @@ func HandleSendPrompt(model *string, message *string) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
-	email, err := c.SendPrompt(*model, *message)
+	response, err := c.SendPrompt(*model, *message)
 	utils.ExitIfError(err)
 
 	if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(email)
+		utils.PrintJson(response)
 	} else {
-		utils.PrintRow(*email)
+		utils.PrintRow(*response)
 	}
 }

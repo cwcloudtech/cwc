@@ -1,7 +1,9 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +19,9 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list the available regions in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleListRegions(&pretty)
+		provider_regions, err := client.GetProviderRegions()
+		utils.ExitIfError(err)
+		user.HandleListRegions(provider_regions, &pretty)
 	},
 }
 

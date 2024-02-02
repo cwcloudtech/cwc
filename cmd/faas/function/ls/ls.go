@@ -1,6 +1,7 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
 	"cwc/utils"
 
@@ -18,10 +19,16 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available functions in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := client.NewClient()
+		utils.ExitIfError(err)
 		if utils.IsBlank(functionId) {
-			user.HandleGetFunctions(&pretty)
+			functions, err := c.GetAllFunctions()
+			utils.ExitIfError(err)
+			user.HandleGetFunctions(functions, &pretty)
 		} else {
-			user.HandleGetFunction(&functionId, &pretty)
+			function, err := c.GetFunctionById(*&functionId)
+			utils.ExitIfError(err)
+			user.HandleGetFunction(function, &pretty)
 		}
 	},
 }

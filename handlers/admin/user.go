@@ -22,13 +22,7 @@ type User struct {
 	Billable           bool   `json:"billable"`
 }
 
-func HandleGetUsers(pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	responseUsers, err := c.GetAllUsers()
-	utils.ExitIfError(err)
-
+func HandleGetUsers(responseUsers *admin.ResponseUsers,pretty *bool) {
 	users := responseUsers.Result
 
 	if config.IsPrettyFormatExpected(pretty) {
@@ -40,13 +34,7 @@ func HandleGetUsers(pretty *bool) {
 	}
 }
 
-func HandleGetUser(id *string, pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	responseUser, err := c.GetUser(*id)
-	utils.ExitIfError(err)
-
+func HandleGetUser(responseUser *admin.ResponseUser, pretty *bool) {
 	user := responseUser.Result
 
 	if config.IsPrettyFormatExpected(pretty) {

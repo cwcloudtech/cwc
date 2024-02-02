@@ -1,7 +1,9 @@
 package triggerKinds
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +15,9 @@ var TriggerKindsCmd = &cobra.Command{
 	Short: "List available trigger kinds",
 	Long:  `This command lets you list your available trigger kinds in the cloud`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleGetTriggerKinds(&pretty)
+		triggerKinds, err := client.GetTriggerKinds()
+		utils.ExitIfError(err)
+		user.HandleGetTriggerKinds(triggerKinds, &pretty)
 	},
 }
 

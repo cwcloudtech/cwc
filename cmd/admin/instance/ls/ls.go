@@ -1,6 +1,7 @@
 package ls
 
 import (
+	adminClient "cwc/admin"
 	"cwc/handlers/admin"
 	"cwc/utils"
 
@@ -19,12 +20,17 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available instances in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := adminClient.NewClient()
+		utils.ExitIfError(err)
 		if utils.IsBlank(instanceId) {
-			admin.HandleGetInstances(&pretty)
+			instances, err := c.AdminGetAllInstances()
+			utils.ExitIfError(err)
+			admin.HandleGetInstances(instances, &pretty)
 		} else {
-			admin.HandleGetInstance(&instanceId, &pretty)
+			instance, err := c.GetInstance(instanceId)
+			utils.ExitIfError(err)
+			admin.HandleGetInstance(instance, &pretty)
 		}
-
 	},
 }
 

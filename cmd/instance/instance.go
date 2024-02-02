@@ -4,7 +4,7 @@ import (
 	"cwc/cmd/instance/create"
 	"cwc/cmd/instance/delete"
 	"cwc/cmd/instance/ls"
-	"cwc/cmd/instance/size"
+	"cwc/cmd/instance/type"
 
 	"cwc/cmd/instance/update"
 

@@ -3,6 +3,7 @@ stages:
   - release
   - cleanup
   - notify
+  - test
 
 mirror:
   stage: publish
@@ -52,5 +53,17 @@ notify:
   script:
     - chmod +x ./ci/notify.sh
     - ./ci/notify.sh
+  tags:
+    - imagesbuilder
+
+test:
+  stage: test
+  only:
+    refs:
+      - /^(main.*)$/
+      - merge_requests
+  script:
+    - chmod +x ./ci/test.sh
+    - ./ci/test.sh
   tags:
     - imagesbuilder

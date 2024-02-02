@@ -6,10 +6,7 @@ import (
 	"cwc/utils"
 )
 
-func HandleListDnsZones(pretty *bool) {
-	dns_zones, err := client.GetDnsZones()
-	utils.ExitIfError(err)
-
+func HandleListDnsZones(dns_zones *client.Dns_zones, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPrettyArray("DNS zones available", dns_zones.Zones)
 	} else if config.GetDefaultFormat() == "json" {

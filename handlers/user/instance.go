@@ -54,13 +54,7 @@ func HandleUpdateInstance(id *string, status *string) {
 	fmt.Printf("Instance %v successfully updated\n", *id)
 }
 
-func HandleGetInstances(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	instances, err := c.GetAllInstances()
-	utils.ExitIfError(err)
-
+func HandleGetInstances(instances *[]client.Instance, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayInstancesAsTable(*instances)
 	} else if config.GetDefaultFormat() == "json" {
@@ -70,10 +64,7 @@ func HandleGetInstances(pretty *bool) {
 	}
 }
 
-func HandleListInstancesTypes(pretty *bool) {
-	instances_types, err := client.GetInstancesTypes()
-	utils.ExitIfError(err)
-
+func HandleListInstancesTypes(instances_types *client.InstancesTypes, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPrettyArray("Types of instances available", instances_types.Types)
 	} else if config.GetDefaultFormat() == "json" {
@@ -83,13 +74,7 @@ func HandleListInstancesTypes(pretty *bool) {
 	}
 }
 
-func HandleGetInstance(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	instance, err := c.GetInstance(*id)
-	utils.ExitIfError(err)
-
+func HandleGetInstance(instance *client.Instance, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Instance's informations", *instance)
 	} else if config.GetDefaultFormat() == "json" {
