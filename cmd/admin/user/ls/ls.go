@@ -1,9 +1,9 @@
 package ls
 
 import (
+	adminClient "cwc/admin"
 	"cwc/handlers/admin"
 	"cwc/utils"
-	adminClient "cwc/admin"
 	"github.com/spf13/cobra"
 )
 
@@ -15,16 +15,15 @@ var (
 // lsCmd represents the ls command
 var LsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "List available environments",
-	Long: `This command lets you list the available environment in the cloud that can be associeted to an instance
-This command takes no arguments`,
+	Short: "List available users",
+	Long:  `List available users and their details`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()
-			utils.ExitIfError(err)
+		utils.ExitIfError(err)
 		if utils.IsBlank(userId) {
 			responseUsers, err := c.GetAllUsers()
 			utils.ExitIfError(err)
-			admin.HandleGetUsers(responseUsers,&pretty)
+			admin.HandleGetUsers(responseUsers, &pretty)
 		} else {
 			responseUser, err := c.GetUser(userId)
 			utils.ExitIfError(err)
