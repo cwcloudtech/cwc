@@ -66,17 +66,24 @@ func (c *Client) GetBucket(bucket_id string) (*Bucket, error) {
 	return bucket, nil
 }
 
-func (c *Client) UpdateBucket(id string, email string) error {
+func (c *Client) UpdateBucket(id string, args ...string) error {
 	buf := bytes.Buffer{}
+	var email string
 	var updateCreds bool = true
+	var renew RenewCredentials
 
-	renew := RenewCredentials{
-		Email:       email,
-		UpdateCreds: updateCreds,
-	}
-
-	if utils.IsValidEmail(email) {
-		updateCreds = false
+	if len(args) > 0 {
+		email = args[0]
+		if !utils.IsValidEmail(email) {
+			return fmt.Errorf("invalid email address")
+		}
+		renew = RenewCredentials{
+			Email: email,
+		}
+	} else {
+		renew = RenewCredentials{
+			UpdateCreds: updateCreds,
+		}
 	}
 
 	encode_err := json.NewEncoder(&buf).Encode(renew)

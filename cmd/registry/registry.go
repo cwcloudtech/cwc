@@ -3,7 +3,7 @@ package registry
 import (
 	"cwc/cmd/registry/delete"
 	"cwc/cmd/registry/ls"
-	"cwc/cmd/registry/update"
+	"cwc/cmd/registry/renew"
 
 	"github.com/spf13/cobra"
 )
@@ -23,6 +23,6 @@ and listing your available registries`,
 func init() {
 	RegistryCmd.DisableFlagsInUseLine = true
 	RegistryCmd.AddCommand(ls.LsCmd)
-	RegistryCmd.AddCommand(update.UpdateCmd)
+	RegistryCmd.AddCommand(renew.RenewCmd)
 	RegistryCmd.AddCommand(delete.DeleteCmd)
 }

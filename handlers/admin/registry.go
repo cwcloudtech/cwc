@@ -34,14 +34,24 @@ func HandleDeleteRegistry(id *string) {
 	fmt.Printf("Registry %v successfully deleted\n", *id)
 }
 
-func HandleUpdateRegistry(id *string, email *string) {
+func HandleTransferRegistryOwnership(id *string, email *string) {
 	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
 	err = c.UpdateRegistry(*id, *email)
 	utils.ExitIfError(err)
 
-	fmt.Printf("Registry %v successfully updated\n", *id)
+	fmt.Printf("Registry with id %v successfully transferred to this email owner: %v\n", *id, *email)
+}
+
+func HandleRenewRegistryCredentials(id *string) {
+	c, err := admin.NewClient()
+	utils.ExitIfError(err)
+
+	err = c.UpdateRegistry(*id)
+	utils.ExitIfError(err)
+
+	fmt.Printf("Registry with id %v successfully renewed credentials\n", *id)
 }
 
 func HandleGetRegistries(pretty *bool) {

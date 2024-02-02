@@ -4,7 +4,8 @@ import (
 	"cwc/cmd/admin/bucket/create"
 	"cwc/cmd/admin/bucket/delete"
 	"cwc/cmd/admin/bucket/ls"
-	"cwc/cmd/admin/bucket/update"
+	"cwc/cmd/admin/bucket/renew"
+	"cwc/cmd/admin/bucket/transfer"
 
 	"github.com/spf13/cobra"
 )
@@ -25,7 +26,7 @@ func init() {
 	BucketCmd.DisableFlagsInUseLine = true
 	BucketCmd.AddCommand(ls.LsCmd)
 	BucketCmd.AddCommand(create.CreateCmd)
-
-	BucketCmd.AddCommand(update.UpdateCmd)
+	BucketCmd.AddCommand(transfer.TransferCmd)
+	BucketCmd.AddCommand(renew.RenewCmd)
 	BucketCmd.AddCommand(delete.DeleteCmd)
 }
