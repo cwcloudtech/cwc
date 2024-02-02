@@ -1,6 +1,7 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
 	"cwc/utils"
 
@@ -19,10 +20,16 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available registries in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := client.NewClient()
+		utils.ExitIfError(err)
 		if utils.IsBlank(registryId) {
-			user.HandleGetRegistries(&pretty)
+			registries, err := c.GetAllRegistries()
+			utils.ExitIfError(err)
+			user.HandleGetRegistries(registries, &pretty)
 		} else {
-			user.HandleGetRegistry(&registryId, &pretty)
+			registry, err := c.GetRegistry(registryId)
+			utils.ExitIfError(err)
+			user.HandleGetRegistry(registry, &pretty)
 		}
 	},
 }

@@ -30,13 +30,7 @@ func HandleRenewRegistry(id *string) {
 	fmt.Printf("Registry %v successfully updated\n", *id)
 }
 
-func HandleGetRegistries(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	registries, err := c.GetAllRegistries()
-	utils.ExitIfError(err)
-
+func HandleGetRegistries(registries *[]client.Registry, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayRegistriesAsTable(*registries)
 	} else if config.GetDefaultFormat() == "json" {
@@ -46,13 +40,7 @@ func HandleGetRegistries(pretty *bool) {
 	}
 }
 
-func HandleGetRegistry(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	registry, err := c.GetRegistry(*id)
-	utils.ExitIfError(err)
-
+func HandleGetRegistry(registry *client.Registry, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Registry's informations", *registry)
 	} else if config.GetDefaultFormat() == "json" {

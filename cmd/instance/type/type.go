@@ -1,7 +1,7 @@
 package size
 
 import (
-	"cwc/cmd/instance/size/ls"
+	"cwc/cmd/instance/type/ls"
 
 	"github.com/spf13/cobra"
 )

@@ -1,7 +1,9 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +18,9 @@ var LsCmd = &cobra.Command{
 	Short: "List availble instances types",
 	Long:  `List availble instances types`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleListInstancesTypes(&pretty)
+		instances_types, err := client.GetInstancesTypes()
+		utils.ExitIfError(err)
+		user.HandleListInstancesTypes(instances_types, &pretty)
 	},
 }
 

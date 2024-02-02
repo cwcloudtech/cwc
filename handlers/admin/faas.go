@@ -10,12 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleGetFunctions(pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	functions, err := c.GetAllFunctions()
-	utils.ExitIfError(err)
+func HandleGetFunctions(functions *[]admin.Function,pretty *bool) {
 
 	if config.IsPrettyFormatExpected(pretty) {
 		displayFunctionsAsTable(*functions)
@@ -40,13 +35,7 @@ func HandleGetFunctions(pretty *bool) {
 	}
 }
 
-func HandleGetFunctionOwner(id *string, pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	owner, err := c.GetFunctionOwnerById(*id)
-	utils.ExitIfError(err)
-
+func HandleGetFunctionOwner(owner *admin.FunctionOwner, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Owner found", *owner)
 	} else if config.GetDefaultFormat() == "json" {
@@ -79,13 +68,7 @@ func displayFunctionsAsTable(functions []admin.Function) {
 	table.Render() // Render the table
 }
 
-func HandleGetInvocations(pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	invocations, err := c.GetAllInvocations()
-	utils.ExitIfError(err)
-
+func HandleGetInvocations(invocations *[]admin.Invocation,pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayInvocationsAsTable(*invocations)
 	} else if config.GetDefaultFormat() == "json" {
@@ -108,13 +91,7 @@ func HandleGetInvocations(pretty *bool) {
 	}
 }
 
-func HandleGetInvocationInvoker(id *string, pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	invoker, err := c.GetInvocationInvokerById(*id)
-	utils.ExitIfError(err)
-
+func HandleGetInvocationInvoker(invoker *admin.InvocationInvoker, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Invoker found", *invoker)
 	} else if config.GetDefaultFormat() == "json" {
@@ -144,13 +121,7 @@ func displayInvocationsAsTable(invocations []admin.Invocation) {
 	table.Render() // Render the table
 }
 
-func HandleGetTriggers(pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	triggers, err := c.GetAllTriggers()
-	utils.ExitIfError(err)
-
+func HandleGetTriggers(triggers *[]admin.Trigger,pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayTriggersAsTable(*triggers)
 	} else if config.GetDefaultFormat() == "json" {
@@ -175,13 +146,7 @@ func HandleGetTriggers(pretty *bool) {
 	}
 }
 
-func HandleGetTriggerOwner(id *string, pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	owner, err := c.GetTriggerOwnerById(*id)
-	utils.ExitIfError(err)
-
+func HandleGetTriggerOwner(owner *admin.TriggerOwner, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Owner found", *owner)
 	} else if config.GetDefaultFormat() == "json" {

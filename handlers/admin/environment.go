@@ -112,13 +112,7 @@ func HandleDeleteEnvironment(id *string) {
 	fmt.Printf("Environment %v successfully deleted\n", *id)
 }
 
-func HandleGetEnvironments(pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	environments, err := c.GetAllEnvironments()
-	utils.ExitIfError(err)
-
+func HandleGetEnvironments(environments *[]admin.Environment, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayEnvironmentsAsTable(*environments)
 	} else if config.GetDefaultFormat() == "json" {
@@ -128,13 +122,7 @@ func HandleGetEnvironments(pretty *bool) {
 	}
 }
 
-func HandleGetEnvironment(id *string, pretty *bool) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	environment, err := c.GetEnvironment(*id)
-	utils.ExitIfError(err)
-
+func HandleGetEnvironment(environment *admin.Environment, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Environment found", environment)
 	} else if config.GetDefaultFormat() == "json" {

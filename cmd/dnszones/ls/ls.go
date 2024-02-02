@@ -1,7 +1,9 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +19,9 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list the available Dns Zones in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleListDnsZones(&pretty)
+		dns_zones, err := client.GetDnsZones()
+		utils.ExitIfError(err)
+		user.HandleListDnsZones(dns_zones, &pretty)
 	},
 }
 

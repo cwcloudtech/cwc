@@ -1,6 +1,7 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
 	"cwc/utils"
 
@@ -19,10 +20,16 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available buckets in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := client.NewClient()
+		utils.ExitIfError(err)
 		if utils.IsBlank(bucketId) {
-			user.HandleGetBuckets(&pretty)
+			buckets, err := c.GetAllBuckets()
+			utils.ExitIfError(err)
+			user.HandleGetBuckets(buckets, &pretty)
 		} else {
-			user.HandleGetBucket(&bucketId, &pretty)
+			bucket, err := c.GetBucket(*&bucketId)
+			utils.ExitIfError(err)
+			user.HandleGetBucket(bucket, &pretty)
 		}
 	},
 }

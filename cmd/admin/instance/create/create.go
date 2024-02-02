@@ -3,8 +3,9 @@ package create
 import (
 	"cwc/handlers/admin"
 	"fmt"
-
+	 adminClient "cwc/admin"
 	"github.com/spf13/cobra"
+	"cwc/utils"
 )
 
 var (
@@ -28,7 +29,10 @@ You have to provide the project ID or the project name in which the instance wil
 You also have to provide the environment that will be installed in the virtuals machines.
 Other arguments are optional.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		admin.HandleAddInstance(&user_email, &name, &projectId, &projectName, &projectUrl, &environment, &instanceType, &zone, &dnsZone)
+		c, err := adminClient.NewClient()
+		created_instance, err := c.AdminAddInstance(user_email, name, projectId, projectName, projectUrl, environment, instanceType,zone, dnsZone)
+		utils.ExitIfError(err)
+		admin.HandleAddInstance(created_instance,&user_email, &name, &projectId, &projectName, &projectUrl, &environment, &instanceType, &zone, &dnsZone)
 	},
 }
 

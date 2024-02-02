@@ -1,7 +1,9 @@
 package models
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
+	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +18,11 @@ var ModelsCmd = &cobra.Command{
 	Short: "Get the available models",
 	Long:  `This command allows you to list the available models of the cwai api`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleGetModels(&pretty)
+		c, err := client.NewClient()
+		utils.ExitIfError(err)
+		models, err := c.GetModels()
+		utils.ExitIfError(err)
+		user.HandleGetModels(models, &pretty)
 	},
 }
 

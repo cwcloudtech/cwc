@@ -10,13 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleAddProject(user_email *string, name *string, host *string, token *string, git_username *string, namespace *string) {
-	c, err := admin.NewClient()
-	utils.ExitIfError(err)
-
-	created_project, err := c.AdminAddProject(*user_email, *name, *host, *token, *git_username, *namespace)
-	utils.ExitIfError(err)
-
+func HandleAddProject(created_project *admin.Project,user_email *string, name *string, host *string, token *string, git_username *string, namespace *string) {
 	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_project)
 	} else {

@@ -31,13 +31,7 @@ func HandleRenewBucket(id *string) {
 	fmt.Printf("Bucket %v successfully updated\n", *id)
 }
 
-func HandleGetBuckets(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	buckets, err := c.GetAllBuckets()
-	utils.ExitIfError(err)
-
+func HandleGetBuckets(buckets *[]client.Bucket, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayBucketsAsTable(*buckets)
 	} else if config.GetDefaultFormat() == "json" {
@@ -47,13 +41,7 @@ func HandleGetBuckets(pretty *bool) {
 	}
 }
 
-func HandleGetBucket(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	bucket, err := c.GetBucket(*id)
-	utils.ExitIfError(err)
-
+func HandleGetBucket(bucket *client.Bucket, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Bucket's informations", *bucket)
 	} else if config.GetDefaultFormat() == "json" {

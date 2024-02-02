@@ -1,6 +1,7 @@
 package ls
 
 import (
+	"cwc/client"
 	"cwc/handlers/user"
 	"cwc/utils"
 
@@ -18,10 +19,16 @@ var LsCmd = &cobra.Command{
 	Long: `This command lets you list your available triggers in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := client.NewClient()
+		utils.ExitIfError(err)
 		if utils.IsBlank(triggerId) {
-			user.HandleGetTriggers(&pretty)
+			triggers, err := c.GetAllTriggers()
+			utils.ExitIfError(err)
+			user.HandleGetTriggers(triggers, &pretty)
 		} else {
-			user.HandleGetTrigger(&triggerId, &pretty)
+			trigger, err := c.GetTriggerById(triggerId)
+			utils.ExitIfError(err)
+			user.HandleGetTrigger(trigger, &pretty)
 		}
 	},
 }

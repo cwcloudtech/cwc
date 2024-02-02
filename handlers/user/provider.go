@@ -7,10 +7,7 @@ import (
 	"fmt"
 )
 
-func HandleListProviders(pretty *bool) {
-	providers, err := client.GetProviders()
-	utils.ExitIfError(err)
-
+func HandleListProviders(providers *client.AvailableProviders, pretty *bool) {
 	var names []string
 	for _, available_provider := range providers.Providers {
 		names = append(names, available_provider.Name)

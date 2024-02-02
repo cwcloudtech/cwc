@@ -10,13 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleGetEnvironments(pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	environments, err := c.GetAllEnvironments()
-	utils.ExitIfError(err)
-
+func HandleGetEnvironments(environments *[]client.Environment, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayEnvironmentsAsTable(*environments)
 	} else if config.GetDefaultFormat() == "json" {
@@ -26,13 +20,7 @@ func HandleGetEnvironments(pretty *bool) {
 	}
 }
 
-func HandleGetEnvironment(id *string, pretty *bool) {
-	c, err := client.NewClient()
-	utils.ExitIfError(err)
-
-	environment, err := c.GetEnvironment(*id)
-	utils.ExitIfError(err)
-
+func HandleGetEnvironment(environment *client.Environment, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		utils.PrintPretty("Environment found", *environment)
 	} else if config.GetDefaultFormat() == "json" {

@@ -3,8 +3,9 @@ package create
 import (
 	"cwc/handlers/admin"
 	"fmt"
-
+	adminClient "cwc/admin"
 	"github.com/spf13/cobra"
+	"cwc/utils"
 )
 
 var (
@@ -24,7 +25,10 @@ var CreateCmd = &cobra.Command{
 You have to provide the project name.
 You can also provide your Gitlab host and access token and git username to save the project in another Gitlab instance`,
 	Run: func(cmd *cobra.Command, args []string) {
-		admin.HandleAddProject(&user_email, &name, &host, &token, &git, &namespace)
+		c, err := adminClient.NewClient()
+		utils.ExitIfError(err)
+		created_project, err := c.AdminAddProject(user_email, name, host, token, git, namespace)
+		admin.HandleAddProject(created_project,&user_email, &name, &host, &token, &git, &namespace)
 	},
 }
 
