@@ -10,8 +10,8 @@ import (
 // providerCmd represents the provider command
 var UserCmd = &cobra.Command{
 	Use:   "user",
-	Short: "Get informations about available environments that you can associate to a virtual machine",
-	Long:  `Get informations about available environments that you can associate to a virtual machine`,
+	Short: "Manage users",
+	Long:  `Manage all users available on the platform`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
