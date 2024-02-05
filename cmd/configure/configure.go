@@ -1,9 +1,11 @@
 package configure
 
 import (
-	"cwc/cmd/configure/ls"
 	"cwc/cmd/configure/get"
+	importConfig "cwc/cmd/configure/import"
+	"cwc/cmd/configure/ls"
 	"cwc/cmd/configure/set"
+	switchConfig "cwc/cmd/configure/switch"
 	"cwc/config"
 	"cwc/handlers/user"
 
@@ -60,4 +62,6 @@ func init() {
 	ConfigureCmd.AddCommand(set.SetCmd)
 	ConfigureCmd.AddCommand(get.GetCmd)
 	ConfigureCmd.AddCommand(ls.LsCmd)
+	ConfigureCmd.AddCommand(switchConfig.SwitchConfigCmd)
+	ConfigureCmd.AddCommand(importConfig.ImportConfigCmd)
 }
