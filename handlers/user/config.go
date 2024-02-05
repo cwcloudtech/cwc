@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func HandleSetConfigFile(configFileName *string) {
+func HandleSwitchConfigFile(configFileName *string) {
 	availableFiles, err := getFilesInFolder(".cwc")
 	utils.ExitIfError(err)
 
@@ -25,10 +25,14 @@ func HandleSetConfigFile(configFileName *string) {
 	}
 
 	if !found {
-		return
+		fmt.Printf("Config file '%s' not found\n", *configFileName)
 	}
 
 	configFilePath := filepath.Join(getHomeDir(), ".cwc", *configFileName)
+	HandleImportConfigFile(configFilePath)
+}
+
+func HandleImportConfigFile(configFilePath string) {
 	configContent, err := readConfigFile(configFilePath)
 	utils.ExitIfError(err)
 
@@ -98,6 +102,8 @@ func HandleSetConfigFile(configFileName *string) {
 		utils.ExitIfError(err)
 		fmt.Println("Credentials are set successfully")
 	}
+
+	fmt.Println("Config is set successfully")
 }
 
 func HandleGetConfigFiles() {
