@@ -4,6 +4,7 @@ import (
 	"cwc/handlers/user"
 	"cwc/utils"
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ var (
 
 var SwitchConfigCmd = &cobra.Command{
 	Use:   "switch [config file name]",
-	Short: "switch the config file",
+	Short: "Switch the config file",
 	Long:  `This command lets you switch between different config files`,
 	Run: func(cmd *cobra.Command, args []string) {
 		errorMessage := "Please provide a valid config file path"
