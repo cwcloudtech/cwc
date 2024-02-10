@@ -93,7 +93,7 @@ cwc.exe
 
 ## Where you can find this repository ?
 
-* Main repo: https://gitlab.comwork.io/oss/cwc/cwc.git
+* Main repo: https://gitlab.comwork.io/oss/cwcloud/cwc.git
 * Github mirror: https://github.com/comworkio/cwc.git
 * Gitlab mirror: https://gitlab.com/ineumann/cwc.git
 
