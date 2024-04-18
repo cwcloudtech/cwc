@@ -134,7 +134,7 @@ func PrepareAddFunction(function *client.Function, interactive *bool) (*client.F
 			var arg string
 			_, err := fmt.Scanln(&arg)
 			if nil != err {
-				break // Exit the loop if an error occurs (e.g., empty line)
+				break 
 			}
 			function.Content.Args = append(function.Content.Args, arg)
 		}
@@ -156,19 +156,104 @@ func PrepareAddFunction(function *client.Function, interactive *bool) (*client.F
 				var envVarKey string
 				_, err := fmt.Scanln(&envVarKey)
 				if nil != err {
-					break // Exit the loop if an error occurs (e.g., empty line)
+					break 
 				}
 				fmt.Print("  ➤ Value: ")
 				var envVarValue string
 				_, err = fmt.Scanln(&envVarValue)
 				if nil != err {
-					break // Exit the loop if an error occurs (e.g., empty line)
+					break 
 				}
 				function.Content.Env[envVarKey] = envVarValue
+				fmt.Print("--------------------\n")
 			}
 		}
 		if len(function.Content.Env) == 0 {
 			function.Content.Env = map[string]string{}
+		}
+
+		fmt.Print("Do you want to add callbacks? [Y/N]: ")
+		var addCallbacks string
+		fmt.Scanln(&addCallbacks)
+		if addCallbacks == "y" || addCallbacks == "Y" {
+			fmt.Println("Enter callbacks (press Enter for each callback; leave an empty line to finish):")
+			function.Content.Callbacks = []client.CallbacksContent{}
+			for {
+				var callback client.CallbacksContent
+				fmt.Print("  ➤ Type (Current available types are http, websocket, and mqtt): ")
+				_, err := fmt.Scanln(&callback.Type)
+				if nil != err {
+					break 
+				}
+
+				if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
+					fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
+				}
+
+				fmt.Print("  ➤ Endpoint: ")
+				_, err = fmt.Scanln(&callback.Endpoint)
+				if nil != err {
+					break 
+				}
+
+				if callback.Type == "http" {
+					fmt.Print("  ➤ Token: ")
+					_, err = fmt.Scanln(&callback.Token)
+					if nil != err {
+						break 
+					}
+				} else {
+					fmt.Print("  ➤ Client ID: ")
+					_, err = fmt.Scanln(&callback.Client_id)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ User Data: ")
+					_, err = fmt.Scanln(&callback.User_data)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ Username: ")
+					_, err = fmt.Scanln(&callback.Username)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ Password: ")
+					_, err = fmt.Scanln(&callback.Password)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ Port: ")
+					_, err = fmt.Scanln(&callback.Port)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ Subscription: ")
+					_, err = fmt.Scanln(&callback.Subscription)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ QoS: ")
+					_, err = fmt.Scanln(&callback.Qos)
+					if nil != err {
+						break 
+					}
+
+					fmt.Print("  ➤ Topic: ")
+					_, err = fmt.Scanln(&callback.Topic)
+					if nil != err {
+						break 
+					}
+				}
+				function.Content.Callbacks = append(function.Content.Callbacks, callback)
+				fmt.Print("--------------------\n")
+			}
 		}
 
 		c, err := client.NewClient()
@@ -301,7 +386,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 			var arg string
 			_, err := fmt.Scanln(&arg)
 			if nil != err {
-				break // Exit the loop if an error occurs (e.g., empty line)
+				break 
 			}
 			function.Content.Args = append(function.Content.Args, arg)
 		}
