@@ -27,15 +27,13 @@ var CreateCmd = &cobra.Command{
 }
 
 func init() {
-	CreateCmd.Flags().BoolVar(&function.Is_public, "is_public", false, "Is the function public? (optional)")
 	CreateCmd.Flags().StringVarP(&function.Content.Name, "name", "n", "", "Name of the function")
 	CreateCmd.Flags().StringVarP(&function.Content.Language, "language", "l", "", "Language of the function")
+	CreateCmd.Flags().StringSliceVarP(&function.Content.Args, "args", "g", []string{}, "Arguments of the function")
+	CreateCmd.Flags().BoolVar(&function.Is_public, "is_public", false, "Is the function public? (optional)")
 	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 	CreateCmd.Flags().StringVarP(&function.Content.Regexp, "regexp", "r", "", "Arguments matching regexp (optional)")
-	CreateCmd.Flags().StringVarP(&function.Content.Callback_url, "callback-url", "u", "", "Callback URL of the function (optional)")
-	CreateCmd.Flags().StringVarP(&function.Content.Callback_authorization_header, "callback-authorization-header", "a", "", "Callback Authorization Header of the function (optional)")
-	CreateCmd.Flags().StringSliceVarP(&function.Content.Args, "args", "g", []string{}, "Arguments of the function")
 	CreateCmd.Flags().StringVarP(&function.Content.Code, "code", "c", "", "Code of the function (optional)")
 
 	err := CreateCmd.MarkFlagRequired("name")

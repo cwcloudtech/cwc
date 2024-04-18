@@ -28,8 +28,6 @@ func init() {
 	UpdateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 	UpdateCmd.Flags().StringVarP(&function.Content.Language, "language", "l", "", "The function language")
 	UpdateCmd.Flags().StringVarP(&function.Content.Regexp, "regexp", "r", "", "The function regexp")
-	UpdateCmd.Flags().StringVarP(&function.Content.Callback_url, "callback_url", "u", "", "The function callback url")
-	UpdateCmd.Flags().StringVarP(&function.Content.Callback_authorization_header, "callback_authorization_header", "a", "", "The function callback authorization header")
 	UpdateCmd.Flags().StringVarP(&function.Content.Name, "name", "n", "", "The function name")
 	UpdateCmd.Flags().BoolVarP(&function.Is_public, "is_public", "p", false, "The function is public")
 	UpdateCmd.Flags().StringSliceVarP(&function.Content.Args, "args", "g", []string{}, "Arguments of the function")

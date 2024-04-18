@@ -128,14 +128,6 @@ func PrepareAddFunction(function *client.Function, interactive *bool) (*client.F
 		fmt.Print("Enter Regexp (or press Enter for empty): ")
 		fmt.Scanln(&function.Content.Regexp)
 
-		// Prompt for Callback URL
-		fmt.Print("Enter Callback URL (or press Enter for empty): ")
-		fmt.Scanln(&function.Content.Callback_url)
-
-		// Prompt for Callback Authorization Header
-		fmt.Print("Enter Callback Authorization Header (or press Enter for empty): ")
-		fmt.Scanln(&function.Content.Callback_authorization_header)
-
 		// Prompt for Args array
 		fmt.Println("Enter Args (one per line, press Enter for each entry; leave an empty line to finish):")
 		for {
@@ -148,6 +140,35 @@ func PrepareAddFunction(function *client.Function, interactive *bool) (*client.F
 		}
 		if len(function.Content.Args) == 0 {
 			function.Content.Args = []string{}
+		}
+
+		fmt.Print("Do you want to make the function public? [Y/N]: ")
+		fmt.Scanln(&function.Is_public)
+
+		fmt.Print("Do you want to add environment variables? [Y/N]: ")
+		var addEnvVars string
+		fmt.Scanln(&addEnvVars)
+		if addEnvVars == "y" || addEnvVars == "Y" {
+			fmt.Println("Enter environment variables (one per line, press Enter for each entry; leave an empty line to finish):")
+			function.Content.Env = make(map[string]string) // Initialize the map
+			for {
+				fmt.Print("  ➤ Key: ")
+				var envVarKey string
+				_, err := fmt.Scanln(&envVarKey)
+				if nil != err {
+					break // Exit the loop if an error occurs (e.g., empty line)
+				}
+				fmt.Print("  ➤ Value: ")
+				var envVarValue string
+				_, err = fmt.Scanln(&envVarValue)
+				if nil != err {
+					break // Exit the loop if an error occurs (e.g., empty line)
+				}
+				function.Content.Env[envVarKey] = envVarValue
+			}
+		}
+		if len(function.Content.Env) == 0 {
+			function.Content.Env = map[string]string{}
 		}
 
 		c, err := client.NewClient()
@@ -253,16 +274,6 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 		fmt.Print("Enter new regexp (or press Enter to keep the current one): ")
 		fmt.Scanln(&function.Content.Regexp)
 
-		// Prompt for Callback URL
-		fmt.Printf("Current callback URL: %s\n", function.Content.Callback_url)
-		fmt.Print("Enter new callback URL (or press Enter to keep the current one): ")
-		fmt.Scanln(&function.Content.Callback_url)
-
-		// Prompt for Callback Authorization Header
-		fmt.Printf("Current callback authorization header: %s\n", function.Content.Callback_authorization_header)
-		fmt.Print("Enter new callback authorization header (or press Enter to keep the current one): ")
-		fmt.Scanln(&function.Content.Callback_authorization_header)
-
 		// Prompt for function name
 		fmt.Printf("Current name: %s\n", function.Content.Name)
 		fmt.Print("Enter new name (or press Enter to keep the current one): ")
@@ -340,14 +351,6 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 
 		if utils.IsNotBlank(updated_function.Content.Regexp) {
 			function.Content.Regexp = updated_function.Content.Regexp
-		}
-
-		if utils.IsNotBlank(updated_function.Content.Callback_url) {
-			function.Content.Callback_url = updated_function.Content.Callback_url
-		}
-
-		if utils.IsNotBlank(updated_function.Content.Callback_authorization_header) {
-			function.Content.Callback_authorization_header = updated_function.Content.Callback_authorization_header
 		}
 
 		if utils.IsNotBlank(updated_function.Content.Name) {
