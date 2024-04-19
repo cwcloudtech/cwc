@@ -330,3 +330,15 @@ type AddTriggerBody struct {
 	Kind    string         `json:"kind"`
 	Content TriggerContent `json:"content"`
 }
+
+type ObjectTypeContent struct {
+	Name string `json:"name"`
+	Public bool `json:"public"`
+	DecodingFunction string `json:"decoding_function"`
+	Triggers []string `json:"triggers"`
+}
+
+type ObjectType struct {
+	Id          string `json:"id"`
+	Content ObjectTypeContent `json:"content"`
+}

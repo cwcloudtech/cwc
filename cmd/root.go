@@ -10,6 +10,7 @@ import (
 	"cwc/cmd/environment"
 	"cwc/cmd/faas"
 	"cwc/cmd/instance"
+	"cwc/cmd/iot"
 	"cwc/cmd/login"
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
@@ -71,4 +72,5 @@ func init() {
 	rootCmd.AddCommand(dnszones.DnsZonesCmd)
 	rootCmd.AddCommand(configure.ConfigureCmd)
 	rootCmd.AddCommand(faas.FaasCmd)
+	rootCmd.AddCommand(iot.IotCmd)
 }
