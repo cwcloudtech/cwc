@@ -176,21 +176,35 @@ type AvailableProviders struct {
 	Providers []Provider `json:"providers"`
 }
 
+type CallbacksContent struct {
+	Type                      string           `json:"type"`
+	Endpoint                  string           `json:"endpoint"`
+	Token                     string           `json:"token"`
+	Client_id                 string           `json:"client_id"`
+	User_data                 string           `json:"user_data"`
+	Username                  string           `json:"username"`
+	Password                  string           `json:"password"`
+	Port                      string           `json:"port"`
+	Subscription              string           `json:"subscription"`
+	Qos                       string           `json:"qos"`
+	Topic                     string           `json:"topic"`
+}
+
 type FunctionContent struct {
-	Code                          string   `json:"code"`
-	Name                          string   `json:"name"`
-	Language                      string   `json:"language"`
-	Args                          []string `json:"args"`
-	Regexp                        string   `json:"regexp"`
-	Callback_url                  string   `json:"callback_url"`
-	Callback_authorization_header string   `json:"callback_authorization_header"`
+	Code      string             `json:"code"`
+	Language  string             `json:"language"`
+	Name      string             `json:"name"`
+	Args      []string           `json:"args"`
+	Regexp    string             `json:"regexp"`
+	Callbacks []CallbacksContent `json:"callbacks"`
+	Env       map[string]string  `json:"env"`
 }
 
 type Function struct {
 	Id         string          `json:"id"`
 	Owner_id   int             `json:"owner_id"`
-	Is_public  bool            `json:"is_public"`
 	Content    FunctionContent `json:"content"`
+	Is_public  bool            `json:"is_public"`
 	Created_at string          `json:"created_at"`
 	Updated_at string          `json:"updated_at"`
 }
