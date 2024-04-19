@@ -76,3 +76,13 @@ func HandleAddObjectType(createdObjectType *client.ObjectType, pretty *bool) {
 		utils.PrintRow(createdObjectType)
 	}
 }
+
+func HandleDeleteObjectType(objectTypeId *string) {
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	err = c.DeleteObjectTypeById(*objectTypeId)
+	utils.ExitIfError(err)
+
+	fmt.Println("Object type successfully deleted")
+}

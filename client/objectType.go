@@ -22,3 +22,11 @@ func (c *Client) CreateObjectType(objectType ObjectType) (*ObjectType, error) {
 	}
 	return created_objectType, nil
 }
+
+func (c *Client) DeleteObjectTypeById(objectTypeId string) error {
+	_, err := c.httpRequest("/iot/object-type/"+objectTypeId, "DELETE", bytes.Buffer{})
+	if nil != err {
+		return err
+	}
+	return nil
+}

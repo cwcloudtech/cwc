@@ -28,10 +28,10 @@ var CreateCmd = &cobra.Command{
 
 func init() {
 	CreateCmd.Flags().StringVarP(&objectType.Content.Name, "name", "n", "", "Name of the object type")
-	CreateCmd.Flags().BoolVar(&objectType.Content.Public, "public", true, "Is the object type public?")
+	CreateCmd.Flags().BoolVar(&objectType.Content.Public, "public", false, "Is the object type public?")
 	CreateCmd.Flags().StringVarP(&objectType.Content.DecodingFunction, "decoding_function", "d", "", "Decoding function of the object type")
 	CreateCmd.Flags().StringSliceVarP(&objectType.Content.Triggers, "triggers", "t", []string{}, "Triggers of the object type")
-	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", true, "Interactive mode (optional)")
+	CreateCmd.Flags().BoolVarP(&interactive, "interactive", "i", false, "Interactive mode (optional)")
 
 	if !interactive {
 		err := CreateCmd.MarkFlagRequired("decoding_function")

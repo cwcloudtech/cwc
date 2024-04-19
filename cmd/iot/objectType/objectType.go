@@ -2,6 +2,7 @@ package objectType
 
 import (
 	"cwc/cmd/iot/objectType/create"
+	"cwc/cmd/iot/objectType/delete"
 
 	"github.com/spf13/cobra"
 )
@@ -19,4 +20,5 @@ Several actions are associated with this command such as creating an object type
 func init() {
 	ObjectTypeCmd.DisableFlagsInUseLine = true
 	ObjectTypeCmd.AddCommand(create.CreateCmd)
+	ObjectTypeCmd.AddCommand(delete.DeleteCmd)
 }
