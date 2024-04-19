@@ -164,82 +164,65 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 	if addCallbacks == "y" || addCallbacks == "Y" {
 		fmt.Println("Enter callbacks (press Enter for each callback; leave an empty line to finish):")
 		function.Content.Callbacks = []client.CallbacksContent{}
+		reader := bufio.NewReader(os.Stdin)
 		for {
 			var callback client.CallbacksContent
 			fmt.Print("  ➤ Type (Current available types are http, websocket, and mqtt): ")
-			_, err := fmt.Scanln(&callback.Type)
-			if nil != err {
-				break 
+			callback.Type, _ = reader.ReadString('\n')
+			callback.Type = strings.TrimSpace(callback.Type)
+			if callback.Type == "" {
+				break
 			}
-
 			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
 				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
 			} else {
 				fmt.Print("  ➤ Endpoint: ")
-				_, err = fmt.Scanln(&callback.Endpoint)
-				if nil != err {
-					break 
-				}
+				callback.Endpoint, _ = reader.ReadString('\n')
+				callback.Endpoint = strings.TrimSpace(callback.Endpoint)
 			}
 
 			if callback.Type == "http" {
 				fmt.Print("  ➤ Token: ")
-				_, err = fmt.Scanln(&callback.Token)
-				if nil != err {
-					break 
-				}
+				callback.Token, _ = reader.ReadString('\n')
+				callback.Token = strings.TrimSpace(callback.Token)
 			} else if callback.Type == "websocket" || callback.Type == "mqtt" {
 				fmt.Print("  ➤ Client ID: ")
-				_, err = fmt.Scanln(&callback.Client_id)
-				if nil != err {
-					break 
-				}
+				callback.Client_id, _ = reader.ReadString('\n')
+				callback.Client_id = strings.TrimSpace(callback.Client_id)
 
 				fmt.Print("  ➤ User Data: ")
-				_, err = fmt.Scanln(&callback.User_data)
-				if nil != err {
-					break 
-				}
+				callback.User_data, _ = reader.ReadString('\n')
+				callback.User_data = strings.TrimSpace(callback.User_data)
 
 				fmt.Print("  ➤ Username: ")
-				_, err = fmt.Scanln(&callback.Username)
-				if nil != err {
-					break 
-				}
+				callback.Username, _ = reader.ReadString('\n')
+				callback.Username = strings.TrimSpace(callback.Username)
 
 				fmt.Print("  ➤ Password: ")
-				_, err = fmt.Scanln(&callback.Password)
-				if nil != err {
-					break 
-				}
+				callback.Password, _ = reader.ReadString('\n')
+				callback.Password = strings.TrimSpace(callback.Password)
 
 				fmt.Print("  ➤ Port: ")
-				_, err = fmt.Scanln(&callback.Port)
-				if nil != err {
-					break 
-				}
+				callback.Port, _ = reader.ReadString('\n')
+				callback.Port = strings.TrimSpace(callback.Port)
 
 				fmt.Print("  ➤ Subscription: ")
-				_, err = fmt.Scanln(&callback.Subscription)
-				if nil != err {
-					break 
-				}
+				callback.Subscription, _ = reader.ReadString('\n')
+				callback.Subscription = strings.TrimSpace(callback.Subscription)
 
 				fmt.Print("  ➤ QoS: ")
-				_, err = fmt.Scanln(&callback.Qos)
-				if nil != err {
-					break 
-				}
+				callback.Qos, _ = reader.ReadString('\n')
+				callback.Qos = strings.TrimSpace(callback.Qos)
 
 				fmt.Print("  ➤ Topic: ")
-				_, err = fmt.Scanln(&callback.Topic)
-				if nil != err {
-					break 
-				}
+				callback.Topic, _ = reader.ReadString('\n')
+				callback.Topic = strings.TrimSpace(callback.Topic)
 			}
+
 			if callback.Type == "mqtt" || callback.Type == "websocket" || callback.Type == "http" {
 				function.Content.Callbacks = append(function.Content.Callbacks, callback)
 			}
+
 			fmt.Print("--------------------\n")
 		}
 	}
