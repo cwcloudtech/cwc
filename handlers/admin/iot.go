@@ -1,7 +1,7 @@
-package user
+package admin
 
 import (
-	"cwc/client"
+	"cwc/admin"
 	"cwc/config"
 	"cwc/utils"
 	"fmt"
@@ -10,7 +10,11 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func AddObjectTypeInInteractiveMode (objectType *client.ObjectType) {
+func AddObjectTypeInInteractiveMode (objectType *admin.ObjectType) {
+	// Prompt the id of the owner
+	fmt.Print("Enter the id of the owner: ")
+	fmt.Scanln(&objectType.User_id)
+
 	// Prompt for the name of the object type
 	fmt.Print("Enter the name of the object type (or press Enter to skip): ")
 	fmt.Scanln(&objectType.Content.Name)
@@ -51,12 +55,12 @@ func AddObjectTypeInInteractiveMode (objectType *client.ObjectType) {
 	}
 }
 
-func PrepareAddObjectType(objectType *client.ObjectType, interactive *bool) (*client.ObjectType, error) {
+func PrepareAddObjectType(objectType *admin.ObjectType, interactive *bool) (*admin.ObjectType, error) {
 	if *interactive {
 		AddObjectTypeInInteractiveMode(objectType)
 	}
 
-	c, err := client.NewClient()
+	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
 	created_objectType, err := c.CreateObjectType(*objectType)
@@ -65,7 +69,7 @@ func PrepareAddObjectType(objectType *client.ObjectType, interactive *bool) (*cl
 	return created_objectType, err
 }
 
-func HandleAddObjectType(createdObjectType *client.ObjectType, pretty *bool) {
+func HandleAddObjectType(createdObjectType *admin.ObjectType, pretty *bool) {
 	if createdObjectType == nil {
 		fmt.Println("Object type not created")
 		return
@@ -80,7 +84,7 @@ func HandleAddObjectType(createdObjectType *client.ObjectType, pretty *bool) {
 }
 
 func HandleDeleteObjectType(objectTypeId *string) {
-	c, err := client.NewClient()
+	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
 	err = c.DeleteObjectTypeById(*objectTypeId)
@@ -89,15 +93,15 @@ func HandleDeleteObjectType(objectTypeId *string) {
 	fmt.Println("Object type successfully deleted")
 }
 
-func HandleGetObjectTypes(objectTypes *[]client.ObjectType, pretty *bool) {
+func HandleGetObjectTypes(objectTypes *[]admin.ObjectType, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayObjectTypesAsTable(*objectTypes)
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(objectTypes)
 	} else {
-		var objectTypesDisplay []client.ObjectTypesDisplay
+		var objectTypesDisplay []admin.ObjectTypesDisplay
 		for i, objectType := range *objectTypes {
-			objectTypesDisplay = append(objectTypesDisplay, client.ObjectTypesDisplay{
+			objectTypesDisplay = append(objectTypesDisplay, admin.ObjectTypesDisplay{
 				Id: objectType.Id,
 				Name: objectType.Content.Name,
 				Public: objectType.Content.Public,
@@ -106,11 +110,11 @@ func HandleGetObjectTypes(objectTypes *[]client.ObjectType, pretty *bool) {
 			objectTypesDisplay[i].Id = objectType.Id
 		}
 
-		utils.PrintMultiRow(client.ObjectTypesDisplay{}, objectTypesDisplay)
+		utils.PrintMultiRow(admin.ObjectTypesDisplay{}, objectTypesDisplay)
 	}
 }
 
-func displayObjectTypesAsTable(objectTypes []client.ObjectType) {
+func displayObjectTypesAsTable(objectTypes []admin.ObjectType) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Public", "Decoding Function"})
 	
@@ -129,8 +133,8 @@ func displayObjectTypesAsTable(objectTypes []client.ObjectType) {
 	table.Render()
 }
 
-func HandleGetObjectType(objectType *client.ObjectType, pretty *bool) {
-	var objectTypeDisplay client.ObjectTypesDisplay
+func HandleGetObjectType(objectType *admin.ObjectType, pretty *bool) {
+	var objectTypeDisplay admin.ObjectTypesDisplay
 	objectTypeDisplay.Id = objectType.Id
 	objectTypeDisplay.Name = objectType.Content.Name
 	objectTypeDisplay.Public = objectType.Content.Public
@@ -145,7 +149,12 @@ func HandleGetObjectType(objectType *client.ObjectType, pretty *bool) {
 	}
 }
 
-func UpdateObjectTypeInInteractiveMode(objectType *client.ObjectType) {
+func UpdateObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
+	// Prompt the id of the owner
+	fmt.Println("Current owner id: ", objectType.User_id)
+	fmt.Print("Enter the id of the owner: ")
+	fmt.Scanln(&objectType.User_id)
+
 	// Prompt for the name of the object type
 	fmt.Println("Current name: ", objectType.Content.Name)
 	fmt.Print("Enter the name of the object type (or press Enter to skip): ")
@@ -190,9 +199,9 @@ func UpdateObjectTypeInInteractiveMode(objectType *client.ObjectType) {
 	}
 }
 
-func HandleUpdateObjectType(id *string, updated_objectType *client.ObjectType, interactive *bool) {
+func HandleUpdateObjectType(id *string, updated_objectType *admin.ObjectType, interactive *bool) {
 
-	c, err := client.NewClient()
+	c, err := admin.NewClient()
 	utils.ExitIfError(err)
 
 	objectType, err := c.GetObjectTypeById(*id)
@@ -201,6 +210,10 @@ func HandleUpdateObjectType(id *string, updated_objectType *client.ObjectType, i
 	if *interactive {
 		UpdateObjectTypeInInteractiveMode(objectType)
 	} else {
+		if updated_objectType.User_id != 0 {
+			objectType.User_id = updated_objectType.User_id
+		}
+
 		if utils.IsNotBlank(updated_objectType.Content.Name) {
 			objectType.Content.Name = updated_objectType.Content.Name
 		}

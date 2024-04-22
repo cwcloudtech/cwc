@@ -314,3 +314,27 @@ type TriggerOwner struct {
 	Id       int    `json:"id"`
 	Username string `json:"username"`
 }
+
+type ObjectTypeContent struct {
+	Name string `json:"name"`
+	Public bool `json:"public"`
+	DecodingFunction string `json:"decoding_function"`
+	Triggers []string `json:"triggers"`
+}
+
+type ObjectType struct {
+	Id          string `json:"id"`
+	User_id    int    `json:"user_id"`
+	Content ObjectTypeContent `json:"content"`
+}
+
+type ObjectTypesDisplay struct {
+	Id string `json:"id"`
+	Name string `json:"name"`
+	Public bool `json:"public"`
+	DecodingFunction string `json:"decoding_function"`
+}
+
+type UpdateObjectTypeBody struct {
+	Content ObjectTypeContent `json:"content"`
+}
