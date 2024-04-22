@@ -48,3 +48,11 @@ func (c *Client) CreateDevice(device Device) (*Device, error) {
 	}
 	return &response, nil
 }
+
+func (c *Client) DeleteDeviceById(deviceId string) error {
+	_, err := c.httpRequest("/iot/device/"+deviceId, "DELETE", bytes.Buffer{})
+	if nil != err {
+		return err
+	}
+	return nil
+}

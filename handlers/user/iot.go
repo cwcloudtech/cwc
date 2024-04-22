@@ -297,3 +297,13 @@ func HandleAddDevice(createdDevice *client.Device, pretty *bool) {
 		utils.PrintRow(createdDevice)
 	}
 }
+
+func HandleDeleteDevice(deviceId *string) {
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	err = c.DeleteDeviceById(*deviceId)
+	utils.ExitIfError(err)
+
+	fmt.Println("Device successfully deleted")
+}

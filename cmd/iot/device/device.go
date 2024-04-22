@@ -2,7 +2,7 @@ package device
 
 import (
 	"cwc/cmd/iot/device/create"
-	// "cwc/cmd/iot/device/delete"
+	"cwc/cmd/iot/device/delete"
 	"cwc/cmd/iot/device/ls"
 
 	"github.com/spf13/cobra"
@@ -22,5 +22,5 @@ func init() {
 	DeviceCmd.DisableFlagsInUseLine = true
 	DeviceCmd.AddCommand(create.CreateCmd)
 	DeviceCmd.AddCommand(ls.LsCmd)
-	// DeviceCmd.AddCommand(delete.DeleteCmd)
+	DeviceCmd.AddCommand(delete.DeleteCmd)
 }
