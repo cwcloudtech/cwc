@@ -273,3 +273,27 @@ func HandleGetDevice(device *client.Device, pretty *bool) {
 		utils.PrintRow(deviceDisplay)
 	}
 }
+
+func PrepareAddDevice(device *client.Device) (*client.Device, error) {
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	created_device, err := c.CreateDevice(*device)
+	utils.ExitIfError(err)
+
+	return created_device, err
+}
+
+func HandleAddDevice(createdDevice *client.Device, pretty *bool) {
+	if createdDevice == nil {
+		fmt.Println("Device not created")
+		return
+	}
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Device successfully created", *createdDevice)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(createdDevice)
+	} else {
+		utils.PrintRow(createdDevice)
+	}
+}

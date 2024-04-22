@@ -30,3 +30,21 @@ func (c *Client) GetDeviceById(deviceId string) (*Device, error) {
 	}
 	return &response, nil
 }
+
+func (c *Client) CreateDevice(device Device) (*Device, error) {
+	buf := bytes.Buffer{}
+	err := json.NewEncoder(&buf).Encode(device)
+	if nil != err {
+		return nil, err
+	}
+	body, err := c.httpRequest("/iot/device", "POST", buf)
+	if nil != err {
+		return nil, err
+	}
+	response := Device{}
+	err = json.NewDecoder(body).Decode(&response)
+	if nil != err {
+		return nil, err
+	}
+	return &response, nil
+}
