@@ -56,3 +56,25 @@ func (c *Client) GetObjectTypeById(objectTypeId string) (*ObjectType, error) {
 	}
 	return objectType, nil
 }
+
+func (c *Client) UpdateObjectType(objectType ObjectType) (*ObjectType, error) {
+	buf := bytes.Buffer{}
+	updated_objectType := &UpdateObjectTypeBody{
+		Content: objectType.Content,
+	}
+	err := json.NewEncoder(&buf).Encode(updated_objectType)
+	if nil != err {
+		return nil, err
+	}
+	resp_body, err := c.httpRequest("/iot/object-type/"+objectType.Id, "PUT", buf)
+	if nil != err {
+		return nil, err
+	}
+	response := &ObjectType{}
+	err = json.NewDecoder(resp_body).Decode(response)
+	if nil != err {
+		return nil, err
+	}
+
+	return response, nil
+}

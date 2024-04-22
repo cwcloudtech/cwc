@@ -343,16 +343,23 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 
 	// Prompt for new Args array
 	utils.PrintPrettyArray("Current args", function.Content.Args)
-	fmt.Println("Enter new Args (one per line, press Enter for each entry; leave an empty line to finish):")
-	for {
-		var arg string
-		_, err := fmt.Scanln(&arg)
-		if nil != err {
-			break 
+	// aske the user if he want to reacreate the args
+	fmt.Print("Do you want to recreate args? [Y/N]: ")
+	var addArgs string
+	fmt.Scanln(&addArgs)
+	if addArgs == "y" || addArgs == "Y" {
+		fmt.Println("Enter new Args (one per line, press Enter for each entry; leave an empty line to finish):")
+		for {
+			var arg string
+			_, err := fmt.Scanln(&arg)
+			if nil != err {
+				break 
+			}
+			function.Content.Args = append(function.Content.Args, arg)
 		}
-		function.Content.Args = append(function.Content.Args, arg)
 	}
 
+	fmt.Println("Current environment variables:")
 	fmt.Print("Do you want to recreate environment variables? [Y/N]: ")
 	var addEnvVars string
 	fmt.Scanln(&addEnvVars)
@@ -380,6 +387,12 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 		function.Content.Env = map[string]string{}
 	}
 
+	fmt.Println("Current callbacks:")
+	for _, callback := range function.Content.Callbacks {
+		fmt.Printf("  ➤ Type: %s\n", callback.Type)
+		fmt.Printf("  ➤ Endpoint: %s\n", callback.Endpoint)
+		fmt.Println("--------------------")
+	}
 	fmt.Print("Do you want to recreate callbacks? [Y/N]: ")
 	var addCallbacks string
 	fmt.Scanln(&addCallbacks)

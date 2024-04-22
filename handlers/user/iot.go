@@ -145,3 +145,82 @@ func HandleGetObjectType(objectType *client.ObjectType, pretty *bool) {
 		utils.PrintRow(objectTypeDisplay)
 	}
 }
+
+func UpdateObjectTypeInInteractiveMode(objectType *client.ObjectType) {
+	// Prompt for the name of the object type
+	fmt.Println("Current name: ", objectType.Content.Name)
+	fmt.Print("Enter the name of the object type (or press Enter to skip): ")
+	fmt.Scanln(&objectType.Content.Name)
+
+	// Prompt for the public status of the object type
+	fmt.Println("Current public status: ", objectType.Content.Public)
+	fmt.Print("Is the object type public? (Y/N): ")
+	fmt.Scanln(&objectType.Content.Public)
+
+	// Prompt for the decoding function of the object type
+	fmt.Println("Current decoding function: ", objectType.Content.DecodingFunction)
+	fmt.Print("Enter the decoding function of the object type (or press Enter to skip): ")
+	fmt.Scanln(&objectType.Content.DecodingFunction)
+	if objectType.Content.DecodingFunction == "" {
+		fmt.Println("The decoding function is required")
+		fmt.Print("--------------------")
+		fmt.Print("Enter the decoding function of the object type")
+		fmt.Scanln(&objectType.Content.DecodingFunction)
+	}
+
+	// Prompt to ask if the user want to add triggers
+	fmt.Println("Current triggers Ids: ", objectType.Content.Triggers)
+	fmt.Print("Do you want to recreate triggers? (Y/N): ")
+	var addTriggers string
+	fmt.Scanln(&addTriggers)
+	if addTriggers == "y" || addTriggers == "Y" {
+		// Prompt for the triggers of the object type
+		fmt.Println("Enter the trigger id (one per line, press Enter for each entry; leave an empty line to finish): ")
+		for {
+			var trigger string
+			fmt.Print("  ➤ Trigger id: ")
+			fmt.Scanln(&trigger)
+			if trigger == "" {
+				break
+			}
+			objectType.Content.Triggers = append(objectType.Content.Triggers, trigger)
+		}
+		if len(objectType.Content.Triggers) == 0 {
+			objectType.Content.Triggers = []string{}
+		}
+	}
+}
+
+func HandleUpdateObjectType(id *string, updated_objectType *client.ObjectType, interactive *bool) {
+
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	objectType, err := c.GetObjectTypeById(*id)
+	utils.ExitIfError(err)
+
+	if *interactive {
+		UpdateObjectTypeInInteractiveMode(objectType)
+	} else {
+		if utils.IsNotBlank(updated_objectType.Content.Name) {
+			objectType.Content.Name = updated_objectType.Content.Name
+		}
+
+		if utils.IsNotBlank(updated_objectType.Content.DecodingFunction) {
+			objectType.Content.DecodingFunction = updated_objectType.Content.DecodingFunction
+		}
+
+		if len(updated_objectType.Content.Triggers) > 0 {
+			objectType.Content.Triggers = updated_objectType.Content.Triggers
+		}
+
+		if updated_objectType.Content.Public {
+			objectType.Content.Public = updated_objectType.Content.Public
+		}
+	}
+
+	_, err = c.UpdateObjectType(*objectType)
+	utils.ExitIfError(err)
+
+	fmt.Println("Object type successfully updated")
+}

@@ -4,6 +4,7 @@ import (
 	"cwc/cmd/iot/objectType/create"
 	"cwc/cmd/iot/objectType/delete"
 	"cwc/cmd/iot/objectType/ls"
+	"cwc/cmd/iot/objectType/update"
 
 	"github.com/spf13/cobra"
 )
@@ -23,4 +24,5 @@ func init() {
 	ObjectTypeCmd.AddCommand(create.CreateCmd)
 	ObjectTypeCmd.AddCommand(ls.LsCmd)
 	ObjectTypeCmd.AddCommand(delete.DeleteCmd)
+	ObjectTypeCmd.AddCommand(update.UpdateCmd)
 }

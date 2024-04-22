@@ -349,3 +349,7 @@ type ObjectTypesDisplay struct {
 	Public bool `json:"public"`
 	DecodingFunction string `json:"decoding_function"`
 }
+
+type UpdateObjectTypeBody struct {
+	Content ObjectTypeContent `json:"content"`
+}
