@@ -26,7 +26,7 @@ This command takes no arguments`,
 			utils.ExitIfError(err)
 			user.HandleGetObjectTypes(objectTypes, &pretty)
 		} else {
-			objectType, err := c.GetObjectTypeById(*&objectTypeId)
+			objectType, err := c.GetObjectTypeById(objectTypeId)
 			utils.ExitIfError(err)
 			user.HandleGetObjectType(objectType, &pretty)
 		}
@@ -34,6 +34,6 @@ This command takes no arguments`,
 }
 
 func init() {
-	LsCmd.Flags().StringVarP(&objectTypeId, "id", "o", "", "The object type id")
+	LsCmd.Flags().StringVarP(&objectTypeId, "id", "i", "", "The object type id")
 	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }
