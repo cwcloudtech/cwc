@@ -5,6 +5,9 @@ import (
 	"cwc/config"
 	"cwc/utils"
 	"fmt"
+	"os"
+
+	"github.com/olekukonko/tablewriter"
 	// "github.com/spf13/cobra"
 )
 
@@ -85,4 +88,60 @@ func HandleDeleteObjectType(objectTypeId *string) {
 	utils.ExitIfError(err)
 
 	fmt.Println("Object type successfully deleted")
+}
+
+func HandleGetObjectTypes(objectTypes *[]client.ObjectType, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayObjectTypesAsTable(*objectTypes)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(objectTypes)
+	} else {
+		var objectTypesDisplay []client.ObjectTypesDisplay
+		for i, objectType := range *objectTypes {
+			objectTypesDisplay = append(objectTypesDisplay, client.ObjectTypesDisplay{
+				Id: objectType.Id,
+				Name: objectType.Content.Name,
+				Public: objectType.Content.Public,
+				DecodingFunction: objectType.Content.DecodingFunction,
+			})
+			objectTypesDisplay[i].Id = objectType.Id
+		}
+
+		utils.PrintMultiRow(client.ObjectTypesDisplay{}, objectTypesDisplay)
+	}
+}
+
+func displayObjectTypesAsTable(objectTypes []client.ObjectType) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Name", "Public", "Decoding Function"})
+	
+	if len(objectTypes) == 0 {
+		table.Append([]string{"No object types available", "404", "404", "404"})
+	} else {
+		for _, objectType := range objectTypes {
+			table.Append([]string{
+				objectType.Id,
+				objectType.Content.Name,
+				fmt.Sprintf("%t", objectType.Content.Public),
+				objectType.Content.DecodingFunction,
+			})
+		}
+	}
+	table.Render()
+}
+
+func HandleGetObjectType(objectType *client.ObjectType, pretty *bool) {
+	var objectTypeDisplay client.ObjectTypesDisplay
+	objectTypeDisplay.Id = objectType.Id
+	objectTypeDisplay.Name = objectType.Content.Name
+	objectTypeDisplay.Public = objectType.Content.Public
+	objectTypeDisplay.DecodingFunction = objectType.Content.DecodingFunction
+
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Object type details", objectTypeDisplay)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(objectType)
+	} else {
+		utils.PrintRow(objectTypeDisplay)
+	}
 }

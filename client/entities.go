@@ -342,3 +342,10 @@ type ObjectType struct {
 	Id          string `json:"id"`
 	Content ObjectTypeContent `json:"content"`
 }
+
+type ObjectTypesDisplay struct {
+	Id string `json:"id"`
+	Name string `json:"name"`
+	Public bool `json:"public"`
+	DecodingFunction string `json:"decoding_function"`
+}

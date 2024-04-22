@@ -30,3 +30,29 @@ func (c *Client) DeleteObjectTypeById(objectTypeId string) error {
 	}
 	return nil
 }
+
+func (c *Client) GetAllObjectTypes() (*[]ObjectType, error) {
+	body, err := c.httpRequest("/iot/object-types", "GET", bytes.Buffer{})
+	if nil != err {
+		return nil, err
+	}
+	response := []ObjectType{}
+	err = json.NewDecoder(body).Decode(&response)
+	if nil != err {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *Client) GetObjectTypeById(objectTypeId string) (*ObjectType, error) {
+	body, err := c.httpRequest("/iot/object-type/"+objectTypeId, "GET", bytes.Buffer{})
+	if nil != err {
+		return nil, err
+	}
+	objectType := &ObjectType{}
+	err = json.NewDecoder(body).Decode(objectType)
+	if nil != err {
+		return nil, err
+	}
+	return objectType, nil
+}
