@@ -223,3 +223,53 @@ func HandleUpdateObjectType(id *string, updated_objectType *client.ObjectType, i
 
 	fmt.Println("Object type successfully updated")
 }
+
+func displayDevicesAsTable(devices []client.Device) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Typeobject_id", "Username", "Active"})
+
+	if len(devices) == 0 {
+		table.Append([]string{"No devices available", "404", "404", "404"})
+	} else {
+		for _, device := range devices {
+			table.Append([]string{
+				device.Id,
+				device.Typeobject_id,
+				device.Username,
+				fmt.Sprintf("%t", device.Active),
+			})
+		}
+	}
+	table.Render()
+}
+
+func HandleGetDevices(devices *[]client.Device, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayDevicesAsTable(*devices)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(devices)
+	} else {
+		var devicesDisplay []client.DeviceDisplay
+		for i, device := range *devices {
+			devicesDisplay = append(devicesDisplay, client.DeviceDisplay(device))
+			devicesDisplay[i].Id = device.Id
+		}
+		utils.PrintMultiRow(client.DeviceDisplay{}, devicesDisplay)
+	}
+}
+
+func HandleGetDevice(device *client.Device, pretty *bool) {
+	var deviceDisplay client.DeviceDisplay
+	deviceDisplay.Id = device.Id
+	deviceDisplay.Typeobject_id = device.Typeobject_id
+	deviceDisplay.Username = device.Username
+	deviceDisplay.Active = device.Active
+
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Device details", deviceDisplay)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(device)
+	} else {
+		utils.PrintRow(deviceDisplay)
+	}
+}
