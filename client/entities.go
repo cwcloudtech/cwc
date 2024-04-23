@@ -367,3 +367,9 @@ type DeviceDisplay struct {
 	Typeobject_id string `json:"typeobject_id"`
 	Active bool `json:"active"`
 }
+
+type Data struct {
+	Id string `json:"id"`
+	Device_id string `json:"device_id"`
+	Content string `json:"content"`
+}

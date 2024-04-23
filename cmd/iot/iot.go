@@ -1,8 +1,9 @@
 package iot
 
 import (
-	"cwc/cmd/iot/objectType"
+	"cwc/cmd/iot/data"
 	"cwc/cmd/iot/device"
+	"cwc/cmd/iot/objectType"
 
 	"github.com/spf13/cobra"
 )
@@ -21,4 +22,5 @@ func init() {
 	IotCmd.DisableFlagsInUseLine = true
 	IotCmd.AddCommand(objectType.ObjectTypeCmd)
 	IotCmd.AddCommand(device.DeviceCmd)
+	IotCmd.AddCommand(data.DataCmd)
 }

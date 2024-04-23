@@ -307,3 +307,22 @@ func HandleDeleteDevice(deviceId *string) {
 
 	fmt.Println("Device successfully deleted")
 }
+
+func PrepareAddData(data *client.Data) (*client.Data, error) {
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	created_data, err := c.CreateData(*data)
+	utils.ExitIfError(err)
+
+	return created_data, err
+}
+
+func HandleAddData(createdData *client.Data) {
+	if createdData == nil {
+		fmt.Println("Data not created")
+		return
+	}
+	fmt.Println("Data successfully created")
+}
+
