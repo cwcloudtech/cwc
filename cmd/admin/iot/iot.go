@@ -1,9 +1,9 @@
 package iot
 
 import (
-	"cwc/cmd/admin/iot/objectType"
-	"cwc/cmd/admin/iot/device"
 	"cwc/cmd/admin/iot/data"
+	"cwc/cmd/admin/iot/device"
+	"cwc/cmd/admin/iot/objectType"
 
 	"github.com/spf13/cobra"
 )
