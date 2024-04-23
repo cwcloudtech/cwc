@@ -338,3 +338,17 @@ type ObjectTypesDisplay struct {
 type UpdateObjectTypeBody struct {
 	Content ObjectTypeContent `json:"content"`
 }
+
+type Device struct {
+	Id string `json:"id"`
+	Username string `json:"username"`
+	Typeobject_id string `json:"typeobject_id"`
+	Active bool `json:"active"`
+}
+
+type DeviceDisplay struct {
+	Id string `json:"id"`
+	Username string `json:"username"`
+	Typeobject_id string `json:"typeobject_id"`
+	Active bool `json:"active"`
+}

@@ -226,7 +226,7 @@ func HandleUpdateObjectType(id *string, updated_objectType *client.ObjectType, i
 
 func displayDevicesAsTable(devices []client.Device) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Typeobject_id", "Username", "Active"})
+	table.SetHeader([]string{"Id", "Object Type ID", "Username", "Active"})
 
 	if len(devices) == 0 {
 		table.Append([]string{"No devices available", "404", "404", "404"})

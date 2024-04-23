@@ -236,3 +236,47 @@ func HandleUpdateObjectType(id *string, updated_objectType *admin.ObjectType, in
 
 	fmt.Println("Object type successfully updated")
 }
+
+func displayDevicesAsTable(devices []admin.Device) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Object Type ID", "Username", "Active"})
+
+	if len(devices) == 0 {
+		table.Append([]string{"No devices available", "404", "404", "404"})
+	} else {
+		for _, device := range devices {
+			table.Append([]string{
+				device.Id,
+				device.Typeobject_id,
+				device.Username,
+				fmt.Sprintf("%t", device.Active),
+			})
+		}
+	}
+	table.Render()
+}
+
+func HandleGetDevices(devices *[]admin.Device, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayDevicesAsTable(*devices)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(devices)
+	} else {
+		var devicesDisplay []admin.DeviceDisplay
+		for i, device := range *devices {
+			devicesDisplay = append(devicesDisplay, admin.DeviceDisplay(device))
+			devicesDisplay[i].Id = device.Id
+		}
+		utils.PrintMultiRow(admin.DeviceDisplay{}, devicesDisplay)
+	}
+}
+
+func HandleDeleteDevice(deviceId *string) {
+	c, err := admin.NewClient()
+	utils.ExitIfError(err)
+
+	err = c.DeleteDeviceById(*deviceId)
+	utils.ExitIfError(err)
+
+	fmt.Println("Device successfully deleted")
+}
