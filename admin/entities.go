@@ -352,3 +352,19 @@ type DeviceDisplay struct {
 	Typeobject_id string `json:"typeobject_id"`
 	Active bool `json:"active"`
 }
+
+type StringData struct {
+	Id string `json:"id"`
+	Data_id string `json:"data_id"`
+	Device_id string `json:"device_id"`
+	Value string `json:"value"`
+	Created_at string `json:"created_at"`
+}
+
+type NumericData struct {
+	Id string `json:"id"`
+	Data_id string `json:"data_id"`
+	Device_id string `json:"device_id"`
+	Value float64 `json:"value"`
+	Created_at string `json:"created_at"`
+}

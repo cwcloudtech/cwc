@@ -280,3 +280,71 @@ func HandleDeleteDevice(deviceId *string) {
 
 	fmt.Println("Device successfully deleted")
 }
+
+func displayNumericDataAsTable(numericData []admin.NumericData) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Device ID", "Value", "Created At"})
+
+	if len(numericData) == 0 {
+		table.Append([]string{"No numeric data available", "404", "404", "404"})
+	} else {
+		for _, data := range numericData {
+			table.Append([]string{
+				data.Id,
+				data.Device_id,
+				fmt.Sprintf("%f", data.Value),
+				data.Created_at,
+			})
+		}
+	}
+	table.Render()
+}
+
+func HandleGetNumericData(numericData *[]admin.NumericData, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayNumericDataAsTable(*numericData)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(numericData)
+	} else {
+		var numericDataDisplay []admin.NumericData
+		for i, data := range *numericData {
+			numericDataDisplay = append(numericDataDisplay, admin.NumericData(data))
+			numericDataDisplay[i].Id = data.Id
+		}
+		utils.PrintMultiRow(admin.NumericData{}, numericDataDisplay)
+	}
+}
+
+func displayStringDataAsTable(stringData []admin.StringData) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Device ID", "Value", "Created At"})
+
+	if len(stringData) == 0 {
+		table.Append([]string{"No string data available", "404", "404", "404"})
+	} else {
+		for _, data := range stringData {
+			table.Append([]string{
+				data.Id,
+				data.Device_id,
+				data.Value,
+				data.Created_at,
+			})
+		}
+	}
+	table.Render()
+}
+
+func HandleGetStringData(stringData *[]admin.StringData, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayStringDataAsTable(*stringData)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(stringData)
+	} else {
+		var stringDataDisplay []admin.StringData
+		for i, data := range *stringData {
+			stringDataDisplay = append(stringDataDisplay, admin.StringData(data))
+			stringDataDisplay[i].Id = data.Id
+		}
+		utils.PrintMultiRow(admin.StringData{}, stringDataDisplay)
+	}
+}
