@@ -11,8 +11,8 @@ import (
 
 var (
 	numericOnly bool = false
-	stringOnly bool = false
-	pretty bool = false
+	stringOnly  bool = false
+	pretty      bool = false
 )
 
 var LsCmd = &cobra.Command{

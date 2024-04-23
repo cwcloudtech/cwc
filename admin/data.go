@@ -30,4 +30,3 @@ func (c *Client) GetAllStringData() (*[]StringData, error) {
 	}
 	return &response, nil
 }
-

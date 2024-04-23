@@ -10,7 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func AddObjectTypeInInteractiveMode (objectType *admin.ObjectType) {
+func AddObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 	// Prompt the id of the owner
 	fmt.Print("Enter the id of the owner: ")
 	fmt.Scanln(&objectType.User_id)
@@ -102,9 +102,9 @@ func HandleGetObjectTypes(objectTypes *[]admin.ObjectType, pretty *bool) {
 		var objectTypesDisplay []admin.ObjectTypesDisplay
 		for i, objectType := range *objectTypes {
 			objectTypesDisplay = append(objectTypesDisplay, admin.ObjectTypesDisplay{
-				Id: objectType.Id,
-				Name: objectType.Content.Name,
-				Public: objectType.Content.Public,
+				Id:               objectType.Id,
+				Name:             objectType.Content.Name,
+				Public:           objectType.Content.Public,
 				DecodingFunction: objectType.Content.DecodingFunction,
 			})
 			objectTypesDisplay[i].Id = objectType.Id
@@ -117,7 +117,7 @@ func HandleGetObjectTypes(objectTypes *[]admin.ObjectType, pretty *bool) {
 func displayObjectTypesAsTable(objectTypes []admin.ObjectType) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Public", "Decoding Function"})
-	
+
 	if len(objectTypes) == 0 {
 		table.Append([]string{"No object types available", "404", "404", "404"})
 	} else {

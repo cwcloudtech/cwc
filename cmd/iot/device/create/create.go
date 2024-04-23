@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	device      client.Device
-	pretty 	bool = false
+	device client.Device
+	pretty bool = false
 )
 
 var CreateCmd = &cobra.Command{

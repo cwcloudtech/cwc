@@ -8,15 +8,15 @@ import (
 )
 
 var (
-	objectTypeId  string
-	interactive bool = false
-	objectType    adminClient.ObjectType
+	objectTypeId string
+	interactive  bool = false
+	objectType   adminClient.ObjectType
 )
 
 var UpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "update a particular object type",
-	Long: "This command lets you update a particular object type. To use this command you have to provide the object type ID",
+	Long:  "This command lets you update a particular object type. To use this command you have to provide the object type ID",
 	Run: func(cmd *cobra.Command, args []string) {
 		admin.HandleUpdateObjectType(&objectTypeId, &objectType, &interactive)
 	},
@@ -36,4 +36,3 @@ func init() {
 		panic(err)
 	}
 }
-

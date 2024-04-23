@@ -10,7 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func AddObjectTypeInInteractiveMode (objectType *client.ObjectType) {
+func AddObjectTypeInInteractiveMode(objectType *client.ObjectType) {
 	// Prompt for the name of the object type
 	fmt.Print("Enter the name of the object type (or press Enter to skip): ")
 	fmt.Scanln(&objectType.Content.Name)
@@ -98,9 +98,9 @@ func HandleGetObjectTypes(objectTypes *[]client.ObjectType, pretty *bool) {
 		var objectTypesDisplay []client.ObjectTypesDisplay
 		for i, objectType := range *objectTypes {
 			objectTypesDisplay = append(objectTypesDisplay, client.ObjectTypesDisplay{
-				Id: objectType.Id,
-				Name: objectType.Content.Name,
-				Public: objectType.Content.Public,
+				Id:               objectType.Id,
+				Name:             objectType.Content.Name,
+				Public:           objectType.Content.Public,
 				DecodingFunction: objectType.Content.DecodingFunction,
 			})
 			objectTypesDisplay[i].Id = objectType.Id
@@ -113,7 +113,7 @@ func HandleGetObjectTypes(objectTypes *[]client.ObjectType, pretty *bool) {
 func displayObjectTypesAsTable(objectTypes []client.ObjectType) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Public", "Decoding Function"})
-	
+
 	if len(objectTypes) == 0 {
 		table.Append([]string{"No object types available", "404", "404", "404"})
 	} else {
@@ -325,4 +325,3 @@ func HandleAddData(createdData *client.Data) {
 	}
 	fmt.Println("Data successfully created")
 }
-

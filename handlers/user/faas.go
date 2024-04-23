@@ -120,7 +120,7 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 		var arg string
 		_, err := fmt.Scanln(&arg)
 		if nil != err {
-			break 
+			break
 		}
 		function.Content.Args = append(function.Content.Args, arg)
 	}
@@ -142,13 +142,13 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 			var envVarKey string
 			_, err := fmt.Scanln(&envVarKey)
 			if nil != err {
-				break 
+				break
 			}
 			fmt.Print("  ➤ Value: ")
 			var envVarValue string
 			_, err = fmt.Scanln(&envVarValue)
 			if nil != err {
-				break 
+				break
 			}
 			function.Content.Env[envVarKey] = envVarValue
 			fmt.Print("--------------------\n")
@@ -353,7 +353,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 			var arg string
 			_, err := fmt.Scanln(&arg)
 			if nil != err {
-				break 
+				break
 			}
 			function.Content.Args = append(function.Content.Args, arg)
 		}
@@ -371,13 +371,13 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 			var envVarKey string
 			_, err := fmt.Scanln(&envVarKey)
 			if nil != err {
-				break 
+				break
 			}
 			fmt.Print("  ➤ Value: ")
 			var envVarValue string
 			_, err = fmt.Scanln(&envVarValue)
 			if nil != err {
-				break 
+				break
 			}
 			function.Content.Env[envVarKey] = envVarValue
 			fmt.Print("--------------------\n")

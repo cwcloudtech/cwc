@@ -14,7 +14,7 @@ var (
 var DeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a particular device",
-	Long: `This command lets you delete a particular device. To use this command you have to provide the device ID that you want to delete.`,
+	Long:  `This command lets you delete a particular device. To use this command you have to provide the device ID that you want to delete.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		admin.HandleDeleteDevice(&deviceId)
 	},

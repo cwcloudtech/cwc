@@ -99,11 +99,11 @@ type Instance struct {
 
 type Email struct {
 	From      *string `json:"from,omitempty"`
-	To        string `json:"to"`
+	To        string  `json:"to"`
 	Bcc       *string `json:"bcc,omitempty"`
-	Subject   string `json:"subject"`
-	Content   string `json:"content"`
-	Templated bool   `json:"templated"`
+	Subject   string  `json:"subject"`
+	Content   string  `json:"content"`
+	Templated bool    `json:"templated"`
 }
 
 type EmailResponse struct {
@@ -177,17 +177,17 @@ type AvailableProviders struct {
 }
 
 type CallbacksContent struct {
-	Type                      string           `json:"type"`
-	Endpoint                  string           `json:"endpoint"`
-	Token                     string           `json:"token"`
-	Client_id                 string           `json:"client_id"`
-	User_data                 string           `json:"user_data"`
-	Username                  string           `json:"username"`
-	Password                  string           `json:"password"`
-	Port                      string           `json:"port"`
-	Subscription              string           `json:"subscription"`
-	Qos                       string           `json:"qos"`
-	Topic                     string           `json:"topic"`
+	Type         string `json:"type"`
+	Endpoint     string `json:"endpoint"`
+	Token        string `json:"token"`
+	Client_id    string `json:"client_id"`
+	User_data    string `json:"user_data"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	Port         string `json:"port"`
+	Subscription string `json:"subscription"`
+	Qos          string `json:"qos"`
+	Topic        string `json:"topic"`
 }
 
 type FunctionContent struct {
@@ -316,22 +316,22 @@ type TriggerOwner struct {
 }
 
 type ObjectTypeContent struct {
-	Name string `json:"name"`
-	Public bool `json:"public"`
-	DecodingFunction string `json:"decoding_function"`
-	Triggers []string `json:"triggers"`
+	Name             string   `json:"name"`
+	Public           bool     `json:"public"`
+	DecodingFunction string   `json:"decoding_function"`
+	Triggers         []string `json:"triggers"`
 }
 
 type ObjectType struct {
-	Id          string `json:"id"`
-	User_id    int    `json:"user_id"`
+	Id      string            `json:"id"`
+	User_id int               `json:"user_id"`
 	Content ObjectTypeContent `json:"content"`
 }
 
 type ObjectTypesDisplay struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
-	Public bool `json:"public"`
+	Id               string `json:"id"`
+	Name             string `json:"name"`
+	Public           bool   `json:"public"`
 	DecodingFunction string `json:"decoding_function"`
 }
 
@@ -340,31 +340,31 @@ type UpdateObjectTypeBody struct {
 }
 
 type Device struct {
-	Id string `json:"id"`
-	Username string `json:"username"`
+	Id            string `json:"id"`
+	Username      string `json:"username"`
 	Typeobject_id string `json:"typeobject_id"`
-	Active bool `json:"active"`
+	Active        bool   `json:"active"`
 }
 
 type DeviceDisplay struct {
-	Id string `json:"id"`
-	Username string `json:"username"`
+	Id            string `json:"id"`
+	Username      string `json:"username"`
 	Typeobject_id string `json:"typeobject_id"`
-	Active bool `json:"active"`
+	Active        bool   `json:"active"`
 }
 
 type StringData struct {
-	Id string `json:"id"`
-	Data_id string `json:"data_id"`
-	Device_id string `json:"device_id"`
-	Value string `json:"value"`
+	Id         string `json:"id"`
+	Data_id    string `json:"data_id"`
+	Device_id  string `json:"device_id"`
+	Value      string `json:"value"`
 	Created_at string `json:"created_at"`
 }
 
 type NumericData struct {
-	Id string `json:"id"`
-	Data_id string `json:"data_id"`
-	Device_id string `json:"device_id"`
-	Value float64 `json:"value"`
-	Created_at string `json:"created_at"`
+	Id         string  `json:"id"`
+	Data_id    string  `json:"data_id"`
+	Device_id  string  `json:"device_id"`
+	Value      float64 `json:"value"`
+	Created_at string  `json:"created_at"`
 }

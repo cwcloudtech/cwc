@@ -10,11 +10,11 @@ import (
 )
 
 var (
-	data 	client.Data
+	data client.Data
 )
 
 var CreateCmd = &cobra.Command{
-	Use:  "create",
+	Use:   "create",
 	Short: "Create a data in the cloud",
 	Long:  "This command lets you create a data in the cloud.",
 	Run: func(cmd *cobra.Command, args []string) {
