@@ -6,6 +6,7 @@ import (
 	"cwc/cmd/admin/environment"
 	"cwc/cmd/admin/faas"
 	"cwc/cmd/admin/instance"
+	"cwc/cmd/admin/iot"
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
 	"cwc/cmd/admin/user"
@@ -33,4 +34,5 @@ func init() {
 	AdminCmd.AddCommand(user.UserCmd)
 	AdminCmd.AddCommand(email.EmailCmd)
 	AdminCmd.AddCommand(faas.FaasCmd)
+	AdminCmd.AddCommand(iot.IotCmd)
 }

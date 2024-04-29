@@ -109,6 +109,171 @@ func HandleDeleteFunction(id *string) {
 	fmt.Printf("Function successfully deleted\n")
 }
 
+func AddFunctionInInteractiveMode(function *client.Function) {
+	// Prompt for Regexp
+	fmt.Print("Enter Regexp (or press Enter for empty): ")
+	fmt.Scanln(&function.Content.Regexp)
+
+	// Prompt for Args array
+	fmt.Println("Enter Args (one per line, press Enter for each entry; leave an empty line to finish):")
+	for {
+		var arg string
+		_, err := fmt.Scanln(&arg)
+		if nil != err {
+			break
+		}
+		function.Content.Args = append(function.Content.Args, arg)
+	}
+	if len(function.Content.Args) == 0 {
+		function.Content.Args = []string{}
+	}
+
+	fmt.Print("Do you want to make the function public? [Y/N]: ")
+	fmt.Scanln(&function.Is_public)
+
+	fmt.Print("Do you want to add environment variables? [Y/N]: ")
+	var addEnvVars string
+	fmt.Scanln(&addEnvVars)
+	if addEnvVars == "y" || addEnvVars == "Y" {
+		fmt.Println("Enter environment variables (one per line, press Enter for each entry; leave an empty line to finish):")
+		function.Content.Env = make(map[string]string) // Initialize the map
+		for {
+			fmt.Print("  ➤ Key: ")
+			var envVarKey string
+			_, err := fmt.Scanln(&envVarKey)
+			if nil != err {
+				break
+			}
+			fmt.Print("  ➤ Value: ")
+			var envVarValue string
+			_, err = fmt.Scanln(&envVarValue)
+			if nil != err {
+				break
+			}
+			function.Content.Env[envVarKey] = envVarValue
+			fmt.Print("--------------------\n")
+		}
+	}
+	if len(function.Content.Env) == 0 {
+		function.Content.Env = map[string]string{}
+	}
+
+	fmt.Print("Do you want to add callbacks? [Y/N]: ")
+	var addCallbacks string
+	fmt.Scanln(&addCallbacks)
+	if addCallbacks == "y" || addCallbacks == "Y" {
+		fmt.Println("Enter callbacks (press Enter for each callback; leave an empty line to finish):")
+		function.Content.Callbacks = []client.CallbacksContent{}
+		reader := bufio.NewReader(os.Stdin)
+		for {
+			var callback client.CallbacksContent
+			fmt.Print("  ➤ Type (Current available types are http, websocket, and mqtt): ")
+			callback.Type, _ = reader.ReadString('\n')
+			callback.Type = strings.TrimSpace(callback.Type)
+			if callback.Type == "" {
+				break
+			}
+			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
+				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
+			} else {
+				fmt.Print("  ➤ Endpoint: ")
+				callback.Endpoint, _ = reader.ReadString('\n')
+				callback.Endpoint = strings.TrimSpace(callback.Endpoint)
+			}
+
+			if callback.Type == "http" {
+				fmt.Print("  ➤ Token: ")
+				callback.Token, _ = reader.ReadString('\n')
+				callback.Token = strings.TrimSpace(callback.Token)
+			} else if callback.Type == "websocket" || callback.Type == "mqtt" {
+				fmt.Print("  ➤ Client ID: ")
+				callback.Client_id, _ = reader.ReadString('\n')
+				callback.Client_id = strings.TrimSpace(callback.Client_id)
+
+				fmt.Print("  ➤ User Data: ")
+				callback.User_data, _ = reader.ReadString('\n')
+				callback.User_data = strings.TrimSpace(callback.User_data)
+
+				fmt.Print("  ➤ Username: ")
+				callback.Username, _ = reader.ReadString('\n')
+				callback.Username = strings.TrimSpace(callback.Username)
+
+				fmt.Print("  ➤ Password: ")
+				callback.Password, _ = reader.ReadString('\n')
+				callback.Password = strings.TrimSpace(callback.Password)
+
+				fmt.Print("  ➤ Port: ")
+				callback.Port, _ = reader.ReadString('\n')
+				callback.Port = strings.TrimSpace(callback.Port)
+
+				fmt.Print("  ➤ Subscription: ")
+				callback.Subscription, _ = reader.ReadString('\n')
+				callback.Subscription = strings.TrimSpace(callback.Subscription)
+
+				fmt.Print("  ➤ QoS: ")
+				callback.Qos, _ = reader.ReadString('\n')
+				callback.Qos = strings.TrimSpace(callback.Qos)
+
+				fmt.Print("  ➤ Topic: ")
+				callback.Topic, _ = reader.ReadString('\n')
+				callback.Topic = strings.TrimSpace(callback.Topic)
+			}
+
+			if callback.Type == "mqtt" || callback.Type == "websocket" || callback.Type == "http" {
+				function.Content.Callbacks = append(function.Content.Callbacks, callback)
+			}
+
+			fmt.Print("--------------------\n")
+		}
+	}
+
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	// assign the code template after choosing the language
+	code_template, err := c.GetFunctionCodeTemplate(function.Content.Args, function.Content.Language)
+	utils.ExitIfError(err)
+
+	fmt.Print("Do you want to add code? [Y/N]: ")
+	var addCode string
+	fmt.Scanln(&addCode)
+
+	if addCode == "y" || addCode == "Y" {
+		editorCommand := utils.GetSystemEditor()
+
+		// Create a temporary file with a specific name and path
+		tempFileName := "temp-code-editor.txt"
+		tempFile, err := os.Create(tempFileName)
+		utils.ExitIfErrorWithMsg("Error creating temporary file", err)
+
+		defer tempFile.Close()
+		defer os.Remove(tempFileName)
+
+		// Write the code_template to the temporary file
+		_, err = tempFile.WriteString(*code_template)
+		utils.ExitIfErrorWithMsg("Error writing code_template to the temporary file", err)
+
+		// Prompt the user to write code in the editor
+		fmt.Printf("Please write your code in the text editor that opens. Save and close the editor when done.\n")
+
+		cmd := exec.Command(editorCommand, tempFileName)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		err = cmd.Run()
+		utils.ExitIfErrorWithMsg("Error opening the text editor", err)
+
+		// Read the code from the temporary file
+		codeBytes, err := os.ReadFile(tempFileName)
+		utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
+
+		function.Content.Code = string(codeBytes)
+	}
+
+	fmt.Printf("code: %s\n", function.Content.Code)
+}
+
 func PrepareAddFunction(function *client.Function, interactive *bool) (*client.Function, error) {
 	language_response, err := client.GetLanguages()
 	utils.ExitIfError(err)
@@ -124,77 +289,7 @@ func PrepareAddFunction(function *client.Function, interactive *bool) (*client.F
 	utils.ExitIfNeeded(fmt.Sprintf("Invalid language. Allowed languages are: %s", strings.Join(language_response.Languages, ", ")), !isLanguageAllowed)
 
 	if *interactive {
-		// Prompt for Regexp
-		fmt.Print("Enter Regexp (or press Enter for empty): ")
-		fmt.Scanln(&function.Content.Regexp)
-
-		// Prompt for Callback URL
-		fmt.Print("Enter Callback URL (or press Enter for empty): ")
-		fmt.Scanln(&function.Content.Callback_url)
-
-		// Prompt for Callback Authorization Header
-		fmt.Print("Enter Callback Authorization Header (or press Enter for empty): ")
-		fmt.Scanln(&function.Content.Callback_authorization_header)
-
-		// Prompt for Args array
-		fmt.Println("Enter Args (one per line, press Enter for each entry; leave an empty line to finish):")
-		for {
-			var arg string
-			_, err := fmt.Scanln(&arg)
-			if nil != err {
-				break // Exit the loop if an error occurs (e.g., empty line)
-			}
-			function.Content.Args = append(function.Content.Args, arg)
-		}
-		if len(function.Content.Args) == 0 {
-			function.Content.Args = []string{}
-		}
-
-		c, err := client.NewClient()
-		utils.ExitIfError(err)
-
-		// assign the code template after choosing the language
-		code_template, err := c.GetFunctionCodeTemplate(function.Content.Args, function.Content.Language)
-		utils.ExitIfError(err)
-
-		fmt.Print("Do you want to add code? [Y/N]: ")
-		var addCode string
-		fmt.Scanln(&addCode)
-
-		if addCode == "y" || addCode == "Y" {
-			editorCommand := utils.GetSystemEditor()
-
-			// Create a temporary file with a specific name and path
-			tempFileName := "temp-code-editor.txt"
-			tempFile, err := os.Create(tempFileName)
-			utils.ExitIfErrorWithMsg("Error creating temporary file", err)
-
-			defer tempFile.Close()
-			defer os.Remove(tempFileName)
-
-			// Write the code_template to the temporary file
-			_, err = tempFile.WriteString(*code_template)
-			utils.ExitIfErrorWithMsg("Error writing code_template to the temporary file", err)
-
-			// Prompt the user to write code in the editor
-			fmt.Printf("Please write your code in the text editor that opens. Save and close the editor when done.\n")
-
-			cmd := exec.Command(editorCommand, tempFileName)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-
-			err = cmd.Run()
-			utils.ExitIfErrorWithMsg("Error opening the text editor", err)
-
-			// Read the code from the temporary file
-			codeBytes, err := os.ReadFile(tempFileName)
-			utils.ExitIfErrorWithMsg("Error reading code from the text editor", err)
-
-			function.Content.Code = string(codeBytes)
-		}
-
-		fmt.Printf("code: %s\n", function.Content.Code)
+		AddFunctionInInteractiveMode(function)
 	}
 
 	c, err := client.NewClient()
@@ -217,6 +312,192 @@ func HandleAddFunction(createdFunction *client.Function, pretty *bool) {
 		utils.PrintJson(*createdFunction)
 	} else {
 		utils.PrintRow(*createdFunction)
+	}
+}
+
+func UpdateFunctionInInteractiveMode(function *client.Function) {
+	// Prompt for Regexp
+	fmt.Printf("Current regexp: %s\n", function.Content.Regexp)
+	fmt.Print("Enter new regexp (or press Enter to keep the current one): ")
+	fmt.Scanln(&function.Content.Regexp)
+
+	// Prompt for function name
+	fmt.Printf("Current name: %s\n", function.Content.Name)
+	fmt.Print("Enter new name (or press Enter to keep the current one): ")
+	fmt.Scanln(&function.Content.Name)
+
+	// Ask if the function should be public
+	if function.Is_public {
+		fmt.Print("Current function status: Public\n")
+	} else {
+		fmt.Print("Current function status: Private\n")
+	}
+
+	fmt.Print("Do you want to make the change the function status? [Y/N]: ")
+
+	var answer string
+	fmt.Scanln(&answer)
+	if answer == "y" || answer == "Y" {
+		function.Is_public = !function.Is_public
+	}
+
+	// Prompt for new Args array
+	utils.PrintPrettyArray("Current args", function.Content.Args)
+	// aske the user if he want to reacreate the args
+	fmt.Print("Do you want to recreate args? [Y/N]: ")
+	var addArgs string
+	fmt.Scanln(&addArgs)
+	if addArgs == "y" || addArgs == "Y" {
+		fmt.Println("Enter new Args (one per line, press Enter for each entry; leave an empty line to finish):")
+		for {
+			var arg string
+			_, err := fmt.Scanln(&arg)
+			if nil != err {
+				break
+			}
+			function.Content.Args = append(function.Content.Args, arg)
+		}
+	}
+
+	fmt.Println("Current environment variables:")
+	fmt.Print("Do you want to recreate environment variables? [Y/N]: ")
+	var addEnvVars string
+	fmt.Scanln(&addEnvVars)
+	if addEnvVars == "y" || addEnvVars == "Y" {
+		fmt.Println("Enter environment variables (one per line, press Enter for each entry; leave an empty line to finish):")
+		function.Content.Env = make(map[string]string) // Initialize the map
+		for {
+			fmt.Print("  ➤ Key: ")
+			var envVarKey string
+			_, err := fmt.Scanln(&envVarKey)
+			if nil != err {
+				break
+			}
+			fmt.Print("  ➤ Value: ")
+			var envVarValue string
+			_, err = fmt.Scanln(&envVarValue)
+			if nil != err {
+				break
+			}
+			function.Content.Env[envVarKey] = envVarValue
+			fmt.Print("--------------------\n")
+		}
+	}
+	if len(function.Content.Env) == 0 {
+		function.Content.Env = map[string]string{}
+	}
+
+	fmt.Println("Current callbacks:")
+	for _, callback := range function.Content.Callbacks {
+		fmt.Printf("  ➤ Type: %s\n", callback.Type)
+		fmt.Printf("  ➤ Endpoint: %s\n", callback.Endpoint)
+		fmt.Println("--------------------")
+	}
+	fmt.Print("Do you want to recreate callbacks? [Y/N]: ")
+	var addCallbacks string
+	fmt.Scanln(&addCallbacks)
+	if addCallbacks == "y" || addCallbacks == "Y" {
+		fmt.Println("Enter callbacks (press Enter for each callback; leave an empty line to finish):")
+		function.Content.Callbacks = []client.CallbacksContent{}
+		reader := bufio.NewReader(os.Stdin)
+		for {
+			var callback client.CallbacksContent
+			fmt.Print("  ➤ Type (Current available types are http, websocket, and mqtt): ")
+			callback.Type, _ = reader.ReadString('\n')
+			callback.Type = strings.TrimSpace(callback.Type)
+			if callback.Type == "" {
+				break
+			}
+			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
+				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
+			} else {
+				fmt.Print("  ➤ Endpoint: ")
+				callback.Endpoint, _ = reader.ReadString('\n')
+				callback.Endpoint = strings.TrimSpace(callback.Endpoint)
+			}
+
+			if callback.Type == "http" {
+				fmt.Print("  ➤ Token: ")
+				callback.Token, _ = reader.ReadString('\n')
+				callback.Token = strings.TrimSpace(callback.Token)
+			} else if callback.Type == "websocket" || callback.Type == "mqtt" {
+				fmt.Print("  ➤ Client ID: ")
+				callback.Client_id, _ = reader.ReadString('\n')
+				callback.Client_id = strings.TrimSpace(callback.Client_id)
+
+				fmt.Print("  ➤ User Data: ")
+				callback.User_data, _ = reader.ReadString('\n')
+				callback.User_data = strings.TrimSpace(callback.User_data)
+
+				fmt.Print("  ➤ Username: ")
+				callback.Username, _ = reader.ReadString('\n')
+				callback.Username = strings.TrimSpace(callback.Username)
+
+				fmt.Print("  ➤ Password: ")
+				callback.Password, _ = reader.ReadString('\n')
+				callback.Password = strings.TrimSpace(callback.Password)
+
+				fmt.Print("  ➤ Port: ")
+				callback.Port, _ = reader.ReadString('\n')
+				callback.Port = strings.TrimSpace(callback.Port)
+
+				fmt.Print("  ➤ Subscription: ")
+				callback.Subscription, _ = reader.ReadString('\n')
+				callback.Subscription = strings.TrimSpace(callback.Subscription)
+
+				fmt.Print("  ➤ QoS: ")
+				callback.Qos, _ = reader.ReadString('\n')
+				callback.Qos = strings.TrimSpace(callback.Qos)
+
+				fmt.Print("  ➤ Topic: ")
+				callback.Topic, _ = reader.ReadString('\n')
+				callback.Topic = strings.TrimSpace(callback.Topic)
+			}
+
+			if callback.Type == "mqtt" || callback.Type == "websocket" || callback.Type == "http" {
+				function.Content.Callbacks = append(function.Content.Callbacks, callback)
+			}
+
+			fmt.Print("--------------------\n")
+		}
+	}
+
+	// Prompt for new code
+	fmt.Print("Do you want to update code? [Y/N]: ")
+	var updateCode string
+	fmt.Scanln(&updateCode)
+
+	if updateCode == "y" || updateCode == "Y" {
+		editorCommand := utils.GetSystemEditor()
+
+		// Create a temporary file with a specific name and path
+		tempFileName := "temp-code-editor-update.txt"
+		tempFile, err := os.Create(tempFileName)
+		utils.ExitIfErrorWithMsg("Error creating temporary file", err)
+
+		defer os.Remove(tempFileName)
+
+		// Write the current code to the temporary file
+		_, err = tempFile.WriteString(function.Content.Code)
+		utils.ExitIfErrorWithMsg("Error writing current code to the temporary file", err)
+
+		// Prompt the user to edit the code in the editor
+		fmt.Printf("Please update your code in the text editor that opens. Save and close the editor when done.\n")
+
+		cmd := exec.Command(editorCommand, tempFileName)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		err = cmd.Run()
+		utils.ExitIfErrorWithMsg("Error opening the text editor", err)
+
+		// Read the updated code from the temporary file
+		updatedCodeBytes, err := os.ReadFile(tempFileName)
+		utils.ExitIfErrorWithMsg("Error reading updated code from the text editor", err)
+
+		// Update the function's code with the edited code
+		function.Content.Code = string(updatedCodeBytes)
 	}
 }
 
@@ -248,90 +529,7 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 
 		utils.ExitIfNeeded(fmt.Sprintf("Allowed languages are: %s", strings.Join(language_response.Languages, ", ")), !isLanguageAllowed)
 
-		// Prompt for Regexp
-		fmt.Printf("Current regexp: %s\n", function.Content.Regexp)
-		fmt.Print("Enter new regexp (or press Enter to keep the current one): ")
-		fmt.Scanln(&function.Content.Regexp)
-
-		// Prompt for Callback URL
-		fmt.Printf("Current callback URL: %s\n", function.Content.Callback_url)
-		fmt.Print("Enter new callback URL (or press Enter to keep the current one): ")
-		fmt.Scanln(&function.Content.Callback_url)
-
-		// Prompt for Callback Authorization Header
-		fmt.Printf("Current callback authorization header: %s\n", function.Content.Callback_authorization_header)
-		fmt.Print("Enter new callback authorization header (or press Enter to keep the current one): ")
-		fmt.Scanln(&function.Content.Callback_authorization_header)
-
-		// Prompt for function name
-		fmt.Printf("Current name: %s\n", function.Content.Name)
-		fmt.Print("Enter new name (or press Enter to keep the current one): ")
-		fmt.Scanln(&function.Content.Name)
-
-		// Ask if the function should be public
-		if function.Is_public {
-			fmt.Print("Current function status: Public\n")
-		} else {
-			fmt.Print("Current function status: Private\n")
-		}
-
-		fmt.Print("Do you want to make the change the function status? [Y/N]: ")
-
-		var answer string
-		fmt.Scanln(&answer)
-		if answer == "y" || answer == "Y" {
-			function.Is_public = !function.Is_public
-		}
-
-		// Prompt for new Args array
-		utils.PrintPrettyArray("Current args", function.Content.Args)
-		fmt.Println("Enter new Args (one per line, press Enter for each entry; leave an empty line to finish):")
-		for {
-			var arg string
-			_, err := fmt.Scanln(&arg)
-			if nil != err {
-				break // Exit the loop if an error occurs (e.g., empty line)
-			}
-			function.Content.Args = append(function.Content.Args, arg)
-		}
-
-		// Prompt for new code
-		fmt.Print("Do you want to update code? [Y/N]: ")
-		var updateCode string
-		fmt.Scanln(&updateCode)
-
-		if updateCode == "y" || updateCode == "Y" {
-			editorCommand := utils.GetSystemEditor()
-
-			// Create a temporary file with a specific name and path
-			tempFileName := "temp-code-editor-update.txt"
-			tempFile, err := os.Create(tempFileName)
-			utils.ExitIfErrorWithMsg("Error creating temporary file", err)
-
-			defer os.Remove(tempFileName)
-
-			// Write the current code to the temporary file
-			_, err = tempFile.WriteString(function.Content.Code)
-			utils.ExitIfErrorWithMsg("Error writing current code to the temporary file", err)
-
-			// Prompt the user to edit the code in the editor
-			fmt.Printf("Please update your code in the text editor that opens. Save and close the editor when done.\n")
-
-			cmd := exec.Command(editorCommand, tempFileName)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-
-			err = cmd.Run()
-			utils.ExitIfErrorWithMsg("Error opening the text editor", err)
-
-			// Read the updated code from the temporary file
-			updatedCodeBytes, err := os.ReadFile(tempFileName)
-			utils.ExitIfErrorWithMsg("Error reading updated code from the text editor", err)
-
-			// Update the function's code with the edited code
-			function.Content.Code = string(updatedCodeBytes)
-		}
+		UpdateFunctionInInteractiveMode(function)
 	} else {
 		// If interactive mode is not enabled, update only the fields that are not empty
 		if utils.IsNotBlank(updated_function.Content.Language) {
@@ -340,14 +538,6 @@ func HandleUpdateFunction(id *string, updated_function *client.Function, interac
 
 		if utils.IsNotBlank(updated_function.Content.Regexp) {
 			function.Content.Regexp = updated_function.Content.Regexp
-		}
-
-		if utils.IsNotBlank(updated_function.Content.Callback_url) {
-			function.Content.Callback_url = updated_function.Content.Callback_url
-		}
-
-		if utils.IsNotBlank(updated_function.Content.Callback_authorization_header) {
-			function.Content.Callback_authorization_header = updated_function.Content.Callback_authorization_header
 		}
 
 		if utils.IsNotBlank(updated_function.Content.Name) {
