@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-func (c *Client) AdminAddProject(user_email string, project_name string, host string, token string, git_username string, namespace string) (*Project, error) {
+func (c *Client) AdminAddProject(user_email string, project_name string, host string, token string, git_username string, namespace string, project_type string) (*Project, error) {
 	buf := bytes.Buffer{}
 	project := AddProjectBody{
 		Name:        project_name,
@@ -16,13 +16,14 @@ func (c *Client) AdminAddProject(user_email string, project_name string, host st
 		Email:       user_email,
 		GitUsername: git_username,
 		Namespace:   namespace,
+		Type:        project_type,
 	}
 
 	err := json.NewEncoder(&buf).Encode(project)
 	if nil != err {
 		return nil, err
 	}
-	resp_body, err := c.httpRequest(fmt.Sprintf("/admin/project"), "POST", buf)
+	resp_body, err := c.httpRequest("/admin/project", "POST", buf)
 	if nil != err {
 		return nil, err
 	}
@@ -58,7 +59,7 @@ func (c *Client) AdminDeleteProjectByUrl(projectUrl string) error {
 	return nil
 }
 func (c *Client) AdminGetAllProjects() (*[]Project, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/admin/project"), "GET", bytes.Buffer{})
+	body, err := c.httpRequest("/admin/project", "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}

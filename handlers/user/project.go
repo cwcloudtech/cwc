@@ -10,11 +10,11 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleAddProject(name *string, host *string, token *string, git_username *string, namespace *string) {
+func HandleAddProject(name *string, host *string, token *string, git_username *string, namespace *string, project_type *string) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
-	created_project, err := c.AddProject(*name, *host, *token, *git_username, *namespace)
+	created_project, err := c.AddProject(*name, *host, *token, *git_username, *namespace, *project_type)
 	utils.ExitIfError(err)
 
 	if config.GetDefaultFormat() == "json" {
@@ -42,14 +42,14 @@ func HandleDeleteProject(id *string, name *string, url *string) {
 	fmt.Println("project successfully deleted")
 }
 
-func HandleGetProjects(project_id *string, project_name *string, project_url *string, pretty *bool) {
+func HandleGetProjects(project_id *string, project_name *string, project_url *string, pretty *bool, project_type *string) {
 	var err error
 
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
 	if utils.IsBlank(*project_id) && utils.IsBlank(*project_name) && utils.IsBlank(*project_url) {
-		projects, err := c.GetAllProjects()
+		projects, err := c.GetAllProjects(*project_type)
 		utils.ExitIfError(err)
 
 		if config.IsPrettyFormatExpected(pretty) {
@@ -83,7 +83,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 
 func displayProjectsAsTable(projects []client.Project) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Name", "URL", "Created at"})
+	table.SetHeader([]string{"ID", "Name", "Type", "URL", "Created at"})
 
 	if len(projects) == 0 {
 		fmt.Println("No users found")
@@ -92,6 +92,7 @@ func displayProjectsAsTable(projects []client.Project) {
 			table.Append([]string{
 				fmt.Sprintf("%d", project.Id),
 				project.Name,
+				project.Type,
 				project.Url,
 				project.CreatedAt,
 			})

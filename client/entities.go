@@ -119,6 +119,7 @@ type ApiKey struct {
 type Project struct {
 	Id        int        `json:"id"`
 	Name      string     `json:"name"`
+	Type      string     `json:"type"`
 	Url       string     `json:"url"`
 	CreatedAt string     `json:"created_at"`
 	Instances []Instance `json:"instances"`
@@ -130,6 +131,7 @@ type AddProjectBody struct {
 	Token       string `json:"token"`
 	Namespace   string `json:"namespace"`
 	GitUsername string `json:"git_username"`
+	Type        string `json:"type"`
 }
 
 type ProviderRegion struct {
@@ -372,4 +374,73 @@ type Data struct {
 	Id        string `json:"id"`
 	Device_id string `json:"device_id"`
 	Content   string `json:"content"`
+}
+
+type Deployment struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Hash        string `json:"hash"`
+	Cluster_id  int    `json:"cluster_id"`
+	Project_id  int    `json:"project_id"`
+	Env_id      int    `json:"env_id"`
+	User_id     int    `json:"user_id"`
+	Created_at  string `json:"created_at"`
+	Namespace   string `json:"namespace"`
+}
+type DeploymentDisplay struct {
+	Id         string `json:"id"`
+	Name       string `json:"name"`
+	Namespace  string `json:"namespace"`
+	Created_at string `json:"created_at"`
+}
+
+type Pod struct {
+	Id         string `json:"id"`
+	Name       string `json:"name"`
+	Status     string `json:"status"`
+	Ip         string `json:"ip"`
+	Start_time string `json:"start_time"`
+}
+
+type ContainerState struct {
+	Running    bool `json:"running"`
+	Terminated bool `json:"terminated"`
+	Waiting    bool `json:"waiting"`
+}
+
+type Container struct {
+	Id            string         `json:"id"`
+	Name          string         `json:"name"`
+	Image         string         `json:"image"`
+	Started       string         `json:"started"`
+	Restart_count string         `json:"restart_count"`
+	State         ContainerState `json:"state"`
+}
+
+type DeploymentProject struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type DeploymentEnvironment struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type DeploymentByIdResponse struct {
+	Name        string                `json:"name"`
+	Namespace   string                `json:"namespace"`
+	Pods        []Pod                 `json:"pods"`
+	Containers  []Container           `json:"containers"`
+	Project     DeploymentProject     `json:"project"`
+	Environment DeploymentEnvironment `json:"environment"`
+}
+
+type CreationDeployment struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Cluster_id  int    `json:"cluster_id"`
+	Project_id  int    `json:"project_id"`
+	Env_id      int    `json:"env_id"`
 }
