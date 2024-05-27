@@ -10,7 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleGetFunctions(functions *[]admin.Function,pretty *bool) {
+func HandleGetFunctions(functions *[]admin.Function, pretty *bool) {
 
 	if config.IsPrettyFormatExpected(pretty) {
 		displayFunctionsAsTable(*functions)
@@ -63,12 +63,11 @@ func displayFunctionsAsTable(functions []admin.Function) {
 				function.Updated_at,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render() // Render the table
 }
 
-func HandleGetInvocations(invocations *[]admin.Invocation,pretty *bool) {
+func HandleGetInvocations(invocations *[]admin.Invocation, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayInvocationsAsTable(*invocations)
 	} else if config.GetDefaultFormat() == "json" {
@@ -117,11 +116,11 @@ func displayInvocationsAsTable(invocations []admin.Invocation) {
 				invocation.Updated_at,
 			})
 		}
+		table.Render()
 	}
-	table.Render() // Render the table
 }
 
-func HandleGetTriggers(triggers *[]admin.Trigger,pretty *bool) {
+func HandleGetTriggers(triggers *[]admin.Trigger, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayTriggersAsTable(*triggers)
 	} else if config.GetDefaultFormat() == "json" {
@@ -175,7 +174,6 @@ func displayTriggersAsTable(triggers []admin.Trigger) {
 				trigger.Updated_at,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

@@ -129,8 +129,8 @@ func displayObjectTypesAsTable(objectTypes []admin.ObjectType) {
 				objectType.Content.DecodingFunction,
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }
 
 func HandleGetObjectType(objectType *admin.ObjectType, pretty *bool) {
@@ -252,8 +252,8 @@ func displayDevicesAsTable(devices []admin.Device) {
 				fmt.Sprintf("%t", device.Active),
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }
 
 func HandleGetDevices(devices *[]admin.Device, pretty *bool) {
@@ -296,8 +296,8 @@ func displayNumericDataAsTable(numericData []admin.NumericData) {
 				data.Created_at,
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }
 
 func HandleGetNumericData(numericData *[]admin.NumericData, pretty *bool) {
@@ -330,8 +330,8 @@ func displayStringDataAsTable(stringData []admin.StringData) {
 				data.Created_at,
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }
 
 func HandleGetStringData(stringData *[]admin.StringData, pretty *bool) {

@@ -22,7 +22,7 @@ type User struct {
 	Billable           bool   `json:"billable"`
 }
 
-func HandleGetUsers(responseUsers *admin.ResponseUsers,pretty *bool) {
+func HandleGetUsers(responseUsers *admin.ResponseUsers, pretty *bool) {
 	users := responseUsers.Result
 
 	if config.IsPrettyFormatExpected(pretty) {
@@ -72,7 +72,6 @@ func displayUsersAsTable(users []admin.User) {
 				fmt.Sprintf("%t", user.Billable),
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

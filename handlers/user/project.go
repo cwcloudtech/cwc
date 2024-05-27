@@ -97,7 +97,6 @@ func displayProjectsAsTable(projects []client.Project) {
 				project.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

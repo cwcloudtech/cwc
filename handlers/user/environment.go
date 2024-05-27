@@ -46,7 +46,6 @@ func displayEnvironmentsAsTable(environments []client.Environment) {
 				environment.Description,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }
