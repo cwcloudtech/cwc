@@ -10,7 +10,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func HandleAddProject(created_project *admin.Project,user_email *string, name *string, host *string, token *string, git_username *string, namespace *string) {
+func HandleAddProject(created_project *admin.Project, user_email *string, name *string, host *string, token *string, git_username *string, namespace *string) {
 	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_project)
 	} else {
@@ -79,7 +79,7 @@ func HandleGetProjects(project_id *string, project_name *string, project_url *st
 
 func displayProjectsAsTable(projects []admin.Project) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Name", "URL", "Created at"})
+	table.SetHeader([]string{"ID", "Name", "Type", "URL", "Created at"})
 
 	if len(projects) == 0 {
 		fmt.Println("No users found")
@@ -88,6 +88,7 @@ func displayProjectsAsTable(projects []admin.Project) {
 			table.Append([]string{
 				fmt.Sprintf("%d", project.Id),
 				project.Name,
+				project.Type,
 				project.Url,
 				project.CreatedAt,
 			})

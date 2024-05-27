@@ -1,20 +1,21 @@
 package create
 
 import (
-	"cwc/handlers/admin"
-	"fmt"
 	adminClient "cwc/admin"
-	"github.com/spf13/cobra"
+	"cwc/handlers/admin"
 	"cwc/utils"
+	"fmt"
+	"github.com/spf13/cobra"
 )
 
 var (
-	name       string
-	host       string
-	token      string
-	git        string
-	namespace  string
-	user_email string
+	name         string
+	host         string
+	token        string
+	git          string
+	namespace    string
+	user_email   string
+	project_type string
 )
 
 // createCmd represents the create command
@@ -27,8 +28,9 @@ You can also provide your Gitlab host and access token and git username to save 
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()
 		utils.ExitIfError(err)
-		created_project, err := c.AdminAddProject(user_email, name, host, token, git, namespace)
-		admin.HandleAddProject(created_project,&user_email, &name, &host, &token, &git, &namespace)
+		created_project, add_project_err := c.AdminAddProject(user_email, name, host, token, git, namespace, project_type)
+		utils.ExitIfError(add_project_err)
+		admin.HandleAddProject(created_project, &user_email, &name, &host, &token, &git, &namespace)
 	},
 }
 
@@ -39,6 +41,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&token, "token", "t", "", "Gitlab Token")
 	CreateCmd.Flags().StringVarP(&git, "git", "g", "", "Git username")
 	CreateCmd.Flags().StringVarP(&namespace, "namespace", "s", "", "Gitlab Group ID")
+	CreateCmd.Flags().StringVarP(&project_type, "type", "p", "", "Project Type (vm, k8s)")
 
 	err := CreateCmd.MarkFlagRequired("name")
 	if nil != err {
