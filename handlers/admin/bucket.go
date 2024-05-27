@@ -91,7 +91,6 @@ func displayBucketsAsTable(buckets []admin.Bucket) {
 				bucket.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

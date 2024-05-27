@@ -67,7 +67,6 @@ func displayRegistriesAsTable(registries []client.Registry) {
 				registry.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

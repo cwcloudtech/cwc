@@ -92,6 +92,6 @@ func displayDeploymentsAsTable(deployments []client.Deployment) {
 				deployment.Created_at,
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }

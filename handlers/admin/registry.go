@@ -54,7 +54,7 @@ func HandleRenewRegistryCredentials(id *string) {
 	fmt.Printf("Registry with id %v successfully renewed credentials\n", *id)
 }
 
-func HandleGetRegistries(registries *[]admin.Registry,pretty *bool) {
+func HandleGetRegistries(registries *[]admin.Registry, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
 		displayRegistriesAsTable(*registries)
 	} else if config.GetDefaultFormat() == "json" {
@@ -91,7 +91,6 @@ func displayRegistriesAsTable(registries []admin.Registry) {
 				registry.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

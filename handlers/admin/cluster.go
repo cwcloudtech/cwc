@@ -36,9 +36,8 @@ func displayClustersAsTable(clusters []admin.Cluster) {
 				cluster.Created_at,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }
 
 func HandleDeleteCluster(clusterId *string) {

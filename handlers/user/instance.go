@@ -100,7 +100,6 @@ func displayInstancesAsTable(instances []client.Instance) {
 				instance.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

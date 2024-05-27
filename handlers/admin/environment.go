@@ -149,7 +149,6 @@ func displayEnvironmentsAsTable(environments []admin.Environment) {
 				fmt.Sprintf("%t", environment.IsPrivate),
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }
