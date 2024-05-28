@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-func (c *Client) AddProject(project_name string, host string, token string, git_username string, namespace string) (*Project, error) {
+func (c *Client) AddProject(project_name string, host string, token string, git_username string, namespace string, project_type string) (*Project, error) {
 	buf := bytes.Buffer{}
 	project := AddProjectBody{
 		Name:        project_name,
@@ -15,13 +15,14 @@ func (c *Client) AddProject(project_name string, host string, token string, git_
 		Token:       token,
 		GitUsername: git_username,
 		Namespace:   namespace,
+		Type:        project_type,
 	}
 
 	err := json.NewEncoder(&buf).Encode(project)
 	if nil != err {
 		return nil, err
 	}
-	resp_body, err := c.httpRequest(fmt.Sprintf("/project"), "POST", buf)
+	resp_body, err := c.httpRequest("/project", "POST", buf)
 	if nil != err {
 		return nil, err
 	}
@@ -56,8 +57,11 @@ func (c *Client) DeleteProjectByUrl(projectUrl string) error {
 	}
 	return nil
 }
-func (c *Client) GetAllProjects() (*[]Project, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/project"), "GET", bytes.Buffer{})
+func (c *Client) GetAllProjects(projectType string) (*[]Project, error) {
+	if projectType == "" {
+		projectType = "all"
+	}
+	body, err := c.httpRequest(fmt.Sprintf("/project?type=%s", projectType), "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}

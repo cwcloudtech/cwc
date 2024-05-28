@@ -30,7 +30,7 @@ func HandleRefreshInstance(id *string) {
 	fmt.Printf("Instance %v state successfully refreshed\n", *id)
 }
 
-func HandleAddInstance(created_instance *admin.Instance,user_email *string, name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
+func HandleAddInstance(created_instance *admin.Instance, user_email *string, name *string, project_id *int, project_name *string, project_url *string, env *string, instance_type *string, zone *string, dns_zone *string) {
 	if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(created_instance)
 	} else {
@@ -84,7 +84,6 @@ func displayInstancesAsTable(instances []admin.Instance) {
 				instance.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

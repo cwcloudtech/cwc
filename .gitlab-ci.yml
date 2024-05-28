@@ -60,7 +60,7 @@ test:
   stage: test
   only:
     refs:
-      - /^(main.*)$/
+      - /^(main.*|develop.*)$/
       - merge_requests
   script:
     - chmod +x ./ci/test.sh

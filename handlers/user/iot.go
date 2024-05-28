@@ -125,8 +125,8 @@ func displayObjectTypesAsTable(objectTypes []client.ObjectType) {
 				objectType.Content.DecodingFunction,
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }
 
 func HandleGetObjectType(objectType *client.ObjectType, pretty *bool) {
@@ -239,8 +239,8 @@ func displayDevicesAsTable(devices []client.Device) {
 				fmt.Sprintf("%t", device.Active),
 			})
 		}
+		table.Render()
 	}
-	table.Render()
 }
 
 func HandleGetDevices(devices *[]client.Device, pretty *bool) {

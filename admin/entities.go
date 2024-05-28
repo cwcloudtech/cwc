@@ -150,6 +150,7 @@ type Project struct {
 	Id        int        `json:"id"`
 	Name      string     `json:"name"`
 	Url       string     `json:"url"`
+	Type      string     `json:"type"`
 	CreatedAt string     `json:"created_at"`
 	Instances []Instance `json:"instances"`
 }
@@ -161,6 +162,7 @@ type AddProjectBody struct {
 	Email       string `json:"email"`
 	Namespace   string `json:"namespace"`
 	GitUsername string `json:"git_username"`
+	Type        string `json:"type"`
 }
 type ProviderRegion struct {
 	Name  string   `json:"name"`
@@ -367,4 +369,13 @@ type NumericData struct {
 	Device_id  string  `json:"device_id"`
 	Value      float64 `json:"value"`
 	Created_at string  `json:"created_at"`
+}
+
+type Cluster struct {
+	Id               int    `json:"id"`
+	KubeconfigFileId int    `json:"kubeconfig_file_id"`
+	Name             string `json:"name"`
+	Platform         string `json:"platform"`
+	Version          string `json:"version"`
+	Created_at       string `json:"created_at"`
 }

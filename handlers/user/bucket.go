@@ -68,7 +68,6 @@ func displayBucketsAsTable(buckets []client.Bucket) {
 				bucket.CreatedAt,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }

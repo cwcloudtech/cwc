@@ -35,8 +35,18 @@ func (c *Client) AdminDeleteEnvironment(env_id string) error {
 	return nil
 }
 
-func (c *Client) GetAllEnvironments() (*[]Environment, error) {
-	body, err := c.httpRequest("/admin/environment/all", "GET", bytes.Buffer{})
+func (c *Client) GetAllEnvironments(optionalArgs ...bool) (*[]Environment, error) {
+	withK8s := false
+	if len(optionalArgs) > 0 {
+		withK8s = optionalArgs[0]
+	}
+
+	url := "/admin/environment/all"
+	if withK8s {
+		url += "?type=k8s"
+	}
+
+	body, err := c.httpRequest(url, "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}

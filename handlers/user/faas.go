@@ -94,9 +94,8 @@ func displayFunctionsAsTable(functions []client.Function) {
 				function.Updated_at,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render() // Render the table
 }
 
 func HandleDeleteFunction(id *string) {
@@ -620,8 +619,8 @@ func displayInvocationsAsTable(invocations []client.Invocation) {
 				invocation.Updated_at,
 			})
 		}
+		table.Render()
 	}
-	table.Render() // Render the table
 }
 
 func PrepareAddInvocation(content *client.InvocationAddContent, argument_values *[]string, interactive *bool, synchronous *bool) (*client.Invocation, error) {
@@ -762,9 +761,8 @@ func displayTriggersAsTable(triggers []client.Trigger) {
 				trigger.Updated_at,
 			})
 		}
+		table.Render()
 	}
-
-	table.Render()
 }
 
 func HandleAddTrigger(trigger *client.Trigger, argument_values *[]string, interactive *bool, pretty *bool) {

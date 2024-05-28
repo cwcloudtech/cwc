@@ -11,6 +11,7 @@ import (
 	"cwc/cmd/faas"
 	"cwc/cmd/instance"
 	"cwc/cmd/iot"
+	"cwc/cmd/kubernetes"
 	"cwc/cmd/login"
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
@@ -73,4 +74,5 @@ func init() {
 	rootCmd.AddCommand(configure.ConfigureCmd)
 	rootCmd.AddCommand(faas.FaasCmd)
 	rootCmd.AddCommand(iot.IotCmd)
+	rootCmd.AddCommand(kubernetes.KubernetesCmd)
 }
