@@ -1,0 +1,20 @@
+# Use an official Golang runtime as a parent image
+FROM golang:latest
+
+# Install git
+RUN apt-get update && apt-get install -y git
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/app
+
+# Clone the Revive repository
+RUN git clone https://github.com/mgechev/revive.git
+
+# Change working directory to revive
+WORKDIR /go/src/app/revive
+
+# Build Revive
+RUN go install github.com/mgechev/revive
+
+# Set the entrypoint to revive
+ENTRYPOINT ["/go/bin/revive"]
