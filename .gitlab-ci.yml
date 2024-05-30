@@ -4,6 +4,7 @@ stages:
   - cleanup
   - notify
   - test
+  - lint
 
 mirror:
   stage: publish
@@ -65,5 +66,17 @@ test:
   script:
     - chmod +x ./ci/test.sh
     - ./ci/test.sh
+  tags:
+    - imagesbuilder
+
+lint:
+  stage: lint
+  only:
+    refs:
+      - /^(main.*|develop.*)$/
+      - merge_requests
+  script:
+    - chmod +x ./ci/lint.sh
+    - ./ci/lint.sh
   tags:
     - imagesbuilder
