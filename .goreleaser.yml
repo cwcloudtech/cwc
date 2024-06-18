@@ -58,8 +58,8 @@ brews:
       owner: oss
       name: cwcloud/homebrew-cwc
     commit_author:
-      name: amirghedira
-      email: amirghedira06@gmail.com
+      name: comwork
+      email: contact@comwork.io
   - 
     url_template: "https://gitlab.comwork.io/oss/cwcloud/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 

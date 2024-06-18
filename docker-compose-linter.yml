@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  revive:
+    build:
+      context: .
+      dockerfile: Dockerfile.linter
+    volumes:
+      - .:/go/src/app
+    working_dir: /go/src/app
