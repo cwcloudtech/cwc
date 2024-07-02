@@ -1,8 +1,7 @@
 package uninstall
 
 import (
-	"cwc/handlers/admin"
-	"fmt"
+	"cwc/handlers/user"
 
 	"github.com/spf13/cobra"
 )
@@ -12,21 +11,16 @@ var (
 )
 
 var UninstallCmd = &cobra.Command{
-	Use:   "uninstall [RELEASE_NAME]",
+	Use:   "uninstall [flags]",
 	Short: "Uninstall the Helm release for cwcloud application",
 	Long:  `Uninstall the Helm release from Kubernetes.`,
-	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 1 {
-			releaseName = args[0]
-			fmt.Println(" releaseName: ", releaseName)
-			fmt.Println(" nameSpace: ", nameSpace)
-			admin.HandleUninstall(cmd, releaseName, nameSpace)
-		} else {
-			cmd.Help()
-		}
+
+		user.HandleUninstall(cmd, releaseName, nameSpace)
 	},
 }
 func init() {
+
 	UninstallCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for uninstalling deployment (default: cwcloud)")
+	UninstallCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
 }

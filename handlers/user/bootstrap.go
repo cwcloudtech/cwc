@@ -1,4 +1,4 @@
-package admin
+package user
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 
 
 )
-func HandleBootstrap(cmd *cobra.Command, clusterIP, releaseName, dbPassword, nameSpace string, otherValues []string, flagVerbose bool) {
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool) {
     repoURL := "https://gitlab.comwork.io/oss/cwcloud/cwcloud-helm.git"
     directory := "./cwcloud"
     branch := "feat/add-helm-templates"
@@ -26,7 +26,7 @@ func HandleBootstrap(cmd *cobra.Command, clusterIP, releaseName, dbPassword, nam
 
     log.Println("Starting Helm chart installation...")
 
-    patchString := buildPatchString(dbPassword, clusterIP, otherValues)
+    patchString := buildPatchString(otherValues)
     log.Printf("Constructed patch string: %s", patchString)
 
     if err := runHelmInstall(releaseName, directory, nameSpace, patchString); err != nil {
@@ -36,9 +36,11 @@ func HandleBootstrap(cmd *cobra.Command, clusterIP, releaseName, dbPassword, nam
     log.Println("Helm chart installation completed successfully.")
 }
 
-func buildPatchString(dbPassword, clusterIP string, otherValues []string) string {
+func buildPatchString(otherValues []string) string {
+    clusterIP := GetClusterIP()
+
     var builder strings.Builder
-    builder.WriteString(fmt.Sprintf("apiEnvCm.postgresPassword=%s,clusterIP=%s", dbPassword, clusterIP))
+    builder.WriteString("clusterIP="+clusterIP)
 
     for _, opt := range otherValues {
         builder.WriteString("," + opt)
@@ -91,7 +93,6 @@ func CloneRepo(repoURL, directory, branch string) error {
 }
 
 
-
 func HandleUninstall(cmd *cobra.Command, releaseName string, nameSpace string) {
     log.Println("Starting Helm chart uninstallation...")
 
@@ -119,6 +120,7 @@ func runHelmUninstall(releaseName, nameSpace string) error {
 
     return helmUninstallation.Run()
 }
+
 
 
 
