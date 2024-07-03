@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 )
+
 var (
 	releaseName string
 	nameSpace   string
@@ -19,6 +20,7 @@ var UninstallCmd = &cobra.Command{
 		user.HandleUninstall(cmd, releaseName, nameSpace)
 	},
 }
+
 func init() {
 
 	UninstallCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for uninstalling deployment (default: cwcloud)")

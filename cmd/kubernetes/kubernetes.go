@@ -1,8 +1,9 @@
 package kubernetes
 
 import (
-	"cwc/cmd/kubernetes/deployment"
 	"cwc/cmd/kubernetes/configure"
+	"cwc/cmd/kubernetes/deployment"
+
 	"github.com/spf13/cobra"
 )
 

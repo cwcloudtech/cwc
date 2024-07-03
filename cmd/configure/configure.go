@@ -47,7 +47,6 @@ The configure command takes no arguments it will prompt you for each default val
 				user.HandlerSetDefaultRegion(default_region)
 			}
 
-
 			default_format := config.GetDefaultFormat()
 			fmt.Printf("Default output format [%s]: ", default_format)
 			new_default_format := utils.PromptUserForValue()
