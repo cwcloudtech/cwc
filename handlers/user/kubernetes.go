@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/client-go/tools/clientcmd"
-
 )
 
 func HandleGetDeployments(deployments *[]client.Deployment, pretty *bool) {
@@ -98,7 +98,6 @@ func displayDeploymentsAsTable(deployments []client.Deployment) {
 	}
 }
 
-
 func HandlerGetDefaultKubeConfigPath() {
 	path := config.GetDefaultKubeConfigPath()
 	fmt.Printf("Default kube config path = %v\n", path)
@@ -124,6 +123,6 @@ func GetClusterIP() string {
 
 	host := kubeConfig.Host
 	serverIP := strings.Split(strings.Split(host, "//")[1], ":")[0]
-	
+
 	return serverIP
 }
