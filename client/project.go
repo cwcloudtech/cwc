@@ -59,7 +59,7 @@ func (c *Client) DeleteProjectByUrl(projectUrl string) error {
 }
 func (c *Client) GetAllProjects(projectType string) (*[]Project, error) {
 	if projectType == "" {
-		projectType = "all"
+		projectType = "vm"
 	}
 	body, err := c.httpRequest(fmt.Sprintf("/project?type=%s", projectType), "GET", bytes.Buffer{})
 	if nil != err {
