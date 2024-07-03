@@ -2,7 +2,7 @@ package kubernetes
 
 import (
 	"cwc/cmd/kubernetes/deployment"
-
+	"cwc/cmd/kubernetes/configure"
 	"github.com/spf13/cobra"
 )
 
@@ -20,4 +20,5 @@ and deleting a deployment`,
 func init() {
 	KubernetesCmd.DisableFlagsInUseLine = true
 	KubernetesCmd.AddCommand(deployment.DeploymentCmd)
+	KubernetesCmd.AddCommand(configure.ConfigureCmd)
 }

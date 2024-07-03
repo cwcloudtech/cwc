@@ -47,15 +47,6 @@ The configure command takes no arguments it will prompt you for each default val
 				user.HandlerSetDefaultRegion(default_region)
 			}
 
-			default_kube_config_path := config.GetDefaultKubeConfigPath()
-			fmt.Printf("Default kube config path [%s]: ", default_kube_config_path)
-			new_default_kube_config_path := utils.PromptUserForValue()
-
-			if utils.IsNotBlank(new_default_kube_config_path) {
-				user.HandlerSetDefaultKubeConfigPath(new_default_kube_config_path)
-			} else {
-				user.HandlerSetDefaultKubeConfigPath(default_kube_config_path)
-			}
 
 			default_format := config.GetDefaultFormat()
 			fmt.Printf("Default output format [%s]: ", default_format)
