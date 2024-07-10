@@ -3,6 +3,7 @@ package cmd
 import (
 	"cwc/cmd/admin"
 	"cwc/cmd/ai"
+	"cwc/cmd/bootstrap"
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
 	"cwc/cmd/dnszones"
@@ -75,4 +76,5 @@ func init() {
 	rootCmd.AddCommand(faas.FaasCmd)
 	rootCmd.AddCommand(iot.IotCmd)
 	rootCmd.AddCommand(kubernetes.KubernetesCmd)
+	rootCmd.AddCommand(bootstrap.BootstrapCmd)
 }

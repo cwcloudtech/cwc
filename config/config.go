@@ -61,6 +61,24 @@ func GetDefaultProvider() string {
 	return provider
 }
 
+func GetDefaultKubeConfigPath() string {
+	dirname, err := os.UserHomeDir()
+	if nil != err {
+		return ""
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return ""
+	}
+
+	file_content := string(content)
+	kube_config_path := GetValueFromFile(file_content, "kube_config_path")
+
+	return kube_config_path
+}
+
 func IsPrettyFormatExpected(pretty *bool) bool {
 	return *pretty || GetDefaultFormat() == "pretty"
 }
@@ -174,6 +192,10 @@ func SetDefaultProvider(provider string) {
 
 func SetDefaultEndpoint(endpoint string) {
 	UpdateFileKeyValue("config", "endpoint", endpoint)
+}
+
+func SetDefaultKubeConfigPath(path string) {
+	UpdateFileKeyValue("config", "kube_config_path", path)
 }
 
 func GetUserToken() string {
