@@ -27,7 +27,21 @@ func init() {
 	BootstrapCmd.DisableFlagsInUseLine = true
 	BootstrapCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
 	BootstrapCmd.Flags().StringVarP(&nameSpace, "name-space", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
-	BootstrapCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, "Values to override other configurations (e.g. --value key=value --value key2=value2)")
+	BootstrapCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)
+
+Example:
+  All applications are enabled by default. To disable some applications, use this format:
+
+    -p applicationName.enabled=false
+
+
+  Example:
+    cwc bootstrap -p comworkCloudPrometheus.enabled=false \
+                  -p comworkCloudOtelCollector.enabled=false \
+                  -p comworkCloudJaeger.enabled=false \
+                  -p comworkCloudScheduler.enabled=false \
+                  -p comworkCloudConsumer.enabled=false
+	`)
 
 	BootstrapCmd.AddCommand(uninstall.UninstallCmd)
 }
