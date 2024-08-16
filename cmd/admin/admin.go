@@ -2,6 +2,7 @@ package admin
 
 import (
 	"cwc/cmd/admin/bucket"
+	"cwc/cmd/admin/dns_records"
 	"cwc/cmd/admin/email"
 	"cwc/cmd/admin/environment"
 	"cwc/cmd/admin/faas"
@@ -37,4 +38,5 @@ func init() {
 	AdminCmd.AddCommand(faas.FaasCmd)
 	AdminCmd.AddCommand(iot.IotCmd)
 	AdminCmd.AddCommand(kubernetes.KubernetesCmd)
+	AdminCmd.AddCommand(dns_records.DnsRecordsCmd)
 }
