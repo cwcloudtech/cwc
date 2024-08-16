@@ -379,3 +379,26 @@ type Cluster struct {
 	Version          string `json:"version"`
 	Created_at       string `json:"created_at"`
 }
+
+type DnsRecord struct {
+	Id               string `json:"id"`
+	Zone             string `json:"zone"`
+	Record           string `json:"record"`
+	Ttl              int 	`json:"ttl"`
+	Type             string `json:"type"`
+	Data             string `json:"data"` 
+}
+
+type DnsRecordCreate struct {
+	RecordName string `json:"record_name"`
+	DnsZone    string `json:"dns_zone"`
+	Type 	 string `json:"type"`
+	Ttl 	 int 	`json:"ttl"`
+	Data 	 string `json:"data"`
+}
+
+type DnsRecordDelete struct {
+	Id      string `json:"id"`
+	RecordName string `json:"record_name"`
+	DnsZone string `json:"dns_zone"`
+}
