@@ -1,19 +1,76 @@
 stages:
-  - publish
-  - release
-  - cleanup
-  - notify
   - test
   - lint
+  - publish
+  - pre-release-cleanup
+  - test-release
+  - release
+  - post-release-cleanup
+  - cleanup 
+  - notify
+
+test:
+  stage: test
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^(main|develop)$/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - chmod +x ./ci/test.sh
+    - ./ci/test.sh
+  tags:
+    - imagesbuilder
+
+lint:
+  stage: lint
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^(main|develop)$/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - chmod +x ./ci/lint.sh
+    - ./ci/lint.sh
+  tags:
+    - imagesbuilder
 
 mirror:
   stage: publish
   script:
     - setsid ./ci/mirror.sh
-  only:
-    - /^(main.*)$/
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^(main.*)$/
   tags:
     - mirror
+
+pre-release-cleanup:
+  stage: pre-release-cleanup
+  image: alpine:latest
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - chmod +x ./ci/pre-release-cleanup.sh
+    - ./ci/pre-release-cleanup.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH =~ /^(main.*)$/
+  tags:
+    - imagesbuilder
+
+#? test-release is just for testing
+#? It does not release artifacts but simulates the process
+test-release:
+  stage: test-release
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    GIT_DEPTH: 0
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+  script:
+    - chmod +x ./ci/test-release.sh
+    - ./ci/test-release.sh
+  tags:
+    - imagesbuilder
 
 release:
   stage: release
@@ -21,10 +78,6 @@ release:
   services:
     - docker:dind
   variables:
-    DOCKER_REGISTRY: $CI_REGISTRY
-    DOCKER_USERNAME: $CI_REGISTRY_USER
-    DOCKER_PASSWORD: $CI_REGISTRY_PASSWORD
-    GITLAB_TOKEN: $GITLAB_TOKEN
     GIT_DEPTH: 0
   only:
     refs:
@@ -32,6 +85,20 @@ release:
   script:
     - chmod +x ./ci/release.sh
     - ./ci/release.sh
+  tags:
+    - imagesbuilder
+
+post-release-cleanup:
+  stage: post-release-cleanup
+  image: alpine:latest
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - chmod +x ./ci/post-release-cleanup.sh
+    - ./ci/post-release-cleanup.sh
+  only:
+    refs:
+      - tags
   tags:
     - imagesbuilder
 
@@ -54,29 +121,5 @@ notify:
   script:
     - chmod +x ./ci/notify.sh
     - ./ci/notify.sh
-  tags:
-    - imagesbuilder
-
-test:
-  stage: test
-  only:
-    refs:
-      - /^(main.*|develop.*)$/
-      - merge_requests
-  script:
-    - chmod +x ./ci/test.sh
-    - ./ci/test.sh
-  tags:
-    - imagesbuilder
-
-lint:
-  stage: lint
-  only:
-    refs:
-      - /^(main.*|develop.*)$/
-      - merge_requests
-  script:
-    - chmod +x ./ci/lint.sh
-    - ./ci/lint.sh
   tags:
     - imagesbuilder
