@@ -1,7 +1,13 @@
-FROM golang:1.16
+FROM golang:1.22
 
 WORKDIR /app
 
-COPY . . 
+COPY go.mod go.sum ./
 
-CMD ["go", "test", "-v", "./tests"]
+RUN go mod download
+
+COPY . .
+
+VOLUME ["/app"]
+
+CMD ["go", "test", "-v", "./..."]

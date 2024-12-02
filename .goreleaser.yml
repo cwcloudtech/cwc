@@ -1,3 +1,5 @@
+version: 2
+
 builds:
   - binary: cwc
     goos:
@@ -12,9 +14,11 @@ builds:
     ldflags:
       - -X main.Version={{.Version}}
 
+universal_binaries:
+  - replace: true
+
 archives:
-  -
-    format: tar.gz
+  - format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
       - goos: windows
@@ -22,46 +26,50 @@ archives:
     files:
       - install.sh
       - README.md
+
 release:
   prerelease: auto
+  #? Added mode for GitLab compatibility
+  mode: replace
+
+checksum:
+  name_template: 'checksums.txt'
+
+dockers:
+  - image_templates: 
+      - "rg.fr-par.scw.cloud/comworkio/cwc:{{ .Version }}"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://gitlab.comwork.io/oss/cwcloud/cwc
+      - --label=org.opencontainers.image.source=https://gitlab.comwork.io/oss/cwcloud/cwc
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
 
 gitlab_urls:
   api: https://gitlab.comwork.io/api/v4
   download: https://gitlab.comwork.io
-  # set to true if you use a self-signed certificate
   skip_tls_verify: true
-  # set to true if you want to upload to the Package Registry rather than attachments
-  # Only works with GitLab 13.5+
   use_package_registry: false
 
-universal_binaries:
-  - replace: true
-
-dockers:
-- image_templates: ["rg.fr-par.scw.cloud/comworkio/cwc:{{ .Version }}"]
-  dockerfile: Dockerfile
-  build_flag_templates:
-  - --label=org.opencontainers.image.title={{ .ProjectName }}
-  - --label=org.opencontainers.image.description={{ .ProjectName }}
-  - --label=org.opencontainers.image.url=https://gitlab.comwork.io/oss/cwcloud/cwc
-  - --label=org.opencontainers.image.source=https://gitlab.comwork.io/oss/cwcloud/cwc
-  - --label=org.opencontainers.image.version={{ .Version }}
-  - --label=org.opencontainers.image.created={{.Date}}"
-  - --label=org.opencontainers.image.revision={{ .FullCommit }}
-  - --label=org.opencontainers.image.licenses=MIT
-
 brews:
-  -
-    name: cwc
+  - name: cwc
     homepage: https://gitlab.comwork.io/oss/cwcloud/cwc
-    tap:
-      owner: oss
-      name: cwcloud/homebrew-cwc
     commit_author:
       name: comwork
       email: contact@comwork.io
-  - 
     url_template: "https://gitlab.comwork.io/oss/cwcloud/cwc/-/releases/{{ .Tag }}/{{ .ArtifactName }}"
 
-checksum:
-  name_template: 'checksums.txt'
+#? Added changelog configuration for better release notes
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - Merge branch
+      - Merge pull request
