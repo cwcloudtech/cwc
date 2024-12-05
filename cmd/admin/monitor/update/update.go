@@ -46,7 +46,7 @@ func init() {
 	UpdateCmd.Flags().StringVarP(&monitor.Username, "username", "s", "", "Username of the request in the monitor")
 	UpdateCmd.Flags().StringVarP(&monitor.Password, "password", "p", "", "Password of the request in the monitor")
 	UpdateCmd.Flags().StringVarP(&rawHeaders, "headers", "H", "", "Headers of the request in the monitor (e.g., key1:value1,key2:value2)")
-	UpdateCmd.Flags().IntVarP(&monitor.User_id, "user_id", "I", 43, "User ID")
+	UpdateCmd.Flags().IntVarP(&monitor.User_id, "user_id", "I", 0, "User ID")
 
 	err := UpdateCmd.MarkFlagRequired("id")
 	if nil != err {

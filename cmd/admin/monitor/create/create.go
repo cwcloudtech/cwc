@@ -48,7 +48,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&monitor.Username, "username", "s", "", "Username of the request in the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Password, "password", "p", "", "Password of the request in the monitor")
 	CreateCmd.Flags().StringVarP(&rawHeaders, "headers", "H", "", "Headers of the request in the monitor (e.g., key1:value1,key2:value2)")
-	CreateCmd.Flags().IntVarP(&monitor.User_id, "user_id", "i", 43, "User ID")
+	CreateCmd.Flags().IntVarP(&monitor.User_id, "user_id", "i", 0, "User ID")
 
 	err := CreateCmd.MarkFlagRequired("name")
 	if nil != err {
@@ -56,6 +56,11 @@ func init() {
 	}
 
 	err = CreateCmd.MarkFlagRequired("url")
+	if nil != err {
+		fmt.Println(err)
+	}
+
+	err = CreateCmd.MarkFlagRequired("user_id")
 	if nil != err {
 		fmt.Println(err)
 	}

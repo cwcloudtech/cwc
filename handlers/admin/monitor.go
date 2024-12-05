@@ -130,6 +130,10 @@ func HandleUpdateMonitor(monitorId *string, updatedMonitor *admin.Monitor) {
 		monitor.Headers = updatedMonitor.Headers
 	}
 
+	if updatedMonitor.User_id != 0 {
+		monitor.User_id = updatedMonitor.User_id
+	}
+
 	_, updateError := c.UpdateMonitorById(*monitorId, *monitor)
 	utils.ExitIfError(updateError)
 
