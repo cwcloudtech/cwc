@@ -49,8 +49,7 @@ pre-release-cleanup:
     - chmod +x ./ci/pre-release-cleanup.sh
     - ./ci/pre-release-cleanup.sh
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH =~ /^(main.*)$/
+    - if: $CI_COMMIT_BRANCH =~ /^(main|develop)$/
   tags:
     - imagesbuilder
 
@@ -64,7 +63,7 @@ test-release:
   variables:
     GIT_DEPTH: 0
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH =~ /^(main|develop)$/
       when: always
   script:
     - chmod +x ./ci/test-release.sh

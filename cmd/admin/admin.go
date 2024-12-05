@@ -9,6 +9,7 @@ import (
 	"cwc/cmd/admin/instance"
 	"cwc/cmd/admin/iot"
 	"cwc/cmd/admin/kubernetes"
+	"cwc/cmd/admin/monitor"
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
 	"cwc/cmd/admin/user"
@@ -39,4 +40,5 @@ func init() {
 	AdminCmd.AddCommand(iot.IotCmd)
 	AdminCmd.AddCommand(kubernetes.KubernetesCmd)
 	AdminCmd.AddCommand(dns_records.DnsRecordsCmd)
+	AdminCmd.AddCommand(monitor.MonitorCmd)
 }
