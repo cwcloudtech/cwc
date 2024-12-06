@@ -15,7 +15,7 @@ import (
 func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool) {
 	repoURL := "https://gitlab.comwork.io/oss/cwcloud/cwcloud-helm.git"
 	directory := "./cwcloud"
-	branch := "develop"
+	branch := "main"
 
 	// Clone the helm repository
 	if err := CloneRepo(repoURL, directory, branch); err != nil {
