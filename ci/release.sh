@@ -9,6 +9,10 @@ if curl --silent "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/releases" | 
   exit 1
 fi
 
+export DOCKER_REGISTRY="${CI_REGISTRY}"
+export DOCKER_USERNAME="${CI_REGISTRY_USER}"
+export DOCKER_PASSWORD="${CI_REGISTRY_PASSWORD}"
+
 if ! docker run --rm --privileged \
   -v "$PWD:/go/src/gitlab.com/goreleaser/cwc" \
   -w "/go/src/gitlab.com/goreleaser/cwc" \
