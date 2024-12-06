@@ -6,8 +6,10 @@ import (
 	"cwc/utils"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 func HandleGetDeployments(deployments *[]client.Deployment, pretty *bool) {
@@ -94,4 +96,33 @@ func displayDeploymentsAsTable(deployments []client.Deployment) {
 		}
 		table.Render()
 	}
+}
+
+func HandlerGetDefaultKubeConfigPath() {
+	path := config.GetDefaultKubeConfigPath()
+	fmt.Printf("Default kube config path = %v\n", path)
+}
+
+func HandlerSetDefaultKubeConfigPath(value string) {
+	config.SetDefaultKubeConfigPath(value)
+	fmt.Printf("Default kube config path = %v\n", value)
+}
+
+func GetClusterIP() string {
+	kubeConfigPath := config.GetDefaultKubeConfigPath()
+	fmt.Println("Kube config path: ", kubeConfigPath)
+	if utils.IsBlank(kubeConfigPath) {
+		return ""
+	}
+
+	kubeConfig, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		fmt.Printf("error getting Kubernetes config: %v\n", err)
+		os.Exit(1)
+	}
+
+	host := kubeConfig.Host
+	serverIP := strings.Split(strings.Split(host, "//")[1], ":")[0]
+
+	return serverIP
 }

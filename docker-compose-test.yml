@@ -1,6 +1,11 @@
-version: '3'
+version: '3.8'
+
 services:
   tests:
-    build: 
-      context: . 
+    build:
+      context: .
       dockerfile: Dockerfile.test
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: go test -v ./...

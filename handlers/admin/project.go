@@ -82,7 +82,7 @@ func displayProjectsAsTable(projects []admin.Project) {
 	table.SetHeader([]string{"ID", "Name", "Type", "URL", "Created at"})
 
 	if len(projects) == 0 {
-		fmt.Println("No users found")
+		fmt.Println("No projects found")
 	} else {
 		for _, project := range projects {
 			table.Append([]string{
