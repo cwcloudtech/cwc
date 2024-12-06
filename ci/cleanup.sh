@@ -16,7 +16,7 @@ gitlab_api_call() {
     if [[ $? -ne 0 ]]; then
         echo "Failed to make API call: $endpoint"
         exit 1
-    }
+    fi
     
     echo "$response"
 }

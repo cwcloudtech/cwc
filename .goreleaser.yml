@@ -58,6 +58,9 @@ gitlab_urls:
 brews:
   - name: cwc
     homepage: https://gitlab.comwork.io/oss/cwcloud/cwc
+    repository:
+      owner: cwc
+      name: cwcloud/homebrew-cwc
     commit_author:
       name: comwork
       email: contact@comwork.io
