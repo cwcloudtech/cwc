@@ -59,7 +59,7 @@ brews:
   - name: cwc
     homepage: https://gitlab.comwork.io/oss/cwcloud/cwc
     repository:
-      owner: cwc
+      owner: oss
       name: cwcloud/homebrew-cwc
     commit_author:
       name: comwork
