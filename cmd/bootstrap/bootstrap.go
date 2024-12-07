@@ -12,6 +12,7 @@ var (
 	nameSpace   string
 	otherValues []string
 	releaseName string
+	keepDir     bool
 )
 
 var BootstrapCmd = &cobra.Command{
@@ -19,14 +20,15 @@ var BootstrapCmd = &cobra.Command{
 	Short: "Automatic Comwork Cloud installation on Kubernetes",
 	Long:  `Automatic Comwork Cloud installation on Kubernetes.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleBootstrap(cmd, releaseName, nameSpace, otherValues, flagVerbose)
+		user.HandleBootstrap(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir)
 	},
 }
 
 func init() {
 	BootstrapCmd.DisableFlagsInUseLine = true
 	BootstrapCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
-	BootstrapCmd.Flags().StringVarP(&nameSpace, "name-space", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
+	BootstrapCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
+	BootstrapCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	BootstrapCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)
 
 Example:
@@ -36,11 +38,8 @@ Example:
 
 
   Example:
-    cwc bootstrap -p comworkCloudPrometheus.enabled=false \
-                  -p comworkCloudOtelCollector.enabled=false \
-                  -p comworkCloudJaeger.enabled=false \
-                  -p comworkCloudScheduler.enabled=false \
-                  -p comworkCloudConsumer.enabled=false
+    cwc bootstrap -p scheduler.enabled=false \
+                  -p consumer.enabled=false
 	`)
 
 	BootstrapCmd.AddCommand(uninstall.UninstallCmd)

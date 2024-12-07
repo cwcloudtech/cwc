@@ -12,13 +12,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool) {
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool) {
 	repoURL := "https://gitlab.comwork.io/oss/cwcloud/cwcloud-helm.git"
-	directory := "./cwcloud"
+	directory := "./cwcloud-helm-cwc"
 	branch := "main"
 
 	// Clone the helm repository
-	if err := CloneRepo(repoURL, directory, branch); err != nil {
+	if err := CloneRepo(repoURL, directory, branch, keepDir); err != nil {
 		log.Printf("Error cloning repository: %v", err)
 		return
 	}
@@ -69,12 +69,13 @@ func runHelmInstall(releaseName, directory, nameSpace, patchString string) error
 	return helmInstallation.Run()
 }
 
-func CloneRepo(repoURL, directory, branch string) error {
-
-	if _, err := os.Stat(directory); !os.IsNotExist(err) {
-		fmt.Printf("Deleting existing directory: %s\n", directory)
-		if err := os.RemoveAll(directory); err != nil {
-			return fmt.Errorf("failed to delete existing directory: %v", err)
+func CloneRepo(repoURL, directory, branch string, keepDir bool) error {
+	if !keepDir {
+		if _, err := os.Stat(directory); !os.IsNotExist(err) {
+			fmt.Printf("Deleting existing directory: %s\n", directory)
+			if err := os.RemoveAll(directory); err != nil {
+				return fmt.Errorf("failed to delete existing directory: %v", err)
+			}
 		}
 	}
 
@@ -83,6 +84,7 @@ func CloneRepo(repoURL, directory, branch string) error {
 		ReferenceName: plumbing.NewBranchReferenceName(branch),
 		Progress:      os.Stdout,
 	})
+
 	if err != nil {
 		return fmt.Errorf("failed to clone repository: %v", err)
 	}
@@ -94,7 +96,6 @@ func CloneRepo(repoURL, directory, branch string) error {
 func HandleUninstall(cmd *cobra.Command, releaseName string, nameSpace string) {
 	log.Println("Starting Helm chart uninstallation...")
 
-	// Run helm uninstall command
 	if err := runHelmUninstall(releaseName, nameSpace); err != nil {
 		log.Fatalf("Error running helm uninstall command: %v", err)
 	}
