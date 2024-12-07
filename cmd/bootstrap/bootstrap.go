@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"github.com/spf13/cobra"
 
+	"cwc/cmd/bootstrap/pfw"
 	"cwc/cmd/bootstrap/uninstall"
 	"cwc/handlers/user"
 )
@@ -43,4 +44,5 @@ Example:
 	`)
 
 	BootstrapCmd.AddCommand(uninstall.UninstallCmd)
+	BootstrapCmd.AddCommand(pfw.PfwCmd)
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -118,4 +119,35 @@ func runHelmUninstall(releaseName, nameSpace string) error {
 	helmUninstallation.Stderr = os.Stderr
 
 	return helmUninstallation.Run()
+}
+
+func HandlePortForward(cmd *cobra.Command, nameSpace string) {
+	log.Println("Starting tunnel on CWCloud...")
+
+	if err := runPortForward(nameSpace, "api", 8000); err != nil {
+		log.Fatalf("Error running kubectl: %v", err)
+	}
+
+	if err := runPortForward(nameSpace, "ui", 3000); err != nil {
+		log.Fatalf("Error running kubectl: %v", err)
+	}
+
+	log.Println("Now you can go here: http://localhost:3000")
+}
+
+func runPortForward(nameSpace string, service string, port int) error {
+	kubectlCommand := "kubectl"
+	kubectlArgs := []string{
+		"-n",
+		nameSpace,
+		"port-forward",
+		"svc/cwcloud-" + service,
+		"" + strconv.Itoa(port) + ":" + strconv.Itoa(port),
+	}
+
+	log.Printf("Executing kubectl command: %s %s", kubectlCommand, strings.Join(kubectlArgs, " "))
+
+	kubectlPortForward := exec.Command(kubectlCommand, kubectlArgs...)
+
+	return kubectlPortForward.Start()
 }
