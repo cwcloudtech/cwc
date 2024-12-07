@@ -70,7 +70,6 @@ func runHelmInstall(releaseName, directory, nameSpace, patchString string) error
 }
 
 func CloneRepo(repoURL, directory, branch string) error {
-
 	if _, err := os.Stat(directory); !os.IsNotExist(err) {
 		fmt.Printf("Deleting existing directory: %s\n", directory)
 		if err := os.RemoveAll(directory); err != nil {
@@ -83,6 +82,7 @@ func CloneRepo(repoURL, directory, branch string) error {
 		ReferenceName: plumbing.NewBranchReferenceName(branch),
 		Progress:      os.Stdout,
 	})
+
 	if err != nil {
 		return fmt.Errorf("failed to clone repository: %v", err)
 	}
