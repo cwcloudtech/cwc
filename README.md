@@ -1,4 +1,4 @@
-# COMWORK CLOUD CLI
+# CWCloud CLI
 
 👋 Welcome to cwc CLI!
 
@@ -6,7 +6,7 @@
     <img src="./img/command-line.png"/> <br/>
 </p>
 
-This is a CLI written in go that will help you work with [comwork cloud API](./README.md).  
+This is a CLI written in go that will help you work with [CWCloud API](./README.md).  
 It's pretty easy to ship into your IaC pipelines.  
 You'll find everything you need in [our documentation](https://doc.cloud.comwork.io/docs/tutorials/api/cli).  
 

@@ -17,8 +17,8 @@ var (
 
 var BootstrapCmd = &cobra.Command{
 	Use:   "bootstrap [flags]",
-	Short: "Automatic Comwork Cloud installation on Kubernetes",
-	Long:  `Automatic Comwork Cloud installation on Kubernetes.`,
+	Short: "CWCloud installation on Kubernetes",
+	Long:  `CWCloud installation on Kubernetes.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleBootstrap(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir)
 	},
