@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool) {
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool) {
 	repoURL := "https://gitlab.comwork.io/oss/cwcloud/cwcloud-helm.git"
 	directory := "./cwcloud-helm-cwc"
 	branch := "main"
@@ -28,8 +28,12 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 	patchString := buildPatchString(otherValues)
 	log.Printf("Constructed patch string: %s", patchString)
 
-	if err := runHelmDependancyUpdate(directory); err != nil {
+	if err := runHelmDependancyUpdate(directory, keepDir); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
+	}
+
+	if err := runDeleteNS(nameSpace, recreateNs); err != nil {
+		log.Fatalf("Error running kubectl command: %v", err)
 	}
 
 	if err := runHelmInstall(releaseName, directory, nameSpace, patchString); err != nil {
@@ -52,7 +56,32 @@ func buildPatchString(otherValues []string) string {
 	return builder.String()
 }
 
-func runHelmDependancyUpdate(directory string) error {
+func runDeleteNS(nameSpace string, recreateNs bool) error {
+	if !recreateNs {
+		return nil
+	}
+
+	kubectlCommand := "kubectl"
+	kubectlArgs := []string{
+		"delete",
+		"ns",
+		nameSpace,
+	}
+
+	log.Printf("Executing kubectl command: %s %s", kubectlCommand, strings.Join(kubectlArgs, " "))
+
+	kubectlDeleteNs := exec.Command(kubectlCommand, kubectlArgs...)
+	kubectlDeleteNs.Stdout = os.Stdout
+	kubectlDeleteNs.Stderr = os.Stderr
+
+	return kubectlDeleteNs.Run()
+}
+
+func runHelmDependancyUpdate(directory string, keepDir bool) error {
+	if keepDir {
+		return nil
+	}
+
 	helmCommand := "helm"
 	helmArgs := []string{
 		"dependency",
