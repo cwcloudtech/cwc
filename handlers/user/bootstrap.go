@@ -18,7 +18,6 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 	directory := "./cwcloud-helm-cwc"
 	branch := "main"
 
-	// Clone the helm repository
 	if err := CloneRepo(repoURL, directory, branch, keepDir); err != nil {
 		log.Printf("Error cloning repository: %v", err)
 		return
@@ -28,6 +27,10 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 
 	patchString := buildPatchString(otherValues)
 	log.Printf("Constructed patch string: %s", patchString)
+
+	if err := runHelmDependancyUpdate(directory); err != nil {
+		log.Fatalf("Error running helm command: %v", err)
+	}
 
 	if err := runHelmInstall(releaseName, directory, nameSpace, patchString); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
@@ -47,6 +50,23 @@ func buildPatchString(otherValues []string) string {
 	}
 
 	return builder.String()
+}
+
+func runHelmDependancyUpdate(directory string) error {
+	helmCommand := "helm"
+	helmArgs := []string{
+		"dependency",
+		"update",
+	}
+
+	log.Printf("Executing helm command: %s %s", helmCommand, strings.Join(helmArgs, " "))
+
+	helmDepUdpate := exec.Command(helmCommand, helmArgs...)
+	helmDepUdpate.Dir = directory
+	helmDepUdpate.Stdout = os.Stdout
+	helmDepUdpate.Stderr = os.Stderr
+
+	return helmDepUdpate.Run()
 }
 
 func runHelmInstall(releaseName, directory, nameSpace, patchString string) error {
