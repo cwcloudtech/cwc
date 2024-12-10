@@ -35,6 +35,10 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 		log.Printf("Not able to delete the namespace: %s, error: %v", nameSpace, err)
 	}
 
+	if err := runCreateNS(nameSpace, openshift); err != nil {
+		log.Printf("Not able to create the namespace: %s, error: %v", nameSpace, err)
+	}
+
 	if err := runHelmInstall(releaseName, directory, nameSpace, openshift); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
@@ -51,6 +55,24 @@ func runDeleteNS(nameSpace string, recreateNs bool, openshift bool) error {
 
 	kubectlArgs := []string{
 		"delete",
+		"ns",
+		nameSpace,
+	}
+
+	log.Printf("Executing %s command: %s %s", kubectlCommand, kubectlCommand, strings.Join(kubectlArgs, " "))
+
+	kubectlDeleteNs := exec.Command(kubectlCommand, kubectlArgs...)
+	kubectlDeleteNs.Stdout = os.Stdout
+	kubectlDeleteNs.Stderr = os.Stderr
+
+	return kubectlDeleteNs.Run()
+}
+
+func runCreateNS(nameSpace string, openshift bool) error {
+	kubectlCommand := utils.If(openshift, "oc", "kubectl")
+
+	kubectlArgs := []string{
+		"create",
 		"ns",
 		nameSpace,
 	}
@@ -91,7 +113,6 @@ func runHelmInstall(releaseName string, directory string, nameSpace string, open
 		"install",
 		releaseName,
 		directory,
-		utils.If(openshift, "", "--create-namespace"),
 		"--namespace", nameSpace,
 		utils.If(openshift, "--set", ""),
 		utils.If(openshift, "s3.enabled=false", ""),
