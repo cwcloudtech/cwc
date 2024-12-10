@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"cwc/utils"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
@@ -72,7 +74,7 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 		log.Printf("Not able to delete the namespace: %s, error: %v", nameSpace, err)
 	}
 
-	if err := runHelmInstall(releaseName, directory, nameSpace, patchString); err != nil {
+	if err := runHelmInstall(releaseName, directory, nameSpace, patchString, openshift); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
@@ -118,10 +120,7 @@ func runDeleteNS(nameSpace string, recreateNs bool, openshift bool) error {
 		return nil
 	}
 
-	kubectlCommand := "kubectl"
-	if openshift {
-		kubectlCommand = "oc"
-	}
+	kubectlCommand := utils.If(openshift, "oc", "kubectl")
 
 	kubectlArgs := []string{
 		"delete",
@@ -159,14 +158,16 @@ func runHelmDependancyUpdate(directory string, keepDir bool) error {
 	return helmDepUdpate.Run()
 }
 
-func runHelmInstall(releaseName, directory, nameSpace, patchString string) error {
+func runHelmInstall(releaseName, directory, nameSpace, patchString string, openshift bool) error {
 	helmCommand := "helm"
 	helmArgs := []string{
 		"install",
 		releaseName,
 		directory,
-		"--create-namespace",
+		utils.If(openshift, "--create-namespace", ""),
 		"--namespace", nameSpace,
+		utils.If(openshift, "--set", ""),
+		utils.If(openshift, "s3.enabled=false", ""),
 		"--set",
 		patchString,
 	}
@@ -253,10 +254,7 @@ func runDeleteAll(nameSpace string, force bool, openshift bool) error {
 		return nil
 	}
 
-	kubectlCommand := "kubectl"
-	if openshift {
-		kubectlCommand = "oc"
-	}
+	kubectlCommand := utils.If(openshift, "oc", "kubectl")
 
 	kubectlArgs := []string{
 		"-n",
@@ -290,10 +288,7 @@ func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool) {
 }
 
 func runPortForward(nameSpace string, service string, port int, openshift bool) error {
-	kubectlCommand := "kubectl"
-	if openshift {
-		kubectlCommand = "oc"
-	}
+	kubectlCommand := utils.If(openshift, "oc", "kubectl")
 
 	kubectlArgs := []string{
 		"-n",
