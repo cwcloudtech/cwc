@@ -11,6 +11,13 @@ import (
 	"strings"
 )
 
+func If[T any](cond bool, vtrue, vfalse T) T {
+	if cond {
+		return vtrue
+	}
+	return vfalse
+}
+
 func IsNotBlank(str string) bool {
 	return len(str) > 0 && strings.TrimSpace(str) != ""
 }
