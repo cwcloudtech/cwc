@@ -69,7 +69,7 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 	}
 
 	if err := runDeleteNS(nameSpace, recreateNs); err != nil {
-		log.Fatalf("Error running kubectl command: %v", err)
+		log.Printf("Not able to delete the namespace: %s, error: %v", nameSpace, err)
 	}
 
 	if err := runHelmInstall(releaseName, directory, nameSpace, patchString); err != nil {
