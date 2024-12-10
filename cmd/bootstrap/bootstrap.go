@@ -15,6 +15,7 @@ var (
 	releaseName string
 	keepDir     bool
 	recreateNs  bool
+	openshift   bool
 )
 
 var BootstrapCmd = &cobra.Command{
@@ -22,7 +23,7 @@ var BootstrapCmd = &cobra.Command{
 	Short: "CWCloud installation on Kubernetes",
 	Long:  `CWCloud installation on Kubernetes.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleBootstrap(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir, recreateNs)
+		user.HandleBootstrap(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir, recreateNs, openshift)
 	},
 }
 
@@ -32,6 +33,7 @@ func init() {
 	BootstrapCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
 	BootstrapCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	BootstrapCmd.Flags().BoolVarP(&recreateNs, "recreate-ns", "d", false, "Recreate the namespace")
+	BootstrapCmd.Flags().BoolVarP(&openshift, "openshift", "o", false, "Use openshift cli instead of kubectl")
 	BootstrapCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)
 
 Example:
