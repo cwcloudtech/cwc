@@ -147,11 +147,19 @@ func CloneRepo(repoURL, directory, branch string, keepDir bool) error {
 	return nil
 }
 
-func HandleUninstall(cmd *cobra.Command, releaseName string, nameSpace string) {
+func HandleUninstall(cmd *cobra.Command, releaseName string, nameSpace string, force bool, openshift bool) {
 	log.Println("Starting Helm chart uninstallation...")
 
 	if err := runHelmUninstall(releaseName, nameSpace); err != nil {
-		log.Fatalf("Error running helm uninstall command: %v", err)
+		if !force {
+			log.Fatalf("Error running helm uninstall command: %v", err)
+		} else {
+			log.Printf("Error running helm uninstall command: %v", err)
+		}
+	}
+
+	if err := runDeleteAll(nameSpace, force, openshift); err != nil {
+		log.Printf("Error running kubectl delete all command: %v", err)
 	}
 
 	log.Println("Helm chart uninstallation completed successfully.")
@@ -172,6 +180,33 @@ func runHelmUninstall(releaseName, nameSpace string) error {
 	helmUninstallation.Stderr = os.Stderr
 
 	return helmUninstallation.Run()
+}
+
+func runDeleteAll(nameSpace string, force bool, openshift bool) error {
+	if !force {
+		return nil
+	}
+
+	kubectlCommand := "kubectl"
+	if openshift {
+		kubectlCommand = "oc"
+	}
+
+	kubectlArgs := []string{
+		"-n",
+		nameSpace,
+		"delete",
+		"all",
+		"--all",
+	}
+
+	log.Printf("Executing %s command: %s %s", kubectlCommand, kubectlCommand, strings.Join(kubectlArgs, " "))
+
+	kubectlDeleteAll := exec.Command(kubectlCommand, kubectlArgs...)
+	kubectlDeleteAll.Stdout = os.Stdout
+	kubectlDeleteAll.Stderr = os.Stderr
+
+	return kubectlDeleteAll.Run()
 }
 
 func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool) {
