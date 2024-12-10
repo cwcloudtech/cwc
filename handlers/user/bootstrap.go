@@ -16,16 +16,16 @@ import (
 )
 
 type RepoConfig struct {
-	RepoURL   string
-	Branch    string
-	Username  string
-	Password  string
+	RepoURL  string
+	Branch   string
+	Username string
+	Password string
 }
 
 func GetRepoConfig() RepoConfig {
 	return RepoConfig{
-		RepoURL:   env.REPO_URL,
-		Branch:    env.BRANCH,
+		RepoURL: env.REPO_URL,
+		Branch:  env.BRANCH,
 	}
 }
 
@@ -49,7 +49,7 @@ func HandleTemporaryConfig(tempConfig *RepoConfig) (cleanup func()) {
 	}
 }
 
-func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool) {
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool, openshift bool) {
 	repoURL := env.REPO_URL
 	directory := env.DIRECTORY
 	branch := env.BRANCH
@@ -68,7 +68,7 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
-	if err := runDeleteNS(nameSpace, recreateNs); err != nil {
+	if err := runDeleteNS(nameSpace, recreateNs, openshift); err != nil {
 		log.Printf("Not able to delete the namespace: %s, error: %v", nameSpace, err)
 	}
 
@@ -113,19 +113,23 @@ func buildPatchString(otherValues []string) string {
 	return builder.String()
 }
 
-func runDeleteNS(nameSpace string, recreateNs bool) error {
+func runDeleteNS(nameSpace string, recreateNs bool, openshift bool) error {
 	if !recreateNs {
 		return nil
 	}
 
 	kubectlCommand := "kubectl"
+	if openshift {
+		kubectlCommand = "oc"
+	}
+
 	kubectlArgs := []string{
 		"delete",
 		"ns",
 		nameSpace,
 	}
 
-	log.Printf("Executing kubectl command: %s %s", kubectlCommand, strings.Join(kubectlArgs, " "))
+	log.Printf("Executing %s command: %s %s", kubectlCommand, kubectlCommand, strings.Join(kubectlArgs, " "))
 
 	kubectlDeleteNs := exec.Command(kubectlCommand, kubectlArgs...)
 	kubectlDeleteNs.Stdout = os.Stdout
@@ -236,22 +240,26 @@ func runHelmUninstall(releaseName, nameSpace string) error {
 	return helmUninstallation.Run()
 }
 
-func HandlePortForward(cmd *cobra.Command, nameSpace string) {
+func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool) {
 	log.Println("Starting tunnel on CWCloud...")
 
-	if err := runPortForward(nameSpace, "api", 8000); err != nil {
+	if err := runPortForward(nameSpace, "api", 8000, openshift); err != nil {
 		log.Fatalf("Error running kubectl: %v", err)
 	}
 
-	if err := runPortForward(nameSpace, "ui", 3000); err != nil {
+	if err := runPortForward(nameSpace, "ui", 3000, openshift); err != nil {
 		log.Fatalf("Error running kubectl: %v", err)
 	}
 
 	log.Println("Now you can go here: http://localhost:3000")
 }
 
-func runPortForward(nameSpace string, service string, port int) error {
+func runPortForward(nameSpace string, service string, port int, openshift bool) error {
 	kubectlCommand := "kubectl"
+	if openshift {
+		kubectlCommand = "oc"
+	}
+
 	kubectlArgs := []string{
 		"-n",
 		nameSpace,
@@ -260,7 +268,7 @@ func runPortForward(nameSpace string, service string, port int) error {
 		"" + strconv.Itoa(port) + ":" + strconv.Itoa(port),
 	}
 
-	log.Printf("Executing kubectl command: %s %s", kubectlCommand, strings.Join(kubectlArgs, " "))
+	log.Printf("Executing %s command: %s %s", kubectlCommand, kubectlCommand, strings.Join(kubectlArgs, " "))
 
 	kubectlPortForward := exec.Command(kubectlCommand, kubectlArgs...)
 
