@@ -66,7 +66,7 @@ This command allows you to specify custom repository URL, directory, and branch 
 				Username: tempUsername,
 				Password: tempPassword,
 			}
-			user.HandleBootstrapWithConfig(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir, tempConfig)
+			user.HandleBootstrapWithConfig(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir, openshift, tempConfig)
 		},
 	}
 

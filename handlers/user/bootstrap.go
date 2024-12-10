@@ -81,7 +81,7 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 	log.Println("Helm chart installation completed successfully.")
 }
 
-func HandleBootstrapWithConfig(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, tempConfig *RepoConfig) {
+func HandleBootstrapWithConfig(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, openshift bool, tempConfig *RepoConfig) {
 	cleanup := HandleTemporaryConfig(tempConfig)
 	defer cleanup()
 
@@ -95,7 +95,7 @@ func HandleBootstrapWithConfig(cmd *cobra.Command, releaseName, nameSpace string
 	patchString := buildPatchString(otherValues)
 	log.Printf("Constructed patch string: %s", patchString)
 
-	if err := runHelmInstall(releaseName, env.DIRECTORY, nameSpace, patchString); err != nil {
+	if err := runHelmInstall(releaseName, env.DIRECTORY, nameSpace, patchString, openshift); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
