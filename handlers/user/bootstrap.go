@@ -163,14 +163,18 @@ func runHelmDependancyUpdate(directory string, keepDir bool) error {
 
 func runHelmInstall(releaseName string, directory string, nameSpace string, openshift bool) error {
 	helmCommand := "helm"
-	helmArgs := []string{
+	helmArgs := utils.If(openshift, []string{
 		"install",
 		releaseName,
 		directory,
 		"--namespace", nameSpace,
-		utils.If(openshift, "--set", ""),
-		utils.If(openshift, "s3.enabled=false", ""),
-	}
+	}, []string{
+		"install",
+		releaseName,
+		directory,
+		"--namespace", nameSpace,
+		"--set", "s3.enabled=false",
+	})
 
 	log.Printf("Executing helm command: %s %s", helmCommand, strings.Join(helmArgs, " "))
 
