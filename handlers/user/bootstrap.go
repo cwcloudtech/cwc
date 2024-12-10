@@ -27,9 +27,6 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 
 	log.Println("Starting Helm chart installation...")
 
-	patchString := buildPatchString(otherValues)
-	log.Printf("Constructed patch string: %s", patchString)
-
 	if err := runHelmDependancyUpdate(directory, keepDir); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
@@ -38,24 +35,11 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 		log.Printf("Not able to delete the namespace: %s, error: %v", nameSpace, err)
 	}
 
-	if err := runHelmInstall(releaseName, directory, nameSpace, patchString, openshift); err != nil {
+	if err := runHelmInstall(releaseName, directory, nameSpace, openshift); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
 	log.Println("Helm chart installation completed successfully.")
-}
-
-func buildPatchString(otherValues []string) string {
-	clusterIP := GetClusterIP()
-
-	var builder strings.Builder
-	builder.WriteString("clusterIP=" + clusterIP)
-
-	for _, opt := range otherValues {
-		builder.WriteString("," + opt)
-	}
-
-	return builder.String()
 }
 
 func runDeleteNS(nameSpace string, recreateNs bool, openshift bool) error {
@@ -101,7 +85,7 @@ func runHelmDependancyUpdate(directory string, keepDir bool) error {
 	return helmDepUdpate.Run()
 }
 
-func runHelmInstall(releaseName, directory, nameSpace, patchString string, openshift bool) error {
+func runHelmInstall(releaseName string, directory string, nameSpace string, openshift bool) error {
 	helmCommand := "helm"
 	helmArgs := []string{
 		"install",
@@ -111,8 +95,6 @@ func runHelmInstall(releaseName, directory, nameSpace, patchString string, opens
 		"--namespace", nameSpace,
 		utils.If(openshift, "--set", ""),
 		utils.If(openshift, "s3.enabled=false", ""),
-		"--set",
-		patchString,
 	}
 
 	log.Printf("Executing helm command: %s %s", helmCommand, strings.Join(helmArgs, " "))
