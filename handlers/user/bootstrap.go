@@ -1,6 +1,7 @@
 package user
 
 import (
+	"cwc/env"
 	"fmt"
 	"log"
 	"os"
@@ -10,15 +11,50 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/spf13/cobra"
 )
 
-func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool) {
-	repoURL := "https://gitlab.comwork.io/oss/cwcloud/cwcloud-helm.git"
-	directory := "./cwcloud-helm-cwc"
-	branch := "main"
+type RepoConfig struct {
+	RepoURL   string
+	Branch    string
+	Username  string
+	Password  string
+}
 
-	if err := CloneRepo(repoURL, directory, branch, keepDir); err != nil {
+func GetRepoConfig() RepoConfig {
+	return RepoConfig{
+		RepoURL:   env.REPO_URL,
+		Branch:    env.BRANCH,
+	}
+}
+
+func HandleTemporaryConfig(tempConfig *RepoConfig) (cleanup func()) {
+	if tempConfig == nil {
+		return func() {}
+	}
+
+	originalConfig := GetRepoConfig()
+
+	if tempConfig.RepoURL != "" {
+		env.REPO_URL = tempConfig.RepoURL
+	}
+	if tempConfig.Branch != "" {
+		env.BRANCH = tempConfig.Branch
+	}
+
+	return func() {
+		env.REPO_URL = originalConfig.RepoURL
+		env.BRANCH = originalConfig.Branch
+	}
+}
+
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool) {
+	repoURL := env.REPO_URL
+	directory := env.DIRECTORY
+	branch := env.BRANCH
+
+	if err := CloneRepo(repoURL, directory, branch, keepDir, "", ""); err != nil {
 		log.Printf("Error cloning repository: %v", err)
 		return
 	}
@@ -37,6 +73,27 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 	}
 
 	if err := runHelmInstall(releaseName, directory, nameSpace, patchString); err != nil {
+		log.Fatalf("Error running helm command: %v", err)
+	}
+
+	log.Println("Helm chart installation completed successfully.")
+}
+
+func HandleBootstrapWithConfig(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, tempConfig *RepoConfig) {
+	cleanup := HandleTemporaryConfig(tempConfig)
+	defer cleanup()
+
+	if err := CloneRepo(tempConfig.RepoURL, env.DIRECTORY, tempConfig.Branch, keepDir, tempConfig.Username, tempConfig.Password); err != nil {
+		log.Printf("Error cloning repository: %v", err)
+		return
+	}
+
+	log.Println("Starting Helm chart installation...")
+
+	patchString := buildPatchString(otherValues)
+	log.Printf("Constructed patch string: %s", patchString)
+
+	if err := runHelmInstall(releaseName, env.DIRECTORY, nameSpace, patchString); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
@@ -119,7 +176,7 @@ func runHelmInstall(releaseName, directory, nameSpace, patchString string) error
 	return helmInstallation.Run()
 }
 
-func CloneRepo(repoURL, directory, branch string, keepDir bool) error {
+func CloneRepo(repoURL, directory, branch string, keepDir bool, username, password string) error {
 	if !keepDir {
 		if _, err := os.Stat(directory); !os.IsNotExist(err) {
 			fmt.Printf("Deleting existing directory: %s\n", directory)
@@ -129,11 +186,20 @@ func CloneRepo(repoURL, directory, branch string, keepDir bool) error {
 		}
 	}
 
-	_, err := git.PlainClone(directory, false, &git.CloneOptions{
+	cloneOptions := &git.CloneOptions{
 		URL:           repoURL,
 		ReferenceName: plumbing.NewBranchReferenceName(branch),
 		Progress:      os.Stdout,
-	})
+	}
+
+	if username != "" || password != "" {
+		cloneOptions.Auth = &http.BasicAuth{
+			Username: username,
+			Password: password,
+		}
+	}
+
+	_, err := git.PlainClone(directory, false, cloneOptions)
 
 	if err != nil {
 		return fmt.Errorf("failed to clone repository: %v", err)
