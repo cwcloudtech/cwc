@@ -107,7 +107,7 @@ func runHelmInstall(releaseName, directory, nameSpace, patchString string, opens
 		"install",
 		releaseName,
 		directory,
-		utils.If(openshift, "--create-namespace", ""),
+		utils.If(openshift, "", "--create-namespace"),
 		"--namespace", nameSpace,
 		utils.If(openshift, "--set", ""),
 		utils.If(openshift, "s3.enabled=false", ""),
