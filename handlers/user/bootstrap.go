@@ -168,12 +168,12 @@ func runHelmInstall(releaseName string, directory string, nameSpace string, open
 		releaseName,
 		directory,
 		"--namespace", nameSpace,
+		"--set", "s3.enabled=false",
 	}, []string{
 		"install",
 		releaseName,
 		directory,
 		"--namespace", nameSpace,
-		"--set", "s3.enabled=false",
 	})
 
 	log.Printf("Executing helm command: %s %s", helmCommand, strings.Join(helmArgs, " "))
