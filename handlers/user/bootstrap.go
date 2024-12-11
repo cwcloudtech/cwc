@@ -141,8 +141,10 @@ func runCreateNS(nameSpace string, openshift bool) error {
 }
 
 func runHelmDependancyUpdate(directory string, keepDir bool) error {
-	if keepDir {
-		return nil
+	if _, err := os.Stat(directory + "/charts"); !os.IsNotExist(err) {
+		if keepDir {
+			return nil
+		}
 	}
 
 	helmCommand := "helm"
@@ -186,12 +188,14 @@ func runHelmInstall(releaseName string, directory string, nameSpace string, open
 }
 
 func CloneRepo(repoURL, directory, branch string, keepDir bool, username, password string) error {
-	if !keepDir {
-		if _, err := os.Stat(directory); !os.IsNotExist(err) {
-			fmt.Printf("Deleting existing directory: %s\n", directory)
-			if err := os.RemoveAll(directory); err != nil {
-				return fmt.Errorf("failed to delete existing directory: %v", err)
-			}
+	if _, err := os.Stat(directory); !os.IsNotExist(err) {
+		if keepDir {
+			return nil
+		}
+
+		fmt.Printf("Deleting existing directory: %s\n", directory)
+		if err := os.RemoveAll(directory); err != nil {
+			return fmt.Errorf("failed to delete existing directory: %v", err)
 		}
 	}
 
