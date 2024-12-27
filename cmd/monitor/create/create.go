@@ -36,7 +36,7 @@ var CreateCmd = &cobra.Command{
 }
 
 func init() {
-	CreateCmd.Flags().StringVarP(&monitor.Type, "type", "y", "http", "Type of the monitor (http, tcp, icmp)")
+	CreateCmd.Flags().StringVarP(&monitor.Type, "type", "y", "http", "Type of the monitor (http or tcp)")
 	CreateCmd.Flags().StringVarP(&monitor.Name, "name", "n", "", "Name of the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Family, "family", "f", "", "Family of the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Url, "url", "u", "", "Url of the monitor")
@@ -47,6 +47,8 @@ func init() {
 	CreateCmd.Flags().IntVarP(&monitor.Timeout, "timeout", "t", 30, "Timeout of the request in the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Username, "username", "s", "", "Username of the request in the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Password, "password", "p", "", "Password of the request in the monitor")
+	CreateCmd.Flags().BoolVarP(&monitor.CheckTls, "check_tls", "k", true, "Check tls of the request in the monitor")
+	CreateCmd.Flags().StringVarP(&monitor.Level, "level", "l", "info", "Log level of the monitor (INFO or DEBUG)")
 	CreateCmd.Flags().StringVarP(&rawHeaders, "headers", "H", "", "Headers of the request in the monitor (e.g., key1:value1,key2:value2)")
 
 	err := CreateCmd.MarkFlagRequired("name")

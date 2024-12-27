@@ -3,21 +3,21 @@ package update
 import (
 	"cwc/client"
 	"cwc/handlers/user"
+	"cwc/utils"
 	"fmt"
 	"strings"
-	"cwc/utils"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	monitorId string
-	monitor   client.Monitor
-	rawHeaders  string
+	monitorId  string
+	monitor    client.Monitor
+	rawHeaders string
 )
 
 var UpdateCmd = &cobra.Command{
-	Use:  "update",
+	Use:   "update",
 	Short: "Update a particular monitor",
 	Long: `This command lets you update a particular monitor.
 To use this command you have to provide the monitor ID`,
@@ -46,6 +46,8 @@ func init() {
 	UpdateCmd.Flags().IntVarP(&monitor.Timeout, "timeout", "t", 30, "Timeout of the request in the monitor")
 	UpdateCmd.Flags().StringVarP(&monitor.Username, "username", "s", "", "Username of the request in the monitor")
 	UpdateCmd.Flags().StringVarP(&monitor.Password, "password", "p", "", "Password of the request in the monitor")
+	UpdateCmd.Flags().BoolVarP(&monitor.CheckTls, "check_tls", "k", true, "Check tls of the request in the monitor")
+	UpdateCmd.Flags().StringVarP(&monitor.Level, "level", "l", "info", "Log level of the monitor (INFO or DEBUG)")
 	UpdateCmd.Flags().StringVarP(&rawHeaders, "headers", "H", "", "Headers of the request in the monitor (e.g., key1:value1,key2:value2)")
 
 	err := UpdateCmd.MarkFlagRequired("id")
@@ -54,7 +56,7 @@ func init() {
 	}
 }
 
-//? Helper function to parse headers string into []Header
+// ? Helper function to parse headers string into []Header
 func parseHeaders(raw string) ([]client.Header, error) {
 	var headers []client.Header
 	pairs := strings.Split(raw, ",")

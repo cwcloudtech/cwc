@@ -467,5 +467,8 @@ type Monitor struct {
 	Status             string   `json:"status"`
 	Response_time      string   `json:"response_time"`
 	User_id            int      `json:"user_id"`
+	CheckTls           bool     `json:"check_tls"`
+	Level              string   `json:"level"`
 	Updated_at         string   `json:"updated_at"`
+	Hash               string   `json:"hash"`
 }

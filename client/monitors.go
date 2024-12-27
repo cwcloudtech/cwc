@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 func (c *Client) GetAllMonitors() (*[]Monitor, error) {
@@ -36,6 +37,8 @@ func (c *Client) GetMonitorById(monitor_id string) (*Monitor, error) {
 
 func (c *Client) AddMonitor(monitor Monitor) (*Monitor, error) {
 	buf := bytes.Buffer{}
+	monitor.Level = strings.ToUpper(monitor.Level)
+	monitor.Type = strings.ToLower(monitor.Type)
 	err := json.NewEncoder(&buf).Encode(monitor)
 	if nil != err {
 		return nil, err
@@ -54,6 +57,8 @@ func (c *Client) AddMonitor(monitor Monitor) (*Monitor, error) {
 
 func (c *Client) UpdateMonitorById(monitorId string, monitor Monitor) (*Monitor, error) {
 	buf := bytes.Buffer{}
+	monitor.Level = strings.ToUpper(monitor.Level)
+	monitor.Type = strings.ToLower(monitor.Type)
 	err := json.NewEncoder(&buf).Encode(monitor)
 	if nil != err {
 		return nil, err
