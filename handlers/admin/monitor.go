@@ -160,6 +160,10 @@ func HandleUpdateMonitor(monitorId *string, updatedMonitor *admin.Monitor) {
 		monitor.Headers = updatedMonitor.Headers
 	}
 
+	if len(updatedMonitor.Callbacks) > 0 {
+		monitor.Callbacks = updatedMonitor.Callbacks
+	}
+
 	if updatedMonitor.User_id != 0 {
 		monitor.User_id = updatedMonitor.User_id
 	}

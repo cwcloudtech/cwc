@@ -160,6 +160,10 @@ func HandleUpdateMonitor(monitorId *string, updatedMonitor *client.Monitor) {
 		monitor.Headers = updatedMonitor.Headers
 	}
 
+	if len(updatedMonitor.Callbacks) > 0 {
+		monitor.Callbacks = updatedMonitor.Callbacks
+	}
+
 	_, updateError := c.UpdateMonitorById(*monitorId, *monitor)
 	utils.ExitIfError(updateError)
 
