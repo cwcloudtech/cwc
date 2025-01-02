@@ -409,24 +409,25 @@ type Header struct {
 }
 
 type Monitor struct {
-	Id                 string   `json:"id"`
-	Type               string   `json:"type"`
-	Name               string   `json:"name"`
-	Family             string   `json:"family"`
-	Url                string   `json:"url"`
-	Method             string   `json:"method"`
-	Expected_http_code string   `json:"expected_http_code"`
-	Body               string   `json:"body"`
-	Expected_contain   string   `json:"expected_contain"`
-	Timeout            int      `json:"timeout"`
-	Username           string   `json:"username"`
-	Password           string   `json:"password"`
-	Headers            []Header `json:"headers"`
-	Status             string   `json:"status"`
-	Response_time      string   `json:"response_time"`
-	User_id            int      `json:"user_id"`
-	CheckTls           bool     `json:"check_tls"`
-	Level              string   `json:"level"`
-	Updated_at         string   `json:"updated_at"`
-	Hash               string   `json:"hash"`
+	Id                 string             `json:"id"`
+	Type               string             `json:"type"`
+	Name               string             `json:"name"`
+	Family             string             `json:"family"`
+	Url                string             `json:"url"`
+	Method             string             `json:"method"`
+	Expected_http_code string             `json:"expected_http_code"`
+	Body               string             `json:"body"`
+	Expected_contain   string             `json:"expected_contain"`
+	Timeout            int                `json:"timeout"`
+	Username           string             `json:"username"`
+	Password           string             `json:"password"`
+	Headers            []Header           `json:"headers"`
+	Callbacks          []CallbacksContent `json:"callbacks"`
+	Status             string             `json:"status"`
+	Response_time      string             `json:"response_time"`
+	User_id            int                `json:"user_id"`
+	CheckTls           bool               `json:"check_tls"`
+	Level              string             `json:"level"`
+	Updated_at         string             `json:"updated_at"`
+	Hash               string             `json:"hash"`
 }
