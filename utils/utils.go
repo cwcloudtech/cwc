@@ -26,6 +26,38 @@ func IsBlank(str string) bool {
 	return !IsNotBlank(str)
 }
 
+func IsEmpty(value interface{}) bool {
+	if nil == value {
+		return true
+	}
+
+	v := reflect.ValueOf(value)
+
+	switch v.Kind() {
+	case reflect.String:
+		return IsBlank(v.String())
+	case reflect.Array, reflect.Slice, reflect.Map, reflect.Chan:
+		return v.Len() == 0
+	case reflect.Ptr, reflect.Interface:
+		return v.IsNil()
+	case reflect.Struct:
+		zero := reflect.New(v.Type()).Elem()
+		return reflect.DeepEqual(v.Interface(), zero.Interface())
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.Invalid:
+		return true
+	default:
+		return false
+	}
+}
+
 func IsValidEmail(email string) bool {
 	if IsBlank(email) {
 		return false
@@ -84,7 +116,7 @@ func PrintPretty(firstLine string, class interface{}) {
 	typesOf := values.Type()
 	for i := 0; i < values.NumField(); i++ {
 		v := values.Field(i).Interface()
-		if nil == v || v == "" || v == 0 {
+		if IsEmpty(v) {
 			continue
 		}
 
