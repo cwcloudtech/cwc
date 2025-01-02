@@ -86,7 +86,14 @@ func HandleBootstrapWithConfig(cmd *cobra.Command, releaseName, nameSpace string
 	cleanup := HandleTemporaryConfig(tempConfig)
 	defer cleanup()
 
-	if err := CloneRepo(tempConfig.RepoURL, env.DIRECTORY, tempConfig.Branch, keepDir, tempConfig.Username, tempConfig.Password); err != nil {
+	username := ""
+	password := ""
+	if tempConfig.RepoURL != env.REPO_URL {
+		username = tempConfig.Username
+		password = tempConfig.Password
+	}
+
+	if err := CloneRepo(tempConfig.RepoURL, env.DIRECTORY, tempConfig.Branch, keepDir, username, password); err != nil {
 		log.Printf("Error cloning repository: %v", err)
 		return
 	}

@@ -202,3 +202,21 @@ func GetSystemEditor() string {
 
 	return editorCommand
 }
+
+func ShortName(name string, hash string) string {
+	if name == "" {
+		return ""
+	}
+	if hash == "" {
+		lastDashIndex := strings.LastIndex(name, "-")
+		if lastDashIndex != -1 {
+			return name[:lastDashIndex]
+		}
+		return name
+	}
+	hashWithDash := "-" + hash
+	if strings.HasSuffix(name, hashWithDash) {
+		return name[:len(name)-len(hashWithDash)]
+	}
+	return name
+}

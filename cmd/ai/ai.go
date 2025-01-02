@@ -1,6 +1,7 @@
 package ai
 
 import (
+	"cwc/cmd/ai/load"
 	"cwc/cmd/ai/models"
 	"cwc/cmd/ai/prompt"
 
@@ -21,4 +22,5 @@ func init() {
 	AiCmd.DisableFlagsInUseLine = true
 	AiCmd.AddCommand(models.ModelsCmd)
 	AiCmd.AddCommand(prompt.PromptCmd)
+	AiCmd.AddCommand(load.LoadCmd)
 }
