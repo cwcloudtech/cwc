@@ -63,8 +63,18 @@ func IsValidEmail(email string) bool {
 		return false
 	}
 
-	_, err := mail.ParseAddress(email)
-	return err == nil
+	addr, err := mail.ParseAddress(email)
+	if err != nil {
+		return false
+	}
+
+	parts := strings.Split(addr.Address, "@")
+	if len(parts) != 2 {
+		return false
+	}
+
+	domain := parts[1]
+	return strings.Contains(domain, ".")
 }
 
 func StringInSlice(a string, list []string) bool {
@@ -112,16 +122,20 @@ func PrintHeader(class interface{}) {
 func PrintPretty(firstLine string, class interface{}) {
 	fmt.Printf("%s:\n", firstLine)
 
-	values := reflect.ValueOf(class)
-	typesOf := values.Type()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i).Interface()
-		if IsEmpty(v) {
+	v := reflect.ValueOf(class)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		fieldValue := v.Field(i).Interface()
+		if IsEmpty(fieldValue) {
 			continue
 		}
 
-		k := strings.Replace(typesOf.Field(i).Name, "_", " ", -1)
-		fmt.Printf("  ➤ %s: %s\n", k, strings.TrimSpace(fmt.Sprintf("%v", v)))
+		fieldName := strings.Replace(t.Field(i).Name, "_", " ", -1)
+		fmt.Printf("  ➤ %s: %s\n", fieldName, strings.TrimSpace(fmt.Sprintf("%v", fieldValue)))
 	}
 }
 
