@@ -29,3 +29,17 @@ func HandleSendPrompt(model *string, message *string) {
 		utils.PrintRow(*response)
 	}
 }
+
+func HandleLoadModel(model *string) {
+	c, err := client.NewClient()
+	utils.ExitIfError(err)
+
+	response, err := c.LoadModel(*model)
+	utils.ExitIfError(err)
+
+	if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(response)
+	} else {
+		utils.PrintRow(*response)
+	}
+}
