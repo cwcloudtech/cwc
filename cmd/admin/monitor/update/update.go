@@ -4,22 +4,23 @@ import (
 	adminClient "cwc/admin"
 	"cwc/handlers/admin"
 	"cwc/utils"
-	"strings"
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	monitorId string
-	monitor    adminClient.Monitor
-	rawHeaders string
+	monitorId    string
+	monitor      adminClient.Monitor
+	rawHeaders   string
+	rawCallbacks string
 )
 
 var UpdateCmd = &cobra.Command{
-	Use: "update",
+	Use:   "update",
 	Short: "Update a monitor in the cloud",
-	Long: "This command lets you update a monitor in the cloud.",
+	Long:  "This command lets you update a monitor in the cloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if rawHeaders != "" {
 			headers, err := parseHeaders(rawHeaders)
@@ -28,6 +29,15 @@ var UpdateCmd = &cobra.Command{
 		} else {
 			monitor.Headers = []adminClient.Header{}
 		}
+
+		if rawCallbacks != "" {
+			callbacks, err := parseCallbacks(rawCallbacks)
+			utils.ExitIfError(err)
+			monitor.Callbacks = callbacks
+		} else {
+			monitor.Callbacks = []adminClient.CallbacksContent{}
+		}
+
 		admin.HandleUpdateMonitor(&monitorId, &monitor)
 	},
 }
@@ -45,7 +55,10 @@ func init() {
 	UpdateCmd.Flags().IntVarP(&monitor.Timeout, "timeout", "t", 30, "Timeout of the request in the monitor")
 	UpdateCmd.Flags().StringVarP(&monitor.Username, "username", "s", "", "Username of the request in the monitor")
 	UpdateCmd.Flags().StringVarP(&monitor.Password, "password", "p", "", "Password of the request in the monitor")
+	UpdateCmd.Flags().BoolVarP(&monitor.CheckTls, "check_tls", "k", true, "Check tls of the request in the monitor")
+	UpdateCmd.Flags().StringVarP(&monitor.Level, "level", "l", "info", "Log level of the monitor (INFO or DEBUG)")
 	UpdateCmd.Flags().StringVarP(&rawHeaders, "headers", "H", "", "Headers of the request in the monitor (e.g., key1:value1,key2:value2)")
+	UpdateCmd.Flags().StringVarP(&rawCallbacks, "callbacks", "C", "", "Callbacks for the monitor (format: type:http,endpoint:https://example.com,token:123;type:mqtt,endpoint:mqtt://broker.com,topic:test)")
 	UpdateCmd.Flags().IntVarP(&monitor.User_id, "user_id", "I", 0, "User ID")
 
 	err := UpdateCmd.MarkFlagRequired("id")
@@ -54,8 +67,7 @@ func init() {
 	}
 }
 
-
-//? Helper function to parse headers string into []Header
+// ? Helper function to parse headers string into []Header
 func parseHeaders(raw string) ([]adminClient.Header, error) {
 	var headers []adminClient.Header
 	pairs := strings.Split(raw, ",")
@@ -70,4 +82,67 @@ func parseHeaders(raw string) ([]adminClient.Header, error) {
 		})
 	}
 	return headers, nil
+}
+
+// ? Helper function to parse callbacks string into []CallbacksContent
+func parseCallbacks(raw string) ([]adminClient.CallbacksContent, error) {
+	if raw == "" {
+		return []adminClient.CallbacksContent{}, nil
+	}
+
+	var callbacks []adminClient.CallbacksContent
+	callbackStrings := strings.Split(raw, ";")
+
+	for _, callback := range callbackStrings {
+		props := strings.Split(callback, ",")
+		var cb adminClient.CallbacksContent
+
+		for _, prop := range props {
+			kv := strings.SplitN(prop, ":", 2)
+			if len(kv) != 2 {
+				return nil, fmt.Errorf("callback property %q is not in key:value format", prop)
+			}
+			key := strings.TrimSpace(kv[0])
+			value := strings.TrimSpace(kv[1])
+
+			switch key {
+			case "type":
+				cb.Type = value
+			case "endpoint":
+				cb.Endpoint = value
+			case "token":
+				cb.Token = value
+			case "client_id":
+				cb.Client_id = value
+			case "user_data":
+				cb.User_data = value
+			case "username":
+				cb.Username = value
+			case "password":
+				cb.Password = value
+			case "port":
+				cb.Port = value
+			case "subscription":
+				cb.Subscription = value
+			case "qos":
+				cb.Qos = value
+			case "topic":
+				cb.Topic = value
+			default:
+				return nil, fmt.Errorf("unknown callback property: %s", key)
+			}
+		}
+
+		// Validate required fields
+		if cb.Type == "" {
+			return nil, fmt.Errorf("callback type is required")
+		}
+		if cb.Endpoint == "" {
+			return nil, fmt.Errorf("callback endpoint is required")
+		}
+
+		callbacks = append(callbacks, cb)
+	}
+
+	return callbacks, nil
 }

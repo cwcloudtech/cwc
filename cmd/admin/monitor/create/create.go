@@ -11,9 +11,10 @@ import (
 )
 
 var (
-	monitor    adminClient.Monitor
-	pretty     bool = false
-	rawHeaders string
+	monitor      adminClient.Monitor
+	pretty       bool = false
+	rawHeaders   string
+	rawCallbacks string
 )
 
 var CreateCmd = &cobra.Command{
@@ -27,6 +28,14 @@ var CreateCmd = &cobra.Command{
 			monitor.Headers = headers
 		} else {
 			monitor.Headers = []adminClient.Header{}
+		}
+
+		if rawCallbacks != "" {
+			callbacks, err := parseCallbacks(rawCallbacks)
+			utils.ExitIfError(err)
+			monitor.Callbacks = callbacks
+		} else {
+			monitor.Callbacks = []adminClient.CallbacksContent{}
 		}
 
 		created_monitor, err := admin.PrepareAddMonitor(&monitor)
@@ -47,7 +56,10 @@ func init() {
 	CreateCmd.Flags().IntVarP(&monitor.Timeout, "timeout", "t", 30, "Timeout of the request in the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Username, "username", "s", "", "Username of the request in the monitor")
 	CreateCmd.Flags().StringVarP(&monitor.Password, "password", "p", "", "Password of the request in the monitor")
+	CreateCmd.Flags().BoolVarP(&monitor.CheckTls, "check_tls", "k", true, "Check tls of the request in the monitor")
+	CreateCmd.Flags().StringVarP(&monitor.Level, "level", "l", "info", "Log level of the monitor (INFO or DEBUG)")
 	CreateCmd.Flags().StringVarP(&rawHeaders, "headers", "H", "", "Headers of the request in the monitor (e.g., key1:value1,key2:value2)")
+	CreateCmd.Flags().StringVarP(&rawCallbacks, "callbacks", "C", "", "Callbacks for the monitor (format: type:http,endpoint:https://example.com,token:123;type:mqtt,endpoint:mqtt://broker.com,topic:test)")
 	CreateCmd.Flags().IntVarP(&monitor.User_id, "user_id", "i", 0, "User ID")
 
 	err := CreateCmd.MarkFlagRequired("name")
@@ -81,4 +93,69 @@ func parseHeaders(raw string) ([]adminClient.Header, error) {
 		})
 	}
 	return headers, nil
+}
+
+// ? Helper function to parse callbacks string into []CallbacksContent
+func parseCallbacks(raw string) ([]adminClient.CallbacksContent, error) {
+	if raw == "" {
+		return []adminClient.CallbacksContent{}, nil
+	}
+
+	var callbacks []adminClient.CallbacksContent
+	// Split by semicolon to separate different callbacks
+	callbackStrings := strings.Split(raw, ";")
+
+	for _, callback := range callbackStrings {
+		// Split each callback's properties by comma
+		props := strings.Split(callback, ",")
+		var cb adminClient.CallbacksContent
+
+		for _, prop := range props {
+			kv := strings.SplitN(prop, ":", 2)
+			if len(kv) != 2 {
+				return nil, fmt.Errorf("callback property %q is not in key:value format", prop)
+			}
+			key := strings.TrimSpace(kv[0])
+			value := strings.TrimSpace(kv[1])
+
+			switch key {
+			case "type":
+				cb.Type = value
+			case "endpoint":
+				cb.Endpoint = value
+			case "token":
+				cb.Token = value
+			case "client_id":
+				cb.Client_id = value
+			case "user_data":
+				cb.User_data = value
+			case "username":
+				cb.Username = value
+			case "password":
+				cb.Password = value
+			case "port":
+				cb.Port = value
+			case "subscription":
+				cb.Subscription = value
+			case "qos":
+				cb.Qos = value
+			case "topic":
+				cb.Topic = value
+			default:
+				return nil, fmt.Errorf("unknown callback property: %s", key)
+			}
+		}
+
+		// Validate required fields based on callback type
+		if cb.Type == "" {
+			return nil, fmt.Errorf("callback type is required")
+		}
+		if cb.Endpoint == "" {
+			return nil, fmt.Errorf("callback endpoint is required")
+		}
+
+		callbacks = append(callbacks, cb)
+	}
+
+	return callbacks, nil
 }

@@ -26,13 +26,55 @@ func IsBlank(str string) bool {
 	return !IsNotBlank(str)
 }
 
+func IsEmpty(value interface{}) bool {
+	if nil == value {
+		return true
+	}
+
+	v := reflect.ValueOf(value)
+
+	switch v.Kind() {
+	case reflect.String:
+		return IsBlank(v.String())
+	case reflect.Array, reflect.Slice, reflect.Map, reflect.Chan:
+		return v.Len() == 0
+	case reflect.Ptr, reflect.Interface:
+		return v.IsNil()
+	case reflect.Struct:
+		zero := reflect.New(v.Type()).Elem()
+		return reflect.DeepEqual(v.Interface(), zero.Interface())
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.Invalid:
+		return true
+	default:
+		return false
+	}
+}
+
 func IsValidEmail(email string) bool {
 	if IsBlank(email) {
 		return false
 	}
 
-	_, err := mail.ParseAddress(email)
-	return err == nil
+	addr, err := mail.ParseAddress(email)
+	if err != nil {
+		return false
+	}
+
+	parts := strings.Split(addr.Address, "@")
+	if len(parts) != 2 {
+		return false
+	}
+
+	domain := parts[1]
+	return strings.Contains(domain, ".")
 }
 
 func StringInSlice(a string, list []string) bool {
@@ -80,16 +122,20 @@ func PrintHeader(class interface{}) {
 func PrintPretty(firstLine string, class interface{}) {
 	fmt.Printf("%s:\n", firstLine)
 
-	values := reflect.ValueOf(class)
-	typesOf := values.Type()
-	for i := 0; i < values.NumField(); i++ {
-		v := values.Field(i).Interface()
-		if nil == v || v == "" || v == 0 {
+	v := reflect.ValueOf(class)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		fieldValue := v.Field(i).Interface()
+		if IsEmpty(fieldValue) {
 			continue
 		}
 
-		k := strings.Replace(typesOf.Field(i).Name, "_", " ", -1)
-		fmt.Printf("  ➤ %s: %s\n", k, strings.TrimSpace(fmt.Sprintf("%v", v)))
+		fieldName := strings.Replace(t.Field(i).Name, "_", " ", -1)
+		fmt.Printf("  ➤ %s: %s\n", fieldName, strings.TrimSpace(fmt.Sprintf("%v", fieldValue)))
 	}
 }
 
@@ -169,4 +215,22 @@ func GetSystemEditor() string {
 	}
 
 	return editorCommand
+}
+
+func ShortName(name string, hash string) string {
+	if name == "" {
+		return ""
+	}
+	if hash == "" {
+		lastDashIndex := strings.LastIndex(name, "-")
+		if lastDashIndex != -1 {
+			return name[:lastDashIndex]
+		}
+		return name
+	}
+	hashWithDash := "-" + hash
+	if strings.HasSuffix(name, hashWithDash) {
+		return name[:len(name)-len(hashWithDash)]
+	}
+	return name
 }

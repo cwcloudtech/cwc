@@ -52,6 +52,8 @@ func HandleGetMonitor(monitor *client.Monitor, pretty *bool) {
 	monitorDisplay.Password = monitor.Password
 	monitorDisplay.Headers = monitor.Headers
 	monitorDisplay.Status = monitor.Status
+	monitorDisplay.CheckTls = monitor.CheckTls
+	monitorDisplay.Level = monitor.Level
 	monitorDisplay.Response_time = monitor.Response_time
 	monitorDisplay.Updated_at = monitor.Updated_at
 
@@ -64,9 +66,27 @@ func HandleGetMonitor(monitor *client.Monitor, pretty *bool) {
 	}
 }
 
+func checkMonitorConfig(monitor *client.Monitor) error {
+	if monitor.Type != "http" && monitor.Type != "tcp" {
+		return fmt.Errorf("invalid monitor type. Monitor type must be either http or tcp")
+	}
+
+	if monitor.Method != "GET" && monitor.Method != "POST" && monitor.Method != "PUT" {
+		return fmt.Errorf("invalid method. Method must be either GET, POST or PUT")
+	}
+
+	if monitor.Level != "info" && monitor.Level != "debug" {
+		return fmt.Errorf("invalid log level. Log level must be either info or debug")
+	}
+
+	return nil
+}
+
 func PrepareAddMonitor(monitor *client.Monitor) (client.Monitor, error) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
+
+	checkMonitorConfig(monitor)
 
 	created_monitor, err := c.AddMonitor(*monitor)
 	utils.ExitIfError(err)
@@ -87,6 +107,8 @@ func HandleUpdateMonitor(monitorId *string, updatedMonitor *client.Monitor) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
+	checkMonitorConfig(updatedMonitor)
+
 	monitor, err := c.GetMonitorById(*monitorId)
 	utils.ExitIfError(err)
 
@@ -96,6 +118,8 @@ func HandleUpdateMonitor(monitorId *string, updatedMonitor *client.Monitor) {
 
 	if utils.IsNotBlank(updatedMonitor.Name) {
 		monitor.Name = updatedMonitor.Name
+	} else {
+		monitor.Name = utils.ShortName(monitor.Name, monitor.Hash)
 	}
 
 	if utils.IsNotBlank(updatedMonitor.Family) {
@@ -126,8 +150,18 @@ func HandleUpdateMonitor(monitorId *string, updatedMonitor *client.Monitor) {
 		monitor.Password = updatedMonitor.Password
 	}
 
+	monitor.CheckTls = updatedMonitor.CheckTls
+
+	if utils.IsNotBlank(updatedMonitor.Level) {
+		monitor.Level = updatedMonitor.Level
+	}
+
 	if len(updatedMonitor.Headers) > 0 {
 		monitor.Headers = updatedMonitor.Headers
+	}
+
+	if len(updatedMonitor.Callbacks) > 0 {
+		monitor.Callbacks = updatedMonitor.Callbacks
 	}
 
 	_, updateError := c.UpdateMonitorById(*monitorId, *monitor)
