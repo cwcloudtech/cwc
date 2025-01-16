@@ -100,11 +100,6 @@ type ModelsResponse struct {
 	Models []string `json:"models"`
 }
 
-type LoadModelResponse struct {
-	Status      string `json:"status"`
-	Http_status int    `json:"http_status"`
-}
-
 type Prompt struct {
 	Model   string `json:"model"`
 	Message string `json:"message"`
