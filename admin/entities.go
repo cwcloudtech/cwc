@@ -52,7 +52,6 @@ type User struct {
 	ContactInfo        string `json:"contact_info"`
 	IsAdmin            bool   `json:"is_admin"`
 	Confirmed          bool   `json:"confirmed"`
-	Billable           bool   `json:"billable"`
 }
 
 type AddEnvironmentType struct {
