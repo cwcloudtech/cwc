@@ -19,7 +19,6 @@ type User struct {
 	ContactInfo        string `json:"contact_info"`
 	IsAdmin            bool   `json:"is_admin"`
 	Confirmed          bool   `json:"confirmed"`
-	Billable           bool   `json:"billable"`
 }
 
 func HandleGetUsers(responseUsers *admin.ResponseUsers, pretty *bool) {
@@ -58,7 +57,7 @@ func HandleDeleteUser(id *string) {
 
 func displayUsersAsTable(users []admin.User) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Email", "Is Admin", "Confirmed", "Billable"})
+	table.SetHeader([]string{"ID", "Email", "Is Admin", "Confirmed"})
 
 	if len(users) == 0 {
 		fmt.Println("No users found")
@@ -69,7 +68,6 @@ func displayUsersAsTable(users []admin.User) {
 				user.Email,
 				fmt.Sprintf("%t", user.IsAdmin),
 				fmt.Sprintf("%t", user.Confirmed),
-				fmt.Sprintf("%t", user.Billable),
 			})
 		}
 		table.Render()
