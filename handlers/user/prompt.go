@@ -6,21 +6,21 @@ import (
 	"cwc/utils"
 )
 
-func HandleGetModels(models *client.ModelsResponse, pretty *bool) {
+func HandleGetAiAdapters(adapters *client.AiAdaptersResponse, pretty *bool) {
 	if config.IsPrettyFormatExpected(pretty) {
-		utils.PrintPrettyArray("Available models", models.Models)
+		utils.PrintPrettyArray("Available adapters", adapters.Adapters)
 	} else if config.GetDefaultFormat() == "json" {
-		utils.PrintJson(models)
+		utils.PrintJson(adapters)
 	} else {
-		utils.PrintArray(models.Models)
+		utils.PrintArray(adapters.Adapters)
 	}
 }
 
-func HandleSendPrompt(model *string, message *string) {
+func HandleSendPrompt(adapter *string, message *string) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
-	response, err := c.SendPrompt(*model, *message)
+	response, err := c.SendPrompt(*adapter, *message)
 	utils.ExitIfError(err)
 
 	if config.GetDefaultFormat() == "json" {

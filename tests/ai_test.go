@@ -1,15 +1,15 @@
 package test
 
 import (
-    "cwc/client"
-    "cwc/handlers/user"
-    "testing"
+	"cwc/client"
+	"cwc/handlers/user"
+	"testing"
 )
 
-func TestHandleGetModels(t *testing.T) {
-    mockModels := &client.ModelsResponse{
-        Models: []string{"model_cwc_1", "model_cwc_2", "model_cwc_3"},
-    }
-    pretty := true
-    user.HandleGetModels(mockModels, &pretty)
+func TestHandleGetAdapters(t *testing.T) {
+	mockAdapters := &client.AiAdaptersResponse{
+		Adapters: []string{"adapter_cwc_1", "adapter_cwc_2", "adapter_cwc_3"},
+	}
+	pretty := true
+	user.HandleGetAiAdapters(mockAdapters, &pretty)
 }
