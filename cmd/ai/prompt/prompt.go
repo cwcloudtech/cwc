@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	model   string
+	adapter string
 	message string
 )
 
@@ -18,15 +18,15 @@ var PromptCmd = &cobra.Command{
 	Short: "Send a prompt",
 	Long:  `This command allows you to send prompt using cwai api`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleSendPrompt(&model, &message)
+		user.HandleSendPrompt(&adapter, &message)
 	},
 }
 
 func init() {
-	PromptCmd.Flags().StringVarP(&model, "model", "t", "", "The chosen model")
+	PromptCmd.Flags().StringVarP(&adapter, "adapter", "a", "", "The chosen adapter")
 	PromptCmd.Flags().StringVarP(&message, "message", "m", "", "The message input")
 
-	err := PromptCmd.MarkFlagRequired("model")
+	err := PromptCmd.MarkFlagRequired("adapter")
 	if nil != err {
 		fmt.Println(err)
 	}

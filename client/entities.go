@@ -96,19 +96,18 @@ type EmailResponse struct {
 	Status string `json:"status"`
 }
 
-type ModelsResponse struct {
-	Models []string `json:"models"`
+type AiAdaptersResponse struct {
+	Adapters []string `json:"adapters"`
 }
 
 type Prompt struct {
-	Model   string `json:"model"`
+	Adapter string `json:"adapter"`
 	Message string `json:"message"`
 }
 
 type PromptResponse struct {
 	Status   string   `json:"status"`
 	Response []string `json:"response"`
-	Score    float64  `json:"score"`
 }
 
 type ApiKey struct {
