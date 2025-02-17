@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 )
 
-func (c *Client) SendPrompt(model string, message string) (*PromptResponse, error) {
+func (c *Client) SendPrompt(adapter string, message string) (*PromptResponse, error) {
 	buf := bytes.Buffer{}
 	prompt := Prompt{
-		Model:   model,
+		Adapter: adapter,
 		Message: message,
 	}
 
