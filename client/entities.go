@@ -106,8 +106,8 @@ type Prompt struct {
 }
 
 type PromptResponse struct {
-	Status   string   `json:"status"`
-	Response []string `json:"response"`
+	Status   string `json:"status"`
+	Response string `json:"response"`
 }
 
 type ApiKey struct {
