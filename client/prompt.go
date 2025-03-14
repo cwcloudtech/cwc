@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 )
 
-func (c *Client) SendPrompt(adapter string, message string) (*PromptResponse, error) {
+func (c *Client) SendPrompt(adapter string, message string, listId string) (*PromptResponse, error) {
 	buf := bytes.Buffer{}
 	prompt := Prompt{
 		Adapter: adapter,
 		Message: message,
+		ListId: listId,
 	}
 
 	err := json.NewEncoder(&buf).Encode(prompt)

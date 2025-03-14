@@ -103,6 +103,7 @@ type AiAdaptersResponse struct {
 type Prompt struct {
 	Adapter string `json:"adapter"`
 	Message string `json:"message"`
+	ListId  string `json:"list_id,omitempty"`
 }
 
 type PromptResponse struct {
