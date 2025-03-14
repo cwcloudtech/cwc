@@ -16,11 +16,11 @@ func HandleGetAiAdapters(adapters *client.AiAdaptersResponse, pretty *bool) {
 	}
 }
 
-func HandleSendPrompt(adapter *string, message *string) {
+func HandleSendPrompt(adapter *string, message *string, listId *string) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
-	response, err := c.SendPrompt(*adapter, *message)
+	response, err := c.SendPrompt(*adapter, *message, *listId)
 	utils.ExitIfError(err)
 
 	if config.GetDefaultFormat() == "json" {
