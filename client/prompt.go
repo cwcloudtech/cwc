@@ -57,3 +57,21 @@ func (c *Client) GetPromptHistory(startIndex, maxResults int) (*PromptHistoryRes
 
 	return response, nil
 }
+
+
+func (c *Client) GetPromptDetails(listId string) (*PromptDetailsResponse, error) {
+	url := fmt.Sprintf("/ai/prompt/list/%s", listId)
+	
+	respBody, err := c.httpRequest(url, "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PromptDetailsResponse{}
+	err = json.NewDecoder(respBody).Decode(response)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}

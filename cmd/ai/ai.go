@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// bucketCmd represents the bucket command
+
 var AiCmd = &cobra.Command{
 	Use:   "ai",
 	Short: "Cwai APIs",

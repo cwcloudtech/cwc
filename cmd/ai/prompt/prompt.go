@@ -14,7 +14,6 @@ var (
 	pretty  bool = false
 )
 
-// createCmd represents the create command
 var PromptCmd = &cobra.Command{
 	Use:   "prompt",
 	Short: "Send a prompt",
@@ -41,4 +40,5 @@ func init() {
 	}
 
 	PromptCmd.AddCommand(HistoryCmd)
+	PromptCmd.AddCommand(DetailsCmd)
 }
