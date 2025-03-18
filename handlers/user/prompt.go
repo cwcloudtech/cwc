@@ -16,14 +16,16 @@ func HandleGetAiAdapters(adapters *client.AiAdaptersResponse, pretty *bool) {
 	}
 }
 
-func HandleSendPrompt(adapter *string, message *string, listId *string) {
+func HandleSendPrompt(adapter *string, message *string, listId *string, pretty *bool) {
 	c, err := client.NewClient()
 	utils.ExitIfError(err)
 
 	response, err := c.SendPrompt(*adapter, *message, *listId)
 	utils.ExitIfError(err)
 
-	if config.GetDefaultFormat() == "json" {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("AI response", *response)
+	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(response)
 	} else {
 		utils.PrintRow(*response)
