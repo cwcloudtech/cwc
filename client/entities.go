@@ -109,6 +109,8 @@ type Prompt struct {
 type PromptResponse struct {
 	Status   string `json:"status"`
 	Response string `json:"response"`
+	ListId   string `json:"list_id"`
+	// Prompt_id string `json:"prompt_id"`
 }
 
 type ApiKey struct {
@@ -472,4 +474,68 @@ type Monitor struct {
 	Level              string             `json:"level"`
 	Updated_at         string             `json:"updated_at"`
 	Hash               string             `json:"hash"`
+}
+
+type PromptList struct {
+	Title     string `json:"title"`
+	UpdatedAt string `json:"updated_at"`
+	UserId    int    `json:"user_id"`
+	Id        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+}
+
+type PromptHistoryResponse struct {
+	Status      string       `json:"status"`
+	PromptLists []PromptList `json:"prompt_lists"`
+	Cid         string       `json:"cid"`
+	Total       int          `json:"total"`
+	StartIndex  int          `json:"start_index"`
+	MaxResults  int          `json:"max_results"`
+}
+
+type PromptUsage struct {
+	Total      int `json:"total"`
+	Prompt     int `json:"prompt"`
+	Completion int `json:"completion"`
+}
+
+type PromptAnswer struct {
+	Usage    PromptUsage `json:"usage"`
+	Status   string      `json:"status"`
+	Response string      `json:"response"`
+}
+
+type PromptSettings struct {
+	TopP        *float64 `json:"top_p"`
+	MaxTokens   int      `json:"max_tokens"`
+	Temperature *float64 `json:"temperature"`
+}
+
+type PromptRequest struct {
+	Adapter    string         `json:"adapter"`
+	ListId     *string        `json:"list_id"`
+	Message    string         `json:"message"`
+	Messages   []interface{}  `json:"messages"`
+	Settings   PromptSettings `json:"settings"`
+	PromptId   *string        `json:"prompt_id"`
+	Regenerate bool           `json:"regenerate"`
+}
+
+type PromptItem struct {
+	Answer       PromptAnswer  `json:"answer"`
+	Id           string        `json:"id"`
+	PromptListId string        `json:"prompt_list_id"`
+	UpdatedAt    string        `json:"updated_at"`
+	Prompt       PromptRequest `json:"prompt"`
+	UserId       int           `json:"user_id"`
+	Adapter      string        `json:"adapter"`
+	CreatedAt    string        `json:"created_at"`
+}
+
+type PromptDetailsResponse struct {
+	Status     string       `json:"status"`
+	PromptList PromptList   `json:"prompt_list"`
+	Prompts    []PromptItem `json:"prompts"`
+	Cid        string       `json:"cid"`
+	HttpCode   int          `json:"http_code"`
 }
