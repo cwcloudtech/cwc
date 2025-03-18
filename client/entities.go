@@ -107,8 +107,10 @@ type Prompt struct {
 }
 
 type PromptResponse struct {
-	Status   string `json:"status"`
-	Response string `json:"response"`
+	Status    string `json:"status"`
+	Response  string `json:"response"`
+	ListId   string `json:"list_id"`
+	// Prompt_id string `json:"prompt_id"`
 }
 
 type ApiKey struct {
