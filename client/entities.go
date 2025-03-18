@@ -107,8 +107,8 @@ type Prompt struct {
 }
 
 type PromptResponse struct {
-	Status    string `json:"status"`
-	Response  string `json:"response"`
+	Status   string `json:"status"`
+	Response string `json:"response"`
 	ListId   string `json:"list_id"`
 	// Prompt_id string `json:"prompt_id"`
 }
@@ -474,4 +474,21 @@ type Monitor struct {
 	Level              string             `json:"level"`
 	Updated_at         string             `json:"updated_at"`
 	Hash               string             `json:"hash"`
+}
+
+type PromptList struct {
+	Title     string `json:"title"`
+	UpdatedAt string `json:"updated_at"`
+	UserId    int    `json:"user_id"`
+	Id        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+}
+
+type PromptHistoryResponse struct {
+	Status      string       `json:"status"`
+	PromptLists []PromptList `json:"prompt_lists"`
+	Cid         string       `json:"cid"`
+	Total       int          `json:"total"`
+	StartIndex  int          `json:"start_index"`
+	MaxResults  int          `json:"max_results"`
 }

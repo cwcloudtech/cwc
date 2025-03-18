@@ -39,4 +39,6 @@ func init() {
 	if nil != err {
 		fmt.Println(err)
 	}
+
+	PromptCmd.AddCommand(HistoryCmd)
 }
