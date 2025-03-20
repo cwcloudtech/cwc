@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"cwc/cmd/bootstrap/pfw"
 	"cwc/cmd/bootstrap/uninstall"
+	"cwc/config"
 	"cwc/env"
 	"cwc/handlers/user"
 	"cwc/utils"
@@ -62,6 +63,13 @@ func init() {
 			defaultRepoURL := env.REPO_URL
 			defaultBranch := env.BRANCH
 
+			if utils.IsNotBlank(config.GetRepoURL()) {
+				defaultRepoURL = config.GetRepoURL()
+			}
+			if utils.IsNotBlank(config.GetRepoBranch()) {
+				defaultBranch = config.GetRepoBranch()
+			}
+
 			if !cmd.Flags().Changed("repo-url") && !cmd.Flags().Changed("branch") &&
 				!cmd.Flags().Changed("username") && !cmd.Flags().Changed("password") {
 
@@ -106,7 +114,14 @@ func init() {
 				Username: tempUsername,
 				Password: tempPassword,
 			}
-			user.HandleBootstrapWithConfig(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir, openshift, tempConfig)
+			user.SaveRepoConfig(tempConfig)
+			fmt.Printf("Configuration saved successfully:\n")
+			fmt.Printf("- Repository URL: %s\n", tempConfig.RepoURL)
+			fmt.Printf("- Branch: %s\n", tempConfig.Branch)
+			if utils.IsNotBlank(tempConfig.Username) {
+				fmt.Printf("- Authentication: Enabled\n")
+			}
+			fmt.Printf("\nTo perform installation with these settings, run: cwc bootstrap\n")
 		},
 	}
 

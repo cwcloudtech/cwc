@@ -1,6 +1,7 @@
 package user
 
 import (
+	"cwc/config"
 	"cwc/env"
 	"fmt"
 	"log"
@@ -25,9 +26,24 @@ type RepoConfig struct {
 }
 
 func GetRepoConfig() RepoConfig {
+	repoURL := config.GetRepoURL()
+	branch := config.GetRepoBranch()
+
+	if repoURL == "" {
+		repoURL = env.REPO_URL
+	} else {
+		env.REPO_URL = repoURL
+	}
+
+	if branch == "" {
+		branch = env.BRANCH
+	} else {
+		env.BRANCH = branch
+	}
+
 	return RepoConfig{
-		RepoURL: env.REPO_URL,
-		Branch:  env.BRANCH,
+		RepoURL: repoURL,
+		Branch:  branch,
 	}
 }
 
@@ -51,12 +67,41 @@ func HandleTemporaryConfig(tempConfig *RepoConfig) (cleanup func()) {
 	}
 }
 
-func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool, openshift bool) {
-	repoURL := env.REPO_URL
-	directory := env.DIRECTORY
-	branch := env.BRANCH
+func (c *RepoConfig) SetRepoURL(url string) {
+	config.UpdateFileKeyValue("config", "repo_url", url)
+	env.REPO_URL = url
+}
 
-	if err := CloneRepo(repoURL, directory, branch, keepDir, "", ""); err != nil {
+func (c *RepoConfig) SetRepoBranch(branch string) {
+	config.UpdateFileKeyValue("config", "repo_branch", branch)
+	env.BRANCH = branch
+}
+
+func SaveRepoConfig(config *RepoConfig) {
+	if config.RepoURL != "" {
+		config.SetRepoURL(config.RepoURL)
+	}
+
+	if config.Branch != "" {
+		config.SetRepoBranch(config.Branch)
+	}
+
+	if config.Username != "" {
+		env.REPO_USERNAME = config.Username
+	}
+
+	if config.Password != "" {
+		env.REPO_PASSWORD = config.Password
+	}
+}
+
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool, openshift bool) {
+	config := GetRepoConfig()
+	repoURL := config.RepoURL
+	directory := env.DIRECTORY
+	branch := config.Branch
+
+	if err := CloneRepo(repoURL, directory, branch, keepDir, env.REPO_USERNAME, env.REPO_PASSWORD); err != nil {
 		log.Printf("Error cloning repository: %v", err)
 		return
 	}
