@@ -122,6 +122,50 @@ func GetDefaultEndpoint() string {
 	return endpoint
 }
 
+func GetRepoURL() string {
+	dirname, err := os.UserHomeDir()
+	default_repo := env.REPO_URL
+	if nil != err {
+		return default_repo
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return default_repo
+	}
+
+	file_content := string(content)
+	repoURL := GetValueFromFile(file_content, "repo_url")
+	if utils.IsBlank(repoURL) {
+		return default_repo
+	}
+
+	return repoURL
+}
+
+func GetRepoBranch() string {
+	dirname, err := os.UserHomeDir()
+	default_branch := env.BRANCH
+	if nil != err {
+		return default_branch
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return default_branch
+	}
+
+	file_content := string(content)
+	branch := GetValueFromFile(file_content, "repo_branch")
+	if utils.IsBlank(branch) {
+		return default_branch
+	}
+
+	return branch
+}
+
 func SetValueToKeyInFile(file string, key string, value string) {
 	dirname, err := os.UserHomeDir()
 	utils.ExitIfError(err)
