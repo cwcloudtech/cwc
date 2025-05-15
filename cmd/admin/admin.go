@@ -12,6 +12,7 @@ import (
 	"cwc/cmd/admin/monitor"
 	"cwc/cmd/admin/project"
 	"cwc/cmd/admin/registry"
+	"cwc/cmd/admin/storage"
 	"cwc/cmd/admin/user"
 
 	"github.com/spf13/cobra"
@@ -41,4 +42,5 @@ func init() {
 	AdminCmd.AddCommand(kubernetes.KubernetesCmd)
 	AdminCmd.AddCommand(dns_records.DnsRecordsCmd)
 	AdminCmd.AddCommand(monitor.MonitorCmd)
+	AdminCmd.AddCommand(storage.StorageCmd)
 }

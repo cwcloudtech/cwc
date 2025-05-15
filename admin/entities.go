@@ -316,6 +316,38 @@ type TriggerOwner struct {
 	Username string `json:"username"`
 }
 
+type StorageKV struct {
+	Key       string      `json:"key"`
+	Payload   interface{} `json:"payload"`
+	TTL       *int        `json:"ttl,omitempty"`
+	CreatedAt string      `json:"created_at,omitempty"`
+	UpdatedAt string      `json:"updated_at,omitempty"`
+	Source    string      `json:"source,omitempty"`
+	UserId    int         `json:"user_id,omitempty"`
+}
+
+type StorageKVListResponse struct {
+	Status     string      `json:"status"`
+	Items      []StorageKV `json:"items"`
+	Count      int         `json:"count"`
+	TotalCount int         `json:"total_count"`
+	StartIndex int         `json:"start_index"`
+	MaxResults int         `json:"max_results"`
+}
+
+type StorageKVResponse struct {
+	Status    string      `json:"status"`
+	Key       string      `json:"key,omitempty"`
+	Message   string      `json:"message,omitempty"`
+	Payload   interface{} `json:"payload,omitempty"`
+	CreatedAt string      `json:"created_at,omitempty"`
+	UpdatedAt string      `json:"updated_at,omitempty"`
+	Source    string      `json:"source,omitempty"`
+	Error     string      `json:"error,omitempty"`
+	I18nCode  string      `json:"i18n_code,omitempty"`
+	UserId    int         `json:"user_id,omitempty"`
+}
+
 type ObjectTypeContent struct {
 	Name             string   `json:"name"`
 	Public           bool     `json:"public"`

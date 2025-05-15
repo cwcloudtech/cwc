@@ -539,3 +539,61 @@ type PromptDetailsResponse struct {
 	Cid        string       `json:"cid"`
 	HttpCode   int          `json:"http_code"`
 }
+
+type StorageKV struct {
+	Key       string      `json:"key"`
+	Payload   interface{} `json:"payload"`
+	TTL       *int        `json:"ttl,omitempty"`
+	CreatedAt string      `json:"created_at,omitempty"`
+	UpdatedAt string      `json:"updated_at,omitempty"`
+	Source    string      `json:"source,omitempty"`
+}
+
+type StorageKVDisplay struct {
+	Key       string `json:"key" header:"Key"`
+	Payload   string `json:"payload" header:"Payload"`
+	CreatedAt string `json:"created_at" header:"Created At"`
+	UpdatedAt string `json:"updated_at" header:"Updated At"`
+	Source    string `json:"source" header:"Source"`
+}
+
+type SimplifiedStorageKVResponse struct {
+	Key       string      `json:"key"`
+	Message   string      `json:"message,omitempty"`
+	Payload   interface{} `json:"payload"`
+	CreatedAt string      `json:"created_at,omitempty"`
+	UpdatedAt string      `json:"updated_at,omitempty"`
+	Source    string      `json:"source,omitempty"`
+}
+
+type StorageKVCreateRequest struct {
+	Key     string      `json:"key"`
+	Payload interface{} `json:"payload"`
+	TTL     *int        `json:"ttl,omitempty"`
+}
+
+type StorageKVUpdateRequest struct {
+	Payload interface{} `json:"payload"`
+	TTL     *int        `json:"ttl,omitempty"`
+}
+
+type StorageKVListResponse struct {
+	Status     string      `json:"status"`
+	Items      []StorageKV `json:"items"`
+	Count      int         `json:"count"`
+	TotalCount int         `json:"total_count"`
+	StartIndex int         `json:"start_index"`
+	MaxResults int         `json:"max_results"`
+}
+
+type StorageKVResponse struct {
+	Status    string      `json:"status"`
+	Key       string      `json:"key,omitempty"`
+	Message   string      `json:"message,omitempty"`
+	Payload   interface{} `json:"payload,omitempty"`
+	CreatedAt string      `json:"created_at,omitempty"`
+	UpdatedAt string      `json:"updated_at,omitempty"`
+	Source    string      `json:"source,omitempty"`
+	Error     string      `json:"error,omitempty"`
+	I18nCode  string      `json:"i18n_code,omitempty"`
+}

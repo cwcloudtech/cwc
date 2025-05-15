@@ -18,6 +18,7 @@ import (
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
 	"cwc/cmd/region"
+	"cwc/cmd/storage"
 	"cwc/handlers/user"
 	"cwc/utils"
 	"fmt"
@@ -79,4 +80,5 @@ func init() {
 	rootCmd.AddCommand(kubernetes.KubernetesCmd)
 	rootCmd.AddCommand(bootstrap.BootstrapCmd)
 	rootCmd.AddCommand(monitor.MonitorCmd)
+	rootCmd.AddCommand(storage.StorageCmd)
 }
