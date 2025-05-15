@@ -234,3 +234,12 @@ func ShortName(name string, hash string) string {
 	}
 	return name
 }
+
+func ParseJSONPayload(jsonStr string) (interface{}, error) {
+	var result interface{}
+	err := json.Unmarshal([]byte(jsonStr), &result)
+	if err != nil {
+		return nil, fmt.Errorf("invalid JSON payload: %v", err)
+	}
+	return result, nil
+}
