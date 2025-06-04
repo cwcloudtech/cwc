@@ -29,8 +29,10 @@ archives:
 
 release:
   prerelease: auto
-  #? Added mode for GitLab compatibility
   mode: replace
+  gitlab:
+    owner: oss
+    name: cwcloud/cwc
 
 checksum:
   name_template: 'checksums.txt'
@@ -66,7 +68,6 @@ brews:
       email: contact@comwork.io
     url_template: "https://gitlab.comwork.io/oss/cwcloud/cwc/-/releases/{{ .Tag }}/downloads/{{ .ArtifactName }}"
 
-#? Added changelog configuration for better release notes
 changelog:
   sort: asc
   filters:
