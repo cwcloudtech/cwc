@@ -102,9 +102,9 @@ func displayPromptDetails(response *client.PromptDetailsResponse) {
 	fmt.Printf("ID: %s\n", response.PromptList.Id)
 	fmt.Printf("Created: %s\n", response.PromptList.CreatedAt)
 	fmt.Printf("Updated: %s\n", response.PromptList.UpdatedAt)
-	
+
 	fmt.Printf("Prompts (%d):\n", len(response.Prompts))
-	
+
 	for i, prompt := range response.Prompts {
 		fmt.Printf("\n--- Prompt %d ---\n", i+1)
 		fmt.Printf("ID: %s\n", prompt.Id)
@@ -112,7 +112,7 @@ func displayPromptDetails(response *client.PromptDetailsResponse) {
 		fmt.Printf("Created: %s\n", prompt.CreatedAt)
 		fmt.Printf("Message: %s\n", prompt.Prompt.Message)
 		fmt.Printf("Response: %s\n", prompt.Answer.Response)
-		fmt.Printf("Usage: %d tokens (Prompt: %d, Completion: %d)\n", 
+		fmt.Printf("Usage: %d tokens (Prompt: %d, Completion: %d)\n",
 			prompt.Answer.Usage.Total,
 			prompt.Answer.Usage.Prompt,
 			prompt.Answer.Usage.Completion)
@@ -120,7 +120,78 @@ func displayPromptDetails(response *client.PromptDetailsResponse) {
 }
 
 func displayPromptDetailsSummary(response *client.PromptDetailsResponse) {
-    for _, prompt := range response.Prompts {
-        fmt.Printf("%s\t%s\t%s\n", prompt.Id, prompt.Prompt.Message, prompt.Answer.Response)
-    }
+	for _, prompt := range response.Prompts {
+		fmt.Printf("%s\t%s\t%s\n", prompt.Id, prompt.Prompt.Message, prompt.Answer.Response)
+	}
+}
+
+func HandleGetExternalAIAdapters(adapters *[]client.AIAdapter, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		displayAIAdaptersAsTable(*adapters)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(adapters)
+	} else {
+		utils.PrintMultiRow(client.AIAdapter{}, *adapters)
+	}
+}
+
+func HandleGetAIAdapter(adapter *client.AIAdapter, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("Found AI adapter", *adapter)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(adapter)
+	} else {
+		utils.PrintRow(*adapter)
+	}
+}
+
+func displayAIAdaptersAsTable(adapters []client.AIAdapter) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "Name", "URL", "Public", "Created At", "Updated At"})
+
+	if len(adapters) == 0 {
+		table.Append([]string{"No AI adapters available", "404", "404", "404", "404", "404"})
+	} else {
+		for _, adapter := range adapters {
+			table.Append([]string{
+				adapter.Id,
+				adapter.Name,
+				adapter.Url,
+				fmt.Sprintf("%t", adapter.IsPublic),
+				adapter.CreatedAt,
+				adapter.UpdatedAt,
+			})
+		}
+	}
+	table.Render()
+}
+
+func HandleCreateAIAdapter(response *client.AIAdapterResponse, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("AI Adapter successfully created", *response)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(response)
+	} else {
+		fmt.Printf("AI Adapter created successfully with ID: %s\n", response.Id)
+	}
+}
+
+func HandleUpdateAIAdapter(response *client.AIAdapterResponse, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("AI Adapter successfully updated", *response)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(response)
+	} else {
+		fmt.Println("AI Adapter updated successfully")
+	}
+}
+
+func HandleDeleteAIAdapter(response *client.AIAdapterResponse, pretty *bool) {
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPretty("AI Adapter successfully deleted", *response)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(response)
+	} else {
+		fmt.Println("AI Adapter deleted successfully")
+	}
 }

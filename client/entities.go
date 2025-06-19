@@ -97,7 +97,50 @@ type EmailResponse struct {
 }
 
 type AiAdaptersResponse struct {
+	Status   string   `json:"status"`
 	Adapters []string `json:"adapters"`
+}
+
+type AIAdapterHeader struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+type AIAdapter struct {
+	Id        string            `json:"id"`
+	Name      string            `json:"name"`
+	UserId    int               `json:"user_id"`
+	Url       string            `json:"url"`
+	Username  string            `json:"username"`
+	Password  string            `json:"password"`
+	Headers   []AIAdapterHeader `json:"headers"`
+	Timeout   int               `json:"timeout"`
+	CheckTls  bool              `json:"check_tls"`
+	IsPublic  bool              `json:"is_public"`
+	CreatedAt string            `json:"created_at"`
+	UpdatedAt string            `json:"updated_at"`
+}
+
+type AIAdapterRequest struct {
+	Name     string            `json:"name"`
+	Url      string            `json:"url"`
+	Username string            `json:"username"`
+	Password string            `json:"password"`
+	Headers  []AIAdapterHeader `json:"headers"`
+	Timeout  int               `json:"timeout"`
+	CheckTls bool              `json:"check_tls"`
+	IsPublic bool              `json:"is_public"`
+}
+
+type AIAdapterResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Id      string `json:"id"`
+}
+
+type ExternalAIAdaptersResponse struct {
+	Status   string      `json:"status"`
+	Adapters []AIAdapter `json:"adapters"`
 }
 
 type Prompt struct {
