@@ -86,8 +86,8 @@ func init() {
 	UpdateCmd.Flags().StringVarP(&password, "password", "w", "", "Password for authentication")
 	UpdateCmd.Flags().IntVarP(&timeout, "timeout", "t", 0, "Timeout in seconds")
 	UpdateCmd.Flags().BoolVarP(&checkTls, "check-tls", "k", false, "Check TLS certificate")
-	UpdateCmd.Flags().BoolVarP(&isPublic, "public", "b", false, "Make adapter public")
-	UpdateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
+	UpdateCmd.Flags().BoolVarP(&isPublic, "public", "p", false, "Make adapter public")
+	UpdateCmd.Flags().BoolVarP(&pretty, "pretty", "", false, "Pretty print the output (optional)")
 
 	UpdateCmd.MarkFlagRequired("adapter-id")
 

@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"cwc/cmd/admin/ai"
 	"cwc/cmd/admin/bucket"
 	"cwc/cmd/admin/dns_records"
 	"cwc/cmd/admin/email"
@@ -43,4 +44,5 @@ func init() {
 	AdminCmd.AddCommand(dns_records.DnsRecordsCmd)
 	AdminCmd.AddCommand(monitor.MonitorCmd)
 	AdminCmd.AddCommand(storage.StorageCmd)
+	AdminCmd.AddCommand(ai.AiCmd)
 }

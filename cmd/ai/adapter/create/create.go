@@ -35,8 +35,8 @@ func init() {
 	CreateCmd.Flags().StringVarP(&adapter.Password, "password", "w", "", "Password for authentication (optional)")
 	CreateCmd.Flags().IntVarP(&adapter.Timeout, "timeout", "t", 30, "Timeout in seconds (optional)")
 	CreateCmd.Flags().BoolVarP(&adapter.CheckTls, "check-tls", "k", true, "Check TLS certificate (optional)")
-	CreateCmd.Flags().BoolVarP(&adapter.IsPublic, "public", "b", false, "Make adapter public (optional)")
-	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
+	CreateCmd.Flags().BoolVarP(&adapter.IsPublic, "public", "p", false, "Make adapter public (optional)")
+	CreateCmd.Flags().BoolVarP(&pretty, "pretty", "", false, "Pretty print the output (optional)")
 
 	CreateCmd.MarkFlagRequired("name")
 	CreateCmd.MarkFlagRequired("url")
