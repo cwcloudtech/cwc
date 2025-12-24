@@ -44,29 +44,29 @@ dockers:
     build_flag_templates:
       - --label=org.opencontainers.image.title={{ .ProjectName }}
       - --label=org.opencontainers.image.description={{ .ProjectName }}
-      - --label=org.opencontainers.image.url=https://gitlab.comwork.io/oss/cwcloud/cwc
-      - --label=org.opencontainers.image.source=https://gitlab.comwork.io/oss/cwcloud/cwc
+      - --label=org.opencontainers.image.url=https://gitlab.cwcloud.tech/oss/cwcloud/cwc
+      - --label=org.opencontainers.image.source=https://gitlab.cwcloud.tech/oss/cwcloud/cwc
       - --label=org.opencontainers.image.version={{ .Version }}
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.revision={{ .FullCommit }}
       - --label=org.opencontainers.image.licenses=MIT
 
 gitlab_urls:
-  api: https://gitlab.comwork.io/api/v4
-  download: https://gitlab.comwork.io
+  api: https://gitlab.cwcloud.tech/api/v4
+  download: https://gitlab.cwcloud.tech
   skip_tls_verify: true
   use_package_registry: false
 
 brews:
   - name: cwc
-    homepage: https://gitlab.comwork.io/oss/cwcloud/cwc
+    homepage: https://gitlab.cwcloud.tech/oss/cwcloud/cwc
     repository:
       owner: oss
       name: cwcloud/homebrew-cwc
     commit_author:
       name: comwork
       email: contact@comwork.io
-    url_template: "https://gitlab.comwork.io/oss/cwcloud/cwc/-/releases/{{ .Tag }}/downloads/{{ .ArtifactName }}"
+    url_template: "https://gitlab.cwcloud.tech/oss/cwcloud/cwc/-/releases/{{ .Tag }}/downloads/{{ .ArtifactName }}"
 
 changelog:
   sort: asc
