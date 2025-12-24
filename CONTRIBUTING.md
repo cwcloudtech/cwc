@@ -36,7 +36,7 @@ It'll build the CLI for Linux, MacOS X and Window platform for x86 and aarch64 a
 
 ![artifacts](./img/artifacts.png)
 
-The the brew formula will be updated [here](https://gitlab.comwork.io/oss/cwc/homebrew-cwc). You'll just have to perform those commands to update the CLI in your device:
+The the brew formula will be updated [here](https://gitlab.cwcloud.tech/oss/cwc/homebrew-cwc). You'll just have to perform those commands to update the CLI in your device:
 
 ```shell
 brew update
