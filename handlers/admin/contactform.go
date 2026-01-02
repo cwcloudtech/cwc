@@ -17,9 +17,9 @@ func HandleGetForms(forms *[]admin.ContactForm, pretty *bool) {
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(forms)
 	} else {
-		var formsDisplay []admin.ContactForm
+		var formsDisplay []admin.DisplayContactForm
 		for i, form := range *forms {
-			formsDisplay = append(formsDisplay, admin.ContactForm{
+			formsDisplay = append(formsDisplay, admin.DisplayContactForm{
 				Id:         form.Id,
 				Name:       form.Name,
 				MailFrom:   form.MailFrom,
@@ -29,7 +29,7 @@ func HandleGetForms(forms *[]admin.ContactForm, pretty *bool) {
 			})
 			formsDisplay[i].Id = form.Id
 		}
-		utils.PrintMultiRow(admin.ContactForm{}, formsDisplay)
+		utils.PrintMultiRow(admin.DisplayContactForm{}, formsDisplay)
 	}
 }
 

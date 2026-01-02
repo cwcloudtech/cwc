@@ -463,6 +463,15 @@ type Monitor struct {
 	Hash               string             `json:"hash"`
 }
 
+type DisplayContactForm struct {
+	Id         string `json:"id"`
+	Name       string `json:"name"`
+	MailFrom   string `json:"mail_from"`
+	MailTo     string `json:"mail_to"`
+	UserId     int    `json:"user_id"`
+	Updated_at string `json:"updated_at"`
+}
+
 type ContactForm struct {
 	Id            string `json:"id"`
 	Name          string `json:"name"`
