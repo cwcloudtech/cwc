@@ -16,8 +16,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a device in the cloud",
-	Long:  "This command lets you create a device in the cloud.",
+	Short: "Create a device with cwcloud",
+	Long:  "This command lets you create a device with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		created_device, err := user.PrepareAddDevice(&device)
 		utils.ExitIfError(err)

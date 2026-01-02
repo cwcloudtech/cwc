@@ -4,6 +4,7 @@ import (
 	adminClient "cwc/admin"
 	"cwc/handlers/admin"
 	"cwc/utils"
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available environments",
-	Long: `This command lets you list your available environments in the cloud
+	Long: `This command lets you list your available environments with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()

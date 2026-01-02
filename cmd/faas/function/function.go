@@ -11,8 +11,8 @@ import (
 
 var FunctionCmd = &cobra.Command{
 	Use:   "function",
-	Short: "Manage your serverless functions in the cloud",
-	Long: `This command lets you Manage your serverless functions in the cloud.
+	Short: "Manage your serverless functions with cwcloud",
+	Long: `This command lets you Manage your serverless functions with cwcloud.
 Several actions are associated with this command such as update a function, deleting a function
 and listing your available functions`,
 

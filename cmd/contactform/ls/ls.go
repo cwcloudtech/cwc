@@ -17,7 +17,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available contact forms",
-	Long: `This command lets you list the available contact forms in the cloud
+	Long: `This command lets you list the available contact forms with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := client.NewClient()

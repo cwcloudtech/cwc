@@ -16,8 +16,8 @@ var (
 // createCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a bucket in the cloud",
-	Long:  `This command lets you create a bucket in the cloud`,
+	Short: "Create a bucket with cwcloud",
+	Long:  `This command lets you create a bucket with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		admin.HandleAddBucket(&user_email, &name, &reg_type)
 	},

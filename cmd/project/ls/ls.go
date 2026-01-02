@@ -18,7 +18,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available projects",
-	Long: `This command lets you list your available projects in the cloud
+	Long: `This command lets you list your available projects with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleGetProjects(&projectId, &projectName, &projectUrl, &pretty, &projectType)

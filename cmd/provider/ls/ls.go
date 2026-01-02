@@ -16,7 +16,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available providers",
-	Long: `This command lets you list the available providers in the cloud
+	Long: `This command lets you list the available providers with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		providers, err := client.GetProviders()

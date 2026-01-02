@@ -17,7 +17,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available environments",
-	Long: `This command lets you list the available environment in the cloud that can be associated to an instance
+	Long: `This command lets you list the available environment with cwcloud that can be associated to an instance
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := client.NewClient()

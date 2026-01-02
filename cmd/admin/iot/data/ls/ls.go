@@ -18,7 +18,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List all available data",
-	Long: `This command lets you list all available data in the cloud
+	Long: `This command lets you list all available data with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if (numericOnly && stringOnly) || (!numericOnly && !stringOnly) {

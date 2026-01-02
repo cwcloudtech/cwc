@@ -11,8 +11,8 @@ import (
 // RegistryCmd represents the bucket command
 var RegistryCmd = &cobra.Command{
 	Use:   "registry",
-	Short: "Manage your registries in the cloud",
-	Long: `This command lets you manage your registries in the cloud.
+	Short: "Manage your registries with cwcloud",
+	Long: `This command lets you manage your registries with cwcloud.
 Several actions are associated with this command such as update a registry, deleting a registry
 and listing your available registries`,
 	Run: func(cmd *cobra.Command, args []string) {

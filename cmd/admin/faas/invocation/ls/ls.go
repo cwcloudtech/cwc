@@ -1,9 +1,10 @@
 package ls
 
 import (
+	adminClient "cwc/admin"
 	"cwc/handlers/admin"
 	"cwc/utils"
-	adminClient "cwc/admin"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +16,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available invocations",
-	Long: `This command lets you list your available invocations in the cloud
+	Long: `This command lets you list your available invocations with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()
@@ -23,7 +24,7 @@ This command takes no arguments`,
 		if utils.IsBlank(invocationId) {
 			invocations, err := c.GetAllInvocations()
 			utils.ExitIfError(err)
-			admin.HandleGetInvocations(invocations,&pretty)
+			admin.HandleGetInvocations(invocations, &pretty)
 		} else {
 			invoker, err := c.GetInvocationInvokerById(invocationId)
 			utils.ExitIfError(err)

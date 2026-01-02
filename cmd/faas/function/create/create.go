@@ -17,8 +17,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a function in the cloud",
-	Long:  "This command lets you create a function in the cloud.",
+	Short: "Create a function with cwcloud",
+	Long:  "This command lets you create a function with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		created_function, err := user.PrepareAddFunction(&function, &interactive)
 		utils.ExitIfError(err)

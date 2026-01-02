@@ -18,8 +18,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a contact form in the cloud",
-	Long:  "This command lets you create a contact form in the cloud.",
+	Short: "Create a contact form with cwcloud",
+	Long:  "This command lets you create a contact form with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		created_form, err := user.PrepareAddForm(&form)
 		utils.ExitIfError(err)

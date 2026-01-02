@@ -8,8 +8,8 @@ import (
 
 var InvocationCmd = &cobra.Command{
 	Use:   "invocation",
-	Short: "Manage your invocations in the cloud",
-	Long: `This command lets you manage your invocations in the cloud.
+	Short: "Manage your invocations with cwcloud",
+	Long: `This command lets you manage your invocations with cwcloud.
 Several actions are associated with this command such as
 listing your available invocations`,
 

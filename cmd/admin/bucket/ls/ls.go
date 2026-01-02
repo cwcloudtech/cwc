@@ -17,7 +17,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available buckets",
-	Long: `This command lets you list your available buckets in the cloud
+	Long: `This command lets you list your available buckets with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()

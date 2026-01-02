@@ -19,8 +19,8 @@ var (
 // createCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a project in the cloud",
-	Long: `This command lets you create a project in the cloud.
+	Short: "Create a project with cwcloud",
+	Long: `This command lets you create a project with cwcloud.
 You have to provide the project name.
 You can also provide your Gitlab host and access token and git username to save the project in another Gitlab instance`,
 	Run: func(cmd *cobra.Command, args []string) {
