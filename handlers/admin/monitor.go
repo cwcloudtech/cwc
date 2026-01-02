@@ -6,6 +6,7 @@ import (
 	"cwc/utils"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -187,7 +188,7 @@ func HandleDeleteMonitor(monitorId *string) {
 
 func displayMonitorsAsTable(monitors []admin.Monitor) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Name", "Family", "Method", "Url", "Updated_at", "Status", "Response_time"})
+	table.SetHeader([]string{"Id", "Name", "Family", "Method", "Url", "Status", "Response_time", "User_id", "Updated_at"})
 
 	if len(monitors) == 0 {
 		table.Append([]string{"No monitors available", "404", "404", "404", "404", "404", "404", "404"})
@@ -199,9 +200,10 @@ func displayMonitorsAsTable(monitors []admin.Monitor) {
 				monitor.Family,
 				monitor.Method,
 				monitor.Url,
-				monitor.Updated_at,
 				monitor.Status,
 				monitor.Response_time,
+				strconv.Itoa(monitor.User_id),
+				monitor.Updated_at,
 			})
 		}
 		table.Render()

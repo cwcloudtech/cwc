@@ -182,7 +182,7 @@ func HandleDeleteMonitor(monitorId *string) {
 
 func displayMonitorsAsTable(monitors []client.Monitor) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Name", "Family", "Method", "Url", "Updated_at", "Status", "Response_time"})
+	table.SetHeader([]string{"Id", "Name", "Family", "Method", "Url", "Status", "Response_time", "Updated_at"})
 
 	if len(monitors) == 0 {
 		table.Append([]string{"No monitors available", "404", "404", "404", "404", "404", "404", "404"})
@@ -194,9 +194,9 @@ func displayMonitorsAsTable(monitors []client.Monitor) {
 				monitor.Family,
 				monitor.Method,
 				monitor.Url,
-				monitor.Updated_at,
 				monitor.Status,
 				monitor.Response_time,
+				monitor.Updated_at,
 			})
 		}
 		table.Render()
