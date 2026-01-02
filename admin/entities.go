@@ -463,6 +463,19 @@ type Monitor struct {
 	Hash               string             `json:"hash"`
 }
 
+type ContactForm struct {
+	Id            string `json:"id"`
+	Name          string `json:"name"`
+	Hash          string `json:"hash"`
+	UserId        int    `json:"user_id"`
+	MailFrom      string `json:"mail_from"`
+	MailTo        string `json:"mail_to"`
+	CopyrightName string `json:"copyright_name"`
+	LogoUrl       string `json:"logo_url"`
+	CreatedAt     string `json:"created_at"`
+	Updated_at    string `json:"updated_at"`
+}
+
 type AIAdapterHeader struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
