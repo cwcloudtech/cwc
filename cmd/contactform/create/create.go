@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	monitor      client.Monitor
+	form         client.ContactForm
 	pretty       bool = false
 	rawHeaders   string
 	rawCallbacks string
@@ -19,25 +19,9 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a monitor in the cloud",
-	Long:  "This command lets you create a monitor in the cloud.",
+	Short: "Create a contact form in the cloud",
+	Long:  "This command lets you create a contact form in the cloud.",
 	Run: func(cmd *cobra.Command, args []string) {
-		if rawHeaders != "" {
-			headers, err := parseHeaders(rawHeaders)
-			utils.ExitIfError(err)
-			monitor.Headers = headers
-		} else {
-			monitor.Headers = []client.Header{}
-		}
-
-		if rawCallbacks != "" {
-			callbacks, err := parseCallbacks(rawCallbacks)
-			utils.ExitIfError(err)
-			monitor.Callbacks = callbacks
-		} else {
-			monitor.Callbacks = []client.CallbacksContent{}
-		}
-
 		created_monitor, err := user.PrepareAddMonitor(&monitor)
 		utils.ExitIfError(err)
 		user.HandleAddMonitor(&created_monitor, &pretty)

@@ -57,14 +57,14 @@ func (c *Client) AddForm(form ContactForm) (*ContactForm, error) {
 	return created_form, nil
 }
 
-func (c *Client) UpdateFormById(monitorId string, form ContactForm) (*ContactForm, error) {
+func (c *Client) UpdateFormById(formId string, form ContactForm) (*ContactForm, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(form)
 	if nil != err {
 		return nil, err
 	}
 
-	resp_body, err := c.httpRequest(fmt.Sprintf("/contactform/%s", monitorId), "PUT", buf)
+	resp_body, err := c.httpRequest(fmt.Sprintf("/contactform/%s", formId), "PUT", buf)
 	if nil != err {
 		return nil, err
 	}
