@@ -1,10 +1,10 @@
 package trigger
 
 import (
-	"cwc/cmd/faas/trigger/ls"
-	"cwc/cmd/faas/trigger/triggerKinds"
 	"cwc/cmd/faas/trigger/create"
 	"cwc/cmd/faas/trigger/delete"
+	"cwc/cmd/faas/trigger/ls"
+	"cwc/cmd/faas/trigger/triggerKinds"
 	"cwc/cmd/faas/trigger/truncate"
 
 	"github.com/spf13/cobra"
@@ -12,8 +12,8 @@ import (
 
 var TriggerCmd = &cobra.Command{
 	Use:   "trigger",
-	Short: "Manage your triggers in the cloud",
-	Long: `This command lets you manage your triggers in the cloud.
+	Short: "Manage your triggers with cwcloud",
+	Long: `This command lets you manage your triggers with cwcloud.
 Several actions are associated with this command such as update a trigger, deleting a trigger
 and listing your available triggers`,
 	Run: func(cmd *cobra.Command, args []string) {

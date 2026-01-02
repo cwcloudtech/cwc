@@ -17,8 +17,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a trigger in the cloud",
-	Long:  `This command lets you create a trigger in the cloud.`,
+	Short: "Create a trigger with cwcloud",
+	Long:  `This command lets you create a trigger with cwcloud.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleAddTrigger(&trigger, &argumentsValues, &interactive, &pretty)
 	},

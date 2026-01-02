@@ -1,11 +1,12 @@
 package create
 
 import (
+	adminClient "cwc/admin"
 	"cwc/handlers/admin"
-	"fmt"
-	 adminClient "cwc/admin"
-	"github.com/spf13/cobra"
 	"cwc/utils"
+	"fmt"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -23,22 +24,22 @@ var (
 // createCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a virtual machine in the cloud",
-	Long: `This command lets you create a virtual machine in the cloud.
-You have to provide the project ID or the project name in which the instance will be associeted.
+	Short: "Create a virtual machine with cwcloud",
+	Long: `This command lets you create a virtual machine with cwcloud.
+You have to provide the project ID or the project name in which the instance will be associated.
 You also have to provide the environment that will be installed in the virtuals machines.
 Other arguments are optional.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()
-		created_instance, err := c.AdminAddInstance(user_email, name, projectId, projectName, projectUrl, environment, instanceType,zone, dnsZone)
+		created_instance, err := c.AdminAddInstance(user_email, name, projectId, projectName, projectUrl, environment, instanceType, zone, dnsZone)
 		utils.ExitIfError(err)
-		admin.HandleAddInstance(created_instance,&user_email, &name, &projectId, &projectName, &projectUrl, &environment, &instanceType, &zone, &dnsZone)
+		admin.HandleAddInstance(created_instance, &user_email, &name, &projectId, &projectName, &projectUrl, &environment, &instanceType, &zone, &dnsZone)
 	},
 }
 
 func init() {
 	CreateCmd.Flags().StringVarP(&name, "name", "n", "", "The instance name")
-	CreateCmd.Flags().StringVarP(&user_email, "user", "m", "", "user associeted with the project")
+	CreateCmd.Flags().StringVarP(&user_email, "user", "m", "", "user associated with the project")
 	CreateCmd.Flags().IntVarP(&projectId, "project_id", "i", 0, "The project id that you want to associete with the instance")
 	CreateCmd.Flags().StringVarP(&projectName, "project_name", "p", "", "The project name that you want to associete with the instance")
 	CreateCmd.Flags().StringVarP(&projectUrl, "project_url", "u", "", "The project url that you want to associete with the instance")

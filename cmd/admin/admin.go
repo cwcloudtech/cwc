@@ -3,6 +3,7 @@ package admin
 import (
 	"cwc/cmd/admin/ai"
 	"cwc/cmd/admin/bucket"
+	"cwc/cmd/admin/contactform"
 	"cwc/cmd/admin/dns_records"
 	"cwc/cmd/admin/email"
 	"cwc/cmd/admin/environment"
@@ -43,6 +44,7 @@ func init() {
 	AdminCmd.AddCommand(kubernetes.KubernetesCmd)
 	AdminCmd.AddCommand(dns_records.DnsRecordsCmd)
 	AdminCmd.AddCommand(monitor.MonitorCmd)
+	AdminCmd.AddCommand(contactform.ContactFormCmd)
 	AdminCmd.AddCommand(storage.StorageCmd)
 	AdminCmd.AddCommand(ai.AiCmd)
 }

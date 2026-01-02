@@ -16,7 +16,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available functions",
-	Long: `This command lets you list your available functions in the cloud
+	Long: `This command lets you list your available functions with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := client.NewClient()

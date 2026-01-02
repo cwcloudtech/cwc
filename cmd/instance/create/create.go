@@ -21,9 +21,9 @@ var (
 // createCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a virtual machine in the cloud",
-	Long: `This command lets you create a virtual machine in the cloud.
-You have to provide the project ID or the project name in which the instance will be associeted.
+	Short: "Create a virtual machine with cwcloud",
+	Long: `This command lets you create a virtual machine with cwcloud.
+You have to provide the project ID or the project name in which the instance will be associated.
 You also have to provide the environment that will be installed in the virtuals machines.
 Other arguments are optional.`,
 	Run: func(cmd *cobra.Command, args []string) {

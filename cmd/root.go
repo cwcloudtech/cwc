@@ -6,6 +6,7 @@ import (
 	"cwc/cmd/bootstrap"
 	"cwc/cmd/bucket"
 	"cwc/cmd/configure"
+	"cwc/cmd/contactform"
 	"cwc/cmd/dnszones"
 	"cwc/cmd/email"
 	"cwc/cmd/environment"
@@ -80,5 +81,6 @@ func init() {
 	rootCmd.AddCommand(kubernetes.KubernetesCmd)
 	rootCmd.AddCommand(bootstrap.BootstrapCmd)
 	rootCmd.AddCommand(monitor.MonitorCmd)
+	rootCmd.AddCommand(contactform.ContactFormCmd)
 	rootCmd.AddCommand(storage.StorageCmd)
 }

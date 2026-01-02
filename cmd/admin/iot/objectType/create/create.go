@@ -20,8 +20,8 @@ var CreateCmd *cobra.Command
 func init() {
 	CreateCmd = &cobra.Command{
 		Use:   "create",
-		Short: "Create an object type in the cloud",
-		Long:  "This command lets you create an object type in the cloud.",
+		Short: "Create an object type with cwcloud",
+		Long:  "This command lets you create an object type with cwcloud.",
 		Run:   createCmdRun,
 	}
 

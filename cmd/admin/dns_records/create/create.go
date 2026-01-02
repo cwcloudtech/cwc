@@ -1,4 +1,4 @@
-package create 
+package create
 
 import (
 	"cwc/handlers/admin"
@@ -9,16 +9,16 @@ import (
 
 var (
 	recordName string
-	dnsZone   string
-	dnsType 	string
-	ttl 		int
-	data 		string
+	dnsZone    string
+	dnsType    string
+	ttl        int
+	data       string
 )
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a DNS record in the cloud",
-	Long:  `This command lets you create a DNS record in the cloud`,
+	Short: "Create a DNS record with cwcloud",
+	Long:  `This command lets you create a DNS record with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		admin.HandleAddDnsRecord(&recordName, &dnsZone, &dnsType, &ttl, &data)
 	},

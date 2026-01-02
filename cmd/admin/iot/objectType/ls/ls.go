@@ -16,7 +16,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List all available object types",
-	Long: `This command lets you list all available object types in the cloud
+	Long: `This command lets you list all available object types with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()

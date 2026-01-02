@@ -16,7 +16,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available Dns Zones",
-	Long: `This command lets you list the available Dns Zones in the cloud
+	Long: `This command lets you list the available Dns Zones with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dns_zones, err := client.GetDnsZones()

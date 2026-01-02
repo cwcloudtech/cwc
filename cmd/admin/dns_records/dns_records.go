@@ -12,8 +12,8 @@ import (
 
 var DnsRecordsCmd = &cobra.Command{
 	Use:   "dnsRecord",
-	Short: "Manage your DNS records in the cloud",
-	Long: `This command lets you manage your DNS records in the cloud.
+	Short: "Manage your DNS records with cwcloud",
+	Long: `This command lets you manage your DNS records with cwcloud.
 Several actions are associated with this command such as update a DNS record, deleting a DNS record
 and listing your available DNS records`,
 	Run: func(cmd *cobra.Command, args []string) {

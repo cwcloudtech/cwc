@@ -15,7 +15,7 @@ var (
 var LCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available DNS records",
-	Long: `This command lets you list your available DNS records in the cloud
+	Long: `This command lets you list your available DNS records with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()

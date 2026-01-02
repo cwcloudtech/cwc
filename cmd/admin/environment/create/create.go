@@ -20,8 +20,8 @@ var (
 // createCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create an environment in the cloud",
-	Long:  `This command lets you create an environment in the cloud`,
+	Short: "Create an environment with cwcloud",
+	Long:  `This command lets you create an environment with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		admin.HandleAddEnvironment(&name, &path, &roles, &privacy, &description, &subdomains, &logo_url)
 	},
