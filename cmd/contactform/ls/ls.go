@@ -16,8 +16,8 @@ var (
 // lsCmd represents the ls command
 var LsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "List available monitors",
-	Long: `This command lets you list the available monitors in the cloud that can be associeted to an instance
+	Short: "List available contact forms",
+	Long: `This command lets you list the available contact forms in the cloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := client.NewClient()

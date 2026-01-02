@@ -8,23 +8,23 @@ import (
 )
 
 var (
-	monitorId string
+	formId string
 )
 
 var DeleteCmd = &cobra.Command{
-	Use:  "delete",
-	Short: "Delete a particular monitor",
-	Long: `This command lets you delete a particular monitor.
-To use this command you have to provide the monitor ID that you want to delete.`,
+	Use:   "delete",
+	Short: "Delete a particular contact form",
+	Long: `This command lets you delete a particular contact form.
+To use this command you have to provide the form ID that you want to delete.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleDeleteMonitor(&monitorId)
+		user.HandleDeleteForm(&formId)
 	},
 }
 
 func init() {
-	DeleteCmd.Flags().StringVarP(&monitorId, "monitor", "m", "", "The monitor id")
+	DeleteCmd.Flags().StringVarP(&formId, "form", "f", "", "The contact form id")
 
-	err := DeleteCmd.MarkFlagRequired("monitor")
+	err := DeleteCmd.MarkFlagRequired("form")
 	if nil != err {
 		fmt.Println(err)
 	}
