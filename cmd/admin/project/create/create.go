@@ -5,6 +5,7 @@ import (
 	"cwc/handlers/admin"
 	"cwc/utils"
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +38,7 @@ You can also provide your Gitlab host and access token and git username to save 
 func init() {
 	CreateCmd.Flags().StringVarP(&name, "name", "n", "", "The project name")
 	CreateCmd.Flags().StringVarP(&host, "host", "l", "", "Gitlab host")
-	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associeted with the project")
+	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associated with the project")
 	CreateCmd.Flags().StringVarP(&token, "token", "t", "", "Gitlab Token")
 	CreateCmd.Flags().StringVarP(&git, "git", "g", "", "Git username")
 	CreateCmd.Flags().StringVarP(&namespace, "namespace", "s", "", "Gitlab Group ID")

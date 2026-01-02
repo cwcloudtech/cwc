@@ -25,7 +25,7 @@ var CreateCmd = &cobra.Command{
 
 func init() {
 	CreateCmd.Flags().StringVarP(&name, "name", "n", "", "The bucket name")
-	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associeted with the project")
+	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associated with the project")
 	CreateCmd.Flags().StringVarP(&reg_type, "type", "t", "", "The bucket type (private/public-read)")
 
 	err := CreateCmd.MarkFlagRequired("name")
