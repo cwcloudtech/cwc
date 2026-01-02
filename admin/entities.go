@@ -448,6 +448,7 @@ type DisplayMonitor struct {
 	Timeout       int    `json:"timeout"`
 	Status        string `json:"status"`
 	Response_time string `json:"response_time"`
+	User_id       int    `json:"user_id"`
 	Updated_at    string `json:"updated_at"`
 }
 

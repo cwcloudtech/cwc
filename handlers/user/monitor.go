@@ -16,22 +16,22 @@ func HandleGetMonitors(monitors *[]client.Monitor, pretty *bool) {
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(monitors)
 	} else {
-		var monitorsDisplay []client.Monitor
+		var monitorsDisplay []client.DisplayMonitor
 		for i, monitor := range *monitors {
-			monitorsDisplay = append(monitorsDisplay, client.Monitor{
+			monitorsDisplay = append(monitorsDisplay, client.DisplayMonitor{
 				Id:            monitor.Id,
 				Name:          monitor.Name,
 				Family:        monitor.Family,
 				Url:           monitor.Url,
 				Method:        monitor.Method,
 				Timeout:       monitor.Timeout,
-				Updated_at:    monitor.Updated_at,
 				Status:        monitor.Status,
 				Response_time: monitor.Response_time,
+				Updated_at:    monitor.Updated_at,
 			})
 			monitorsDisplay[i].Id = monitor.Id
 		}
-		utils.PrintMultiRow(client.Monitor{}, monitorsDisplay)
+		utils.PrintMultiRow(client.DisplayMonitor{}, monitorsDisplay)
 	}
 }
 

@@ -27,6 +27,7 @@ func HandleGetMonitors(monitors *[]admin.Monitor, pretty *bool) {
 				Timeout:       monitor.Timeout,
 				Status:        monitor.Status,
 				Response_time: monitor.Response_time,
+				User_id:       monitor.User_id,
 				Updated_at:    monitor.Updated_at,
 			})
 			monitorsDisplay[i].Id = monitor.Id

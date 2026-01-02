@@ -495,6 +495,18 @@ type Header struct {
 	Value string `json:"value"`
 }
 
+type DisplayMonitor struct {
+	Id            string `json:"id"`
+	Name          string `json:"name"`
+	Family        string `json:"family"`
+	Url           string `json:"url"`
+	Method        string `json:"method"`
+	Timeout       int    `json:"timeout"`
+	Status        string `json:"status"`
+	Response_time string `json:"response_time"`
+	Updated_at    string `json:"updated_at"`
+}
+
 type Monitor struct {
 	Id                 string             `json:"id"`
 	Type               string             `json:"type"`
