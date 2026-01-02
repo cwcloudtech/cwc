@@ -79,7 +79,7 @@ func (c *Client) UpdateFormById(formId string, form ContactForm) (*ContactForm, 
 }
 
 func (c *Client) DeleteFormById(formId string) error {
-	_, err := c.httpRequest(fmt.Sprintf("/contactForm/%s", formId), "DELETE", bytes.Buffer{})
+	_, err := c.httpRequest(fmt.Sprintf("/contactform/%s", formId), "DELETE", bytes.Buffer{})
 	if nil != err {
 		return err
 	}
