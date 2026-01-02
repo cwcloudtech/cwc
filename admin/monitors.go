@@ -22,8 +22,8 @@ func (c *Client) GetAllMonitors() (*[]Monitor, error) {
 	return &response, nil
 }
 
-func (c *Client) GetMonitorById(monitor_id string) (*Monitor, error) {
-	body, err := c.httpRequest(fmt.Sprintf("/admin/monitor/%s", monitor_id), "GET", bytes.Buffer{})
+func (c *Client) GetMonitorById(monitorId string) (*Monitor, error) {
+	body, err := c.httpRequest(fmt.Sprintf("/admin/monitor/%s", monitorId), "GET", bytes.Buffer{})
 	if nil != err {
 		return nil, err
 	}
