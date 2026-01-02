@@ -23,18 +23,18 @@ This command takes no arguments`,
 		c, err := client.NewClient()
 		utils.ExitIfError(err)
 		if utils.IsBlank(formId) {
-			monitors, err := c.GetAllMonitors()
+			forms, err := c.GetAllForms()
 			utils.ExitIfError(err)
-			user.HandleGetMonitors(monitors, &pretty)
+			user.HandleGetForms(forms, &pretty)
 		} else {
-			monitor, err := c.GetMonitorById(*&monitorId)
+			form, err := c.GetFormById(*&formId)
 			utils.ExitIfError(err)
-			user.HandleGetMonitor(monitor, &pretty)
+			user.HandleGetForm(form, &pretty)
 		}
 	},
 }
 
 func init() {
-	LsCmd.Flags().StringVarP(&monitorId, "monitor", "m", "", "The monitor id")
+	LsCmd.Flags().StringVarP(&formId, "form", "f", "", "The form id")
 	LsCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty print the output (optional)")
 }
