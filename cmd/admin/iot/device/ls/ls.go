@@ -16,7 +16,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available devices",
-	Long: `This command lets you list your available devices in the cloud
+	Long: `This command lets you list your available devices with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := adminClient.NewClient()

@@ -16,8 +16,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a deployment in the cloud",
-	Long:  "This command lets you create a deployment in the cloud.",
+	Short: "Create a deployment with cwcloud",
+	Long:  "This command lets you create a deployment with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		created_deployment, err := user.PrepareAddDeployment(&deployment)
 		utils.ExitIfError(err)

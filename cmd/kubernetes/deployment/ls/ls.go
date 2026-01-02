@@ -4,6 +4,7 @@ import (
 	"cwc/client"
 	"cwc/handlers/user"
 	"cwc/utils"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ var pretty bool
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available deployments",
-	Long:  `This command lets you list your available deployments in the cloud`,
+	Long:  `This command lets you list your available deployments with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := client.NewClient()
 		utils.ExitIfError(err)

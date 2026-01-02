@@ -1,9 +1,9 @@
 package invocation
 
 import (
-	"cwc/cmd/faas/invocation/ls"
-	"cwc/cmd/faas/invocation/delete"
 	"cwc/cmd/faas/invocation/create"
+	"cwc/cmd/faas/invocation/delete"
+	"cwc/cmd/faas/invocation/ls"
 	"cwc/cmd/faas/invocation/truncate"
 
 	"github.com/spf13/cobra"
@@ -11,8 +11,8 @@ import (
 
 var InvocationCmd = &cobra.Command{
 	Use:   "invocation",
-	Short: "Manage your invocations in the cloud",
-	Long: `This command lets you manage your invocations in the cloud.
+	Short: "Manage your invocations with cwcloud",
+	Long: `This command lets you manage your invocations with cwcloud.
 Several actions are associated with this command such as update a invocation, deleting a invocation
 and listing your available invocations`,
 

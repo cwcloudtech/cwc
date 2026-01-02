@@ -13,7 +13,7 @@ var pretty bool = false
 var TriggerKindsCmd = &cobra.Command{
 	Use:   "kinds",
 	Short: "List available trigger kinds",
-	Long:  `This command lets you list your available trigger kinds in the cloud`,
+	Long:  `This command lets you list your available trigger kinds with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		triggerKinds, err := client.GetTriggerKinds()
 		utils.ExitIfError(err)

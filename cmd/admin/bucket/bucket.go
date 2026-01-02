@@ -13,8 +13,8 @@ import (
 // bucketCmd represents the bucket command
 var BucketCmd = &cobra.Command{
 	Use:   "bucket",
-	Short: "Manage your S3 buckets in the cloud",
-	Long: `This command lets you manage your S3 buckets in the cloud.
+	Short: "Manage your S3 buckets with cwcloud",
+	Long: `This command lets you manage your S3 buckets with cwcloud.
 Several actions are associated with this command such as update a bucket, deleting a bucket
 and listing your available buckets`,
 	Run: func(cmd *cobra.Command, args []string) {

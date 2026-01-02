@@ -17,7 +17,7 @@ var (
 var LsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List available registries",
-	Long: `This command lets you list your available registries in the cloud
+	Long: `This command lets you list your available registries with cwcloud
 This command takes no arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := client.NewClient()

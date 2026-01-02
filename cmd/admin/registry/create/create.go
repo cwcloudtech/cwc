@@ -16,8 +16,8 @@ var (
 // createCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a registry in the cloud",
-	Long:  `This command lets you create a registry in the cloud`,
+	Short: "Create a registry with cwcloud",
+	Long:  `This command lets you create a registry with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		admin.HandleAddRegistry(&user_email, &name, &reg_type)
 	},
@@ -25,7 +25,7 @@ var CreateCmd = &cobra.Command{
 
 func init() {
 	CreateCmd.Flags().StringVarP(&name, "name", "n", "", "The registry name")
-	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associeted with the project")
+	CreateCmd.Flags().StringVarP(&user_email, "user", "u", "", "user associated with the project")
 	CreateCmd.Flags().StringVarP(&reg_type, "type", "t", "", "The registry type (private/public-read)")
 
 	err := CreateCmd.MarkFlagRequired("name")

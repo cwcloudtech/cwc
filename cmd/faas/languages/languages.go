@@ -13,7 +13,7 @@ var pretty bool = false
 var LanguagesCmd = &cobra.Command{
 	Use:   "languages",
 	Short: "List available languages",
-	Long:  `This command lets you list your available languages in the cloud`,
+	Long:  `This command lets you list your available languages with cwcloud`,
 	Run: func(cmd *cobra.Command, args []string) {
 		languages, err := client.GetLanguages()
 		utils.ExitIfError(err)

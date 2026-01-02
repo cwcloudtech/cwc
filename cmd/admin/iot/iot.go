@@ -10,8 +10,8 @@ import (
 
 var IotCmd = &cobra.Command{
 	Use:   "iot",
-	Short: "Manage your internet of things in the cloud",
-	Long: `This command lets you manage your internet of things in the cloud.
+	Short: "Manage your internet of things with cwcloud",
+	Long: `This command lets you manage your internet of things with cwcloud.
 Several actions are associated with this command such as managing your object types`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()

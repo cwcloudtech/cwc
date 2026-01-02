@@ -6,6 +6,7 @@ import (
 	"cwc/utils"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -16,22 +17,23 @@ func HandleGetMonitors(monitors *[]admin.Monitor, pretty *bool) {
 	} else if config.GetDefaultFormat() == "json" {
 		utils.PrintJson(monitors)
 	} else {
-		var monitorsDisplay []admin.Monitor
+		var monitorsDisplay []admin.DisplayMonitor
 		for i, monitor := range *monitors {
-			monitorsDisplay = append(monitorsDisplay, admin.Monitor{
+			monitorsDisplay = append(monitorsDisplay, admin.DisplayMonitor{
 				Id:            monitor.Id,
 				Name:          monitor.Name,
 				Family:        monitor.Family,
 				Url:           monitor.Url,
 				Method:        monitor.Method,
 				Timeout:       monitor.Timeout,
-				Updated_at:    monitor.Updated_at,
 				Status:        monitor.Status,
 				Response_time: monitor.Response_time,
+				User_id:       monitor.User_id,
+				Updated_at:    monitor.Updated_at,
 			})
 			monitorsDisplay[i].Id = monitor.Id
 		}
-		utils.PrintMultiRow(admin.Monitor{}, monitorsDisplay)
+		utils.PrintMultiRow(admin.DisplayMonitor{}, monitorsDisplay)
 	}
 }
 
@@ -186,7 +188,7 @@ func HandleDeleteMonitor(monitorId *string) {
 
 func displayMonitorsAsTable(monitors []admin.Monitor) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Name", "Family", "Method", "Url", "Updated_at", "Status", "Response_time"})
+	table.SetHeader([]string{"Id", "Name", "Family", "Method", "Url", "Status", "Response_time", "User_id", "Updated_at"})
 
 	if len(monitors) == 0 {
 		table.Append([]string{"No monitors available", "404", "404", "404", "404", "404", "404", "404"})
@@ -198,9 +200,10 @@ func displayMonitorsAsTable(monitors []admin.Monitor) {
 				monitor.Family,
 				monitor.Method,
 				monitor.Url,
-				monitor.Updated_at,
 				monitor.Status,
 				monitor.Response_time,
+				strconv.Itoa(monitor.User_id),
+				monitor.Updated_at,
 			})
 		}
 		table.Render()

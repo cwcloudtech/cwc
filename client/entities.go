@@ -495,6 +495,18 @@ type Header struct {
 	Value string `json:"value"`
 }
 
+type DisplayMonitor struct {
+	Id            string `json:"id"`
+	Name          string `json:"name"`
+	Family        string `json:"family"`
+	Url           string `json:"url"`
+	Method        string `json:"method"`
+	Timeout       int    `json:"timeout"`
+	Status        string `json:"status"`
+	Response_time string `json:"response_time"`
+	Updated_at    string `json:"updated_at"`
+}
+
 type Monitor struct {
 	Id                 string             `json:"id"`
 	Type               string             `json:"type"`
@@ -517,6 +529,27 @@ type Monitor struct {
 	Level              string             `json:"level"`
 	Updated_at         string             `json:"updated_at"`
 	Hash               string             `json:"hash"`
+}
+
+type DisplayContactForm struct {
+	Id         string `json:"id"`
+	Name       string `json:"name"`
+	MailFrom   string `json:"mail_from"`
+	MailTo     string `json:"mail_to"`
+	Updated_at string `json:"updated_at"`
+}
+
+type ContactForm struct {
+	Id            string `json:"id"`
+	Name          string `json:"name"`
+	Hash          string `json:"hash"`
+	UserId        int    `json:"user_id"`
+	MailFrom      string `json:"mail_from"`
+	MailTo        string `json:"mail_to"`
+	CopyrightName string `json:"copyright_name"`
+	LogoUrl       string `json:"logo_url"`
+	CreatedAt     string `json:"created_at"`
+	Updated_at    string `json:"updated_at"`
 }
 
 type PromptList struct {

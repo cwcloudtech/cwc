@@ -3,8 +3,9 @@ package create
 import (
 	"cwc/client"
 	"cwc/handlers/user"
-	"fmt"
 	"cwc/utils"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +19,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create an invocation in the cloud",
-	Long:  "This command lets you create an invocation in the cloud.",
+	Short: "Create an invocation with cwcloud",
+	Long:  "This command lets you create an invocation with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		created_invocation, err := user.PrepareAddInvocation(&content, &argumentsValues, &interactive, &synchronous)
 		utils.ExitIfError(err)

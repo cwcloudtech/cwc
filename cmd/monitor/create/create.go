@@ -19,8 +19,8 @@ var (
 
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a monitor in the cloud",
-	Long:  "This command lets you create a monitor in the cloud.",
+	Short: "Create a monitor with cwcloud",
+	Long:  "This command lets you create a monitor with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if rawHeaders != "" {
 			headers, err := parseHeaders(rawHeaders)
