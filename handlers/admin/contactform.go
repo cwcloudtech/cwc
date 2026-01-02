@@ -22,7 +22,6 @@ func HandleGetForms(forms *[]admin.ContactForm, pretty *bool) {
 			formsDisplay = append(formsDisplay, admin.ContactForm{
 				Id:         form.Id,
 				Name:       form.Name,
-				Hash:       form.Hash,
 				MailFrom:   form.MailFrom,
 				MailTo:     form.MailTo,
 				UserId:     form.UserId,
@@ -118,7 +117,7 @@ func HandleDeleteForm(formId *string) {
 
 func displayFormsAsTable(forms []admin.ContactForm) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Name", "Hash", "MailFrom", "MailTo", "UserId", "Updated_at"})
+	table.SetHeader([]string{"Id", "Name", "MailFrom", "MailTo", "UserId", "Updated_at"})
 
 	if len(forms) == 0 {
 		table.Append([]string{"No contact forms available", "404", "404", "404", "404", "404", "404"})
@@ -127,7 +126,6 @@ func displayFormsAsTable(forms []admin.ContactForm) {
 			table.Append([]string{
 				form.Id,
 				form.Name,
-				form.Hash,
 				form.MailFrom,
 				form.MailTo,
 				strconv.Itoa(form.UserId),
