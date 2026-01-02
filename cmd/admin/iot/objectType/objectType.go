@@ -12,7 +12,7 @@ import (
 var ObjectTypeCmd = &cobra.Command{
 	Use:   "objectType",
 	Short: "Manage your object types with cwcloud",
-	Long: `This command lets you Manage your object types with cwcloud.
+	Long: `This command lets you manage your object types with cwcloud.
 Several actions are associated with this command such as creating an object type`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()

@@ -10,7 +10,7 @@ import (
 var ClusterCmd = &cobra.Command{
 	Use:   "cluster",
 	Short: "Manage your kubernetes clusters with cwcloud",
-	Long: `This command lets you Manage your kubernetes clusters with cwcloud.
+	Long: `This command lets you manage your kubernetes clusters with cwcloud.
 Several actions are associated with this command such listing your available clusters`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()

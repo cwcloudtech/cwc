@@ -10,7 +10,7 @@ import (
 var KubernetesCmd = &cobra.Command{
 	Use:   "kubernetes",
 	Short: "Manage your kubernetes environments with cwcloud",
-	Long: `This command lets you Manage your kubernetes environments with cwcloud.
+	Long: `This command lets you manage your kubernetes environments with cwcloud.
 Several actions are associated with this command such listing your available environments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
