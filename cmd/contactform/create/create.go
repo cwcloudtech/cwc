@@ -10,10 +10,8 @@ import (
 )
 
 var (
-	form         client.ContactForm
-	pretty       bool = false
-	rawHeaders   string
-	rawCallbacks string
+	form   client.ContactForm
+	pretty bool = false
 )
 
 var CreateCmd = &cobra.Command{

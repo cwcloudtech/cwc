@@ -9,10 +9,8 @@ import (
 )
 
 var (
-	formId       string
-	form         client.ContactForm
-	rawHeaders   string
-	rawCallbacks string
+	formId string
+	form   client.ContactForm
 )
 
 var UpdateCmd = &cobra.Command{
