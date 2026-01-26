@@ -29,6 +29,7 @@ func init() {
 	UpdateCmd.Flags().StringVarP(&form.MailTo, "to", "t", "", "Recipient of the contact form")
 	UpdateCmd.Flags().StringVarP(&form.CopyrightName, "copyright", "c", "", "Copyright name of the contact form")
 	UpdateCmd.Flags().StringVarP(&form.LogoUrl, "logo_url", "l", "", "Logo URL of the contact form")
+	UpdateCmd.Flags().StringVarP(&form.TrustedIps, "trusted_ips", "t", "", "Trusted ips for the contact form")
 	UpdateCmd.Flags().IntVarP(&form.UserId, "user_id", "I", 0, "User ID")
 
 	err := UpdateCmd.MarkFlagRequired("id")
