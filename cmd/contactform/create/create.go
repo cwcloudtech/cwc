@@ -31,6 +31,7 @@ func init() {
 	CreateCmd.Flags().StringVarP(&form.MailTo, "to", "t", "", "Recipient of the contact form")
 	CreateCmd.Flags().StringVarP(&form.CopyrightName, "copyright", "c", "", "Copyright name of the contact form")
 	CreateCmd.Flags().StringVarP(&form.LogoUrl, "logo_url", "l", "", "Logo URL of the contact form")
+	CreateCmd.Flags().StringVarP(&form.TrustedIps, "trusted_ips", "t", "", "Trusted ips for the contact form")
 
 	err := CreateCmd.MarkFlagRequired("name")
 	if nil != err {

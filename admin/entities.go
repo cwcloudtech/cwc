@@ -494,6 +494,7 @@ type ContactForm struct {
 	MailTo        string `json:"mail_to"`
 	CopyrightName string `json:"copyright_name"`
 	LogoUrl       string `json:"logo_url"`
+	TrustedIps    string `json:"trusted_ips"`
 	CreatedAt     string `json:"created_at"`
 	Updated_at    string `json:"updated_at"`
 }

@@ -24,12 +24,13 @@ To use this command you have to provide the contact form ID`,
 }
 
 func init() {
-	UpdateCmd.Flags().StringVarP(&formId, "id", "m", "", "The contact form ID")
+	UpdateCmd.Flags().StringVarP(&formId, "id", "i", "", "The contact form ID")
 	UpdateCmd.Flags().StringVarP(&form.Name, "name", "n", "", "Name of the contact form")
 	UpdateCmd.Flags().StringVarP(&form.MailFrom, "from", "f", "", "Expeditor of the contact form")
 	UpdateCmd.Flags().StringVarP(&form.MailTo, "to", "t", "", "Recipient of the contact form")
 	UpdateCmd.Flags().StringVarP(&form.CopyrightName, "copyright", "c", "", "Copyright name of the contact form")
 	UpdateCmd.Flags().StringVarP(&form.LogoUrl, "logo_url", "l", "", "Logo URL of the contact form")
+	UpdateCmd.Flags().StringVarP(&form.TrustedIps, "trusted_ips", "t", "", "Trusted ips for the contact form")
 
 	err := UpdateCmd.MarkFlagRequired("id")
 	if nil != err {
