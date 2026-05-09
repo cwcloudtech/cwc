@@ -48,6 +48,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
 		defaultModel = "gpt-4o-mini"
+		providerName = "openai"
 	}
 
 	if modelName == "" {
