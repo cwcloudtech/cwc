@@ -15,7 +15,6 @@ import (
 	"cwc/cmd/iot"
 	"cwc/cmd/kubernetes"
 	"cwc/cmd/login"
-	"cwc/cmd/mcp"
 	"cwc/cmd/monitor"
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
@@ -84,5 +83,4 @@ func init() {
 	rootCmd.AddCommand(monitor.MonitorCmd)
 	rootCmd.AddCommand(contactform.ContactFormCmd)
 	rootCmd.AddCommand(storage.StorageCmd)
-	rootCmd.AddCommand(mcp.McpCmd)
 }

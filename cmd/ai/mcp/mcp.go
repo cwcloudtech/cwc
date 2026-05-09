@@ -1,4 +1,4 @@
-package start
+package mcp
 
 import (
 	"fmt"
@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	port     int
-	endpoint string
+	port       int
+	endpoint   string
 	listenAddr string
 )
 
@@ -22,9 +22,9 @@ type runCwcCommandArgs struct {
 	Args    []string `json:"args" jsonschema:"description=Additional command arguments and flags"`
 }
 
-// StartCmd runs a stateless MCP HTTP server.
-var StartCmd = &cobra.Command{
-	Use:   "start",
+// McpCmd represents the MCP command group under ai.
+var McpCmd = &cobra.Command{
+	Use:   "mcp",
 	Short: "Start the cwc MCP server",
 	Long:  "Start the cwc MCP server",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -47,8 +47,8 @@ var StartCmd = &cobra.Command{
 					return nil, fmt.Errorf("command is required")
 				}
 
-				if commandName == "mcp" && len(arguments.Args) > 0 && arguments.Args[0] == "start" {
-					return nil, fmt.Errorf("running mcp start from the MCP tool is blocked")
+				if commandName == "ai" && len(arguments.Args) > 0 && arguments.Args[0] == "mcp" {
+					return nil, fmt.Errorf("running ai mcp from the MCP tool is blocked")
 				}
 
 				cliArgs := append([]string{commandName}, arguments.Args...)
@@ -84,7 +84,8 @@ var StartCmd = &cobra.Command{
 }
 
 func init() {
-	StartCmd.Flags().StringVarP(&listenAddr, "listen", "l", "127.0.0.1", "MCP server listen address")
-	StartCmd.Flags().IntVarP(&port, "port", "p", 8080, "MCP server port")
-	StartCmd.Flags().StringVarP(&endpoint, "endpoint", "e", "/mcp", "MCP HTTP endpoint path")
+	McpCmd.DisableFlagsInUseLine = true
+	McpCmd.Flags().StringVarP(&listenAddr, "listen", "l", "127.0.0.1", "MCP server listen address")
+	McpCmd.Flags().IntVarP(&port, "port", "p", 8080, "MCP server port")
+	McpCmd.Flags().StringVarP(&endpoint, "endpoint", "e", "/mcp", "MCP HTTP endpoint path")
 }
