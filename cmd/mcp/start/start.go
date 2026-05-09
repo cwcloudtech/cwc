@@ -14,6 +14,7 @@ import (
 var (
 	port     int
 	endpoint string
+	listenAddr string
 )
 
 type runCwcCommandArgs struct {
@@ -27,7 +28,7 @@ var StartCmd = &cobra.Command{
 	Short: "Start the cwc MCP server",
 	Long:  "Start the cwc MCP server",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := fmt.Sprintf(":%d", port)
+		addr := fmt.Sprintf("%s:%d", listenAddr, port)
 		transport := mcp_http_transport.NewHTTPTransport(endpoint).WithAddr(addr)
 
 		server := mcp_golang.NewServer(
@@ -77,12 +78,13 @@ var StartCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("Starting cwc MCP server on %s%s\n", addr, endpoint)
+		fmt.Printf("Starting cwc MCP server on http://%s%s\n", addr, endpoint)
 		return server.Serve()
 	},
 }
 
 func init() {
+	StartCmd.Flags().StringVarP(&listenAddr, "listen", "l", "127.0.0.1", "MCP server listen address")
 	StartCmd.Flags().IntVarP(&port, "port", "p", 8080, "MCP server port")
-	StartCmd.Flags().StringVar(&endpoint, "endpoint", "/mcp", "MCP HTTP endpoint path")
+	StartCmd.Flags().StringVarP(&endpoint, "endpoint", "e", "", "MCP HTTP endpoint path")
 }
