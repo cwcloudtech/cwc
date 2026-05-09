@@ -2,6 +2,8 @@ package ai
 
 import (
 	"cwc/cmd/ai/adapter"
+	"cwc/cmd/ai/agent"
+	"cwc/cmd/ai/mcp"
 	"cwc/cmd/ai/prompt"
 
 	"github.com/spf13/cobra"
@@ -19,5 +21,7 @@ var AiCmd = &cobra.Command{
 func init() {
 	AiCmd.DisableFlagsInUseLine = true
 	AiCmd.AddCommand(adapter.AdapterCmd)
+	AiCmd.AddCommand(agent.AgentCmd)
+	AiCmd.AddCommand(mcp.McpCmd)
 	AiCmd.AddCommand(prompt.PromptCmd)
 }
