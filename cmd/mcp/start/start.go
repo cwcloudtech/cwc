@@ -86,5 +86,5 @@ var StartCmd = &cobra.Command{
 func init() {
 	StartCmd.Flags().StringVarP(&listenAddr, "listen", "l", "127.0.0.1", "MCP server listen address")
 	StartCmd.Flags().IntVarP(&port, "port", "p", 8080, "MCP server port")
-	StartCmd.Flags().StringVarP(&endpoint, "endpoint", "e", "", "MCP HTTP endpoint path")
+	StartCmd.Flags().StringVarP(&endpoint, "endpoint", "e", "/mcp", "MCP HTTP endpoint path")
 }
