@@ -1,7 +1,7 @@
 package mcp
 
 import (
-	"cwc/cmd/mcp/start"
+	"cwc/cmd/ai/mcp/start"
 
 	"github.com/spf13/cobra"
 )

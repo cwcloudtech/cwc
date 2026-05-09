@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	port     int
-	endpoint string
+	port       int
+	endpoint   string
 	listenAddr string
 )
 

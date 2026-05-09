@@ -1,4 +1,4 @@
-package prompt
+package agent
 
 import (
 	"bytes"
@@ -17,14 +17,14 @@ import (
 
 // LLMAgent represents an LLM that can call MCP server tools
 type LLMAgent struct {
-	serverURL      string
-	modelName      string
-	provider       string
-	client         *mcp_golang.Client
-	httpClient     *http.Client
+	serverURL       string
+	modelName       string
+	provider        string
+	client          *mcp_golang.Client
+	httpClient      *http.Client
 	anthropicAPIKey string
-	openAIAPIKey   string
-	openAIBaseURL  string
+	openAIAPIKey    string
+	openAIBaseURL   string
 }
 
 // NewLLMAgent creates a new LLM agent connected to an MCP server
@@ -60,16 +60,16 @@ func firstNonEmpty(values ...string) string {
 
 // ClaudeMessage represents a message in Claude API format
 type ClaudeMessage struct {
-	Role    string        `json:"role"`
-	Content string        `json:"content"`
+	Role    string `json:"role"`
+	Content string `json:"content"`
 }
 
 // ClaudeRequest represents a request to Claude API
 type ClaudeRequest struct {
-	Model     string           `json:"model"`
-	MaxTokens int              `json:"max_tokens"`
-	Messages  []ClaudeMessage  `json:"messages"`
-	Tools     []ClaudeTool     `json:"tools,omitempty"`
+	Model     string          `json:"model"`
+	MaxTokens int             `json:"max_tokens"`
+	Messages  []ClaudeMessage `json:"messages"`
+	Tools     []ClaudeTool    `json:"tools,omitempty"`
 }
 
 // ClaudeTool represents a tool definition for Claude
@@ -87,11 +87,11 @@ type ClaudeResponse struct {
 
 // ContentBlock represents a block in Claude's response
 type ContentBlock struct {
-	Type      string      `json:"type"`
-	Text      string      `json:"text,omitempty"`
-	ID        string      `json:"id,omitempty"`
-	Name      string      `json:"name,omitempty"`
-	Input     interface{} `json:"input,omitempty"`
+	Type  string      `json:"type"`
+	Text  string      `json:"text,omitempty"`
+	ID    string      `json:"id,omitempty"`
+	Name  string      `json:"name,omitempty"`
+	Input interface{} `json:"input,omitempty"`
 }
 
 // ErrorInfo represents error information
@@ -143,7 +143,7 @@ type OpenAIChatCompletionResponse struct {
 	Error *ErrorInfo `json:"error,omitempty"`
 }
 
-// ProcessPrompt processes a prompt using Claude LLM with MCP server tools
+// ProcessPrompt processes a prompt using the configured LLM with MCP server tools
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	ctx := context.Background()
 
