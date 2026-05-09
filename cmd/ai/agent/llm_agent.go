@@ -37,12 +37,10 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		switch providerName {
 		case "openrouter":
 			modelName = "meta-llama/llama-3.3-8b-instruct:free"
-		case "openai":
-			modelName = "gpt-4o-mini"
 		case "anthropic":
 			modelName = "claude-3-5-haiku-20241022"
 		default:
-			modelName = "meta-llama/llama-3.3-8b-instruct:free"
+			modelName = "gpt-4o-mini"
 		}
 	}
 	
