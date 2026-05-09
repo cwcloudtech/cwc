@@ -25,7 +25,7 @@ type LLMAgent struct {
 	anthropicAPIKey string
 	openAIAPIKey    string
 	openRouterAPIKey string
-	openAIBaseURL   string
+	providerBaseUrl  string
 }
 
 // NewLLMAgent creates a new LLM agent connected to an MCP server
@@ -38,6 +38,11 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(os.Getenv("OPENROUTER_BASE_URL"))
 		if baseURL == "" {
 			baseURL = "https://openrouter.ai/api/v1"
+		}
+	case "anthropic":
+		baseURL = strings.TrimSpace(os.Getenv("ANTHROPIC_BASE_URL"))
+		if baseURL == "" {
+			baseURL = "https://api.anthropic.com/v1"
 		}
 	default:
 		baseURL = strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
@@ -54,7 +59,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		anthropicAPIKey:  strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
 		openAIAPIKey:     strings.TrimSpace(os.Getenv("OPENAI_API_KEY")),
 		openRouterAPIKey: strings.TrimSpace(os.Getenv("OPENROUTER_API_KEY")),
-		openAIBaseURL:    strings.TrimRight(baseURL, "/"),
+		providerBaseUrl:  strings.TrimRight(baseURL, "/"),
 	}
 }
 
@@ -336,7 +341,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 		return nil, fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", "https://api.anthropic.com/v1/messages", bytes.NewReader(reqBody))
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", agent.providerBaseUrl + "/messages", bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -382,7 +387,7 @@ func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionR
 		return nil, fmt.Errorf("failed to marshal OpenAI request: %w", err)
 	}
 
-	endpoint := agent.openAIBaseURL + "/chat/completions"
+	endpoint := agent.providerBaseUrl + "/chat/completions"
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create OpenAI request: %w", err)
