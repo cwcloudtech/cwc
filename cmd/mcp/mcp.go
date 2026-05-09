@@ -1,6 +1,7 @@
 package mcp
 
 import (
+	"cwc/cmd/mcp/prompt"
 	"cwc/cmd/mcp/start"
 
 	"github.com/spf13/cobra"
@@ -19,4 +20,5 @@ var McpCmd = &cobra.Command{
 func init() {
 	McpCmd.DisableFlagsInUseLine = true
 	McpCmd.AddCommand(start.StartCmd)
+	McpCmd.AddCommand(prompt.PromptCmd)
 }
