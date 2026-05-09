@@ -38,6 +38,6 @@ func init() {
 	AgentCmd.Flags().StringVarP(&promptText, "prompt", "p", "", "The prompt to send to the LLM")
 	AgentCmd.Flags().StringVarP(&serverURL, "server", "s", "http://127.0.0.1:8080/mcp", "The MCP server URL")
 	AgentCmd.Flags().StringVarP(&modelName, "model", "m", "", "The LLM model to use (default: llama for openrouter, gpt-4o-mini for openai, claude-3-5-haiku for anthropic)")
-	AgentCmd.Flags().StringVar(&provider, "provider", "openrouter", "LLM provider: openrouter, openai or anthropic")
+	AgentCmd.Flags().StringVar(&provider, "provider", "openai", "LLM provider: openrouter, openai or anthropic")
 	AgentCmd.MarkFlagRequired("prompt")
 }
