@@ -84,7 +84,6 @@ type ClaudeRequest struct {
 	MaxTokens int             `json:"max_tokens"`
 	Messages  []ClaudeMessage `json:"messages"`
 	Tools     []ClaudeTool    `json:"tools,omitempty"`
-	ToolChoice interface{}    `json:"tool_choice,omitempty"`
 }
 
 // ClaudeTool represents a tool definition for Claude
@@ -148,7 +147,7 @@ type OpenAIChatCompletionRequest struct {
 	Model      string          `json:"model"`
 	Messages   []OpenAIMessage `json:"messages"`
 	Tools      []OpenAITool    `json:"tools,omitempty"`
-	ToolChoice interface{}     `json:"tool_choice,omitempty"`
+	ToolChoice string          `json:"tool_choice,omitempty"`
 }
 
 type OpenAIChatCompletionResponse struct {
@@ -193,13 +192,11 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			"type":       "object",
 			"properties": map[string]interface{}{},
 		}
-		
 		if tool.InputSchema != nil {
 			if typedSchema, ok := tool.InputSchema.(map[string]interface{}); ok {
 				inputSchema = typedSchema
 			}
 		}
-
 		if tool.Name == "run_cwc_command" && dynamicRunCmdSchema != nil {
 			inputSchema = dynamicRunCmdSchema
 		}
@@ -220,14 +217,13 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		})
 	}
 
-	preferredToolName := selectPreferredMCPTool(prompt, openAITools)
 	openAITools = selectOpenAIToolsForPrompt(prompt, openAITools, 128)
 
 	modelText := ""
 	if agent.provider == "anthropic" {
-		modelText, err = agent.runAnthropic(ctx, prompt, claudeTools, preferredToolName)
+		modelText, err = agent.runAnthropic(ctx, prompt, claudeTools)
 	} else {
-		modelText, err = agent.runOpenAI(ctx, prompt, openAITools, preferredToolName)
+		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
 	}
 	if err == nil && strings.TrimSpace(modelText) != "" {
 		return modelText, nil
@@ -397,73 +393,6 @@ func selectOpenAIToolsForPrompt(prompt string, tools []OpenAITool, maxTools int)
 	return selected
 }
 
-func selectPreferredMCPTool(prompt string, tools []OpenAITool) string {
-	if len(tools) == 0 {
-		return ""
-	}
-
-	normalizedPrompt := strings.ToLower(prompt)
-	replacer := strings.NewReplacer("-", " ", "_", " ", "/", " ", ",", " ", ".", " ", ":", " ", ";", " ")
-	normalizedPrompt = replacer.Replace(normalizedPrompt)
-	promptTokens := map[string]bool{}
-	for _, part := range strings.Fields(normalizedPrompt) {
-		if len(part) >= 2 {
-			promptTokens[part] = true
-		}
-	}
-
-	type scoredTool struct {
-		name  string
-		score int
-	}
-
-	scored := make([]scoredTool, 0, len(tools))
-	for _, tool := range tools {
-		if tool.Function.Name == "run_cwc_command" || tool.Function.Name == "list_cwc_commands" || tool.Function.Name == "get_cwc_command_help" {
-			continue
-		}
-
-		name := strings.ToLower(tool.Function.Name)
-		desc := strings.ToLower(tool.Function.Description)
-		score := 0
-
-		nameForTokens := replacer.Replace(name)
-		for _, token := range strings.Fields(nameForTokens) {
-			if promptTokens[token] {
-				score += 12
-			}
-		}
-
-		for token := range promptTokens {
-			if strings.Contains(name, token) {
-				score += 8
-			}
-			if token != "" && strings.Contains(desc, token) {
-				score += 3
-			}
-		}
-
-		scored = append(scored, scoredTool{name: tool.Function.Name, score: score})
-	}
-
-	if len(scored) == 0 {
-		return ""
-	}
-
-	sort.SliceStable(scored, func(i, j int) bool {
-		if scored[i].score == scored[j].score {
-			return scored[i].name < scored[j].name
-		}
-		return scored[i].score > scored[j].score
-	})
-
-	if scored[0].score < 10 {
-		return ""
-	}
-
-	return scored[0].name
-}
-
 func (agent *LLMAgent) hasProviderCredentials() bool {
 	if agent.provider == "anthropic" {
 		return strings.TrimSpace(agent.anthropicAPIKey) != ""
@@ -474,7 +403,7 @@ func (agent *LLMAgent) hasProviderCredentials() bool {
 	return strings.TrimSpace(agent.openAIAPIKey) != ""
 }
 
-func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool, preferredToolName string) (string, error) {
+func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool) (string, error) {
 	claudeReq := ClaudeRequest{
 		Model:     agent.modelName,
 		MaxTokens: 1024,
@@ -485,12 +414,6 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTo
 				Content: prompt,
 			},
 		},
-	}
-	if preferredToolName != "" {
-		claudeReq.ToolChoice = map[string]interface{}{
-			"type": "tool",
-			"name": preferredToolName,
-		}
 	}
 
 	response, err := agent.callClaude(ctx, claudeReq)
@@ -521,23 +444,14 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTo
 	return "", nil
 }
 
-func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools []OpenAITool, preferredToolName string) (string, error) {
+func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools []OpenAITool) (string, error) {
 	req := OpenAIChatCompletionRequest{
 		Model:    agent.modelName,
 		Messages: []OpenAIMessage{{Role: "user", Content: prompt}},
 	}
 	if len(openAITools) > 0 {
 		req.Tools = openAITools
-		if preferredToolName != "" {
-			req.ToolChoice = map[string]interface{}{
-				"type": "function",
-				"function": map[string]string{
-					"name": preferredToolName,
-				},
-			}
-		} else {
-			req.ToolChoice = "auto"
-		}
+		req.ToolChoice = "auto"
 	}
 
 	resp, err := agent.callOpenAI(ctx, req)
