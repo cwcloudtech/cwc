@@ -31,6 +31,21 @@ type LLMAgent struct {
 // NewLLMAgent creates a new LLM agent connected to an MCP server
 func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
 	providerName := strings.ToLower(strings.TrimSpace(provider))
+	
+	// Set default model based on provider if not specified
+	if strings.TrimSpace(modelName) == "" {
+		switch providerName {
+		case "openrouter":
+			modelName = "meta-llama/llama-3.3-8b-instruct:free"
+		case "openai":
+			modelName = "gpt-4o-mini"
+		case "anthropic":
+			modelName = "claude-3-5-haiku-20241022"
+		default:
+			modelName = "meta-llama/llama-3.3-8b-instruct:free"
+		}
+	}
+	
 	baseURL := ""
 	tokenKey := ""
 	
