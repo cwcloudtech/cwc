@@ -23,9 +23,7 @@ type LLMAgent struct {
 	provider        string
 	client          *mcp_golang.Client
 	httpClient      *http.Client
-	anthropicAPIKey string
-	openAIAPIKey    string
-	openRouterAPIKey string
+	apiKey    string
 	providerBaseUrl  string
 }
 
@@ -33,31 +31,28 @@ type LLMAgent struct {
 func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
 	providerName := strings.ToLower(strings.TrimSpace(provider))
 	
-	// Set default model based on provider if not specified
-	if strings.TrimSpace(modelName) == "" {
-		switch providerName {
-		case "openrouter":
-			modelName = "meta-llama/llama-3.3-70b-instruct"
-		case "anthropic":
-			modelName = "claude-haiku-4-5"
-		default:
-			modelName = "gpt-4o-mini"
-		}
-	}
-	
 	baseURL := ""
-	tokenKey := ""
+	apiKey := ""
+	defaultModel := ""
 	
 	switch providerName {
 	case "openrouter":
-		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
-		tokenKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
+		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
+		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
+		defaultModel = "meta-llama/llama-3.3-70b-instruct"
 	case "anthropic":
 		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
-		tokenKey = strings.TrimSpace(config.GetAnthropicAPIKey())
+		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
+		defaultModel = "claude-haiku-4-5"
 	default:
-		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
-		tokenKey = strings.TrimSpace(config.GetOpenAIAPIKey())
+		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
+		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
+		defaultModel = "gpt-4o-mini"
+		providerName = "openai"
+	}
+
+	if modelName == "" {
+		modelName = defaultModel
 	}
 
 	return &LLMAgent{
@@ -65,9 +60,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		modelName:        modelName,
 		provider:         providerName,
 		httpClient:       &http.Client{},
-		anthropicAPIKey:  tokenKey,
-		openAIAPIKey:     tokenKey,
-		openRouterAPIKey: tokenKey,
+		apiKey:           apiKey,
 		providerBaseUrl:  strings.TrimRight(baseURL, "/"),
 	}
 }
@@ -414,13 +407,7 @@ func selectPreferredToolsForPrompt[T any](
 }
 
 func (agent *LLMAgent) hasProviderCredentials() bool {
-	if agent.provider == "anthropic" {
-		return strings.TrimSpace(agent.anthropicAPIKey) != ""
-	}
-	if agent.provider == "openrouter" {
-		return true
-	}
-	return strings.TrimSpace(agent.openAIAPIKey) != ""
+	return strings.TrimSpace(agent.apiKey) != ""
 }
 
 func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool) (string, error) {
@@ -523,7 +510,7 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 
 // callClaude calls the Claude API
 func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*ClaudeResponse, error) {
-	if agent.anthropicAPIKey == "" {
+	if agent.apiKey == "" {
 		return nil, fmt.Errorf("anthropic_api_key config is not set")
 	}
 
@@ -538,7 +525,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("x-api-key", agent.anthropicAPIKey)
+	httpReq.Header.Set("x-api-key", agent.apiKey)
 	httpReq.Header.Set("anthropic-version", "2023-06-01")
 
 	httpResp, err := agent.httpClient.Do(httpReq)
@@ -580,14 +567,12 @@ func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionR
 		return nil, fmt.Errorf("failed to create OpenAI request: %w", err)
 	}
 
-	httpReq.Header.Set("Content-Type", "application/json")
-	if agent.provider == "openrouter" && agent.openRouterAPIKey != "" {
-		httpReq.Header.Set("Authorization", "Bearer " + agent.openRouterAPIKey)
-	} else if agent.provider == "openai" && agent.openAIAPIKey != "" {
-		httpReq.Header.Set("Authorization", "Bearer " + agent.openAIAPIKey)
-	} else if agent.provider == "openai" {
-		return nil, fmt.Errorf("openai_api_key config is not set")
+	if agent.apiKey == "" {
+		return nil, fmt.Errorf("api key config is not set")
 	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Authorization", "Bearer " + agent.apiKey)
 
 	httpResp, err := agent.httpClient.Do(httpReq)
 	if err != nil {
