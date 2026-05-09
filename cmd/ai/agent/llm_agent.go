@@ -31,31 +31,27 @@ type LLMAgent struct {
 func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
 	providerName := strings.ToLower(strings.TrimSpace(provider))
 	
-	// Set default model based on provider if not specified
-	if strings.TrimSpace(modelName) == "" {
-		switch providerName {
-		case "openrouter":
-			modelName = "gpt-4o-mini"
-		case "anthropic":
-			modelName = "claude-haiku-4-5"
-		default:
-			modelName = "meta-llama/llama-3.3-70b-instruct"
-		}
-	}
-	
 	baseURL := ""
 	apiKey := ""
+	defaultModel := ""
 	
 	switch providerName {
 	case "openrouter":
 		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
+		defaultModel = "meta-llama/llama-3.3-70b-instruct"
 	case "anthropic":
 		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
 		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
+		defaultModel = "claude-haiku-4-5"
 	default:
 		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
+		defaultModel = "gpt-4o-mini"
+	}
+
+	if modelName == "" {
+		modelName = defaultModel
 	}
 
 	return &LLMAgent{
