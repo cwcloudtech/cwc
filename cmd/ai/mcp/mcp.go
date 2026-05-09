@@ -302,6 +302,7 @@ func discoverCWCCommands(executable string) ([]commandSpec, error) {
 	for key := range collected {
 		keys = append(keys, key)
 	}
+	
 	sort.Strings(keys)
 	for _, key := range keys {
 		result = append(result, collected[key])
@@ -323,17 +324,12 @@ func parseAvailableCommands(helpText string) []parsedCommand {
 
 	for _, line := range lines {
 		trim := strings.TrimSpace(line)
-		if strings.HasPrefix(trim, "Available Commands:") {
+		if strings.HasPrefix(trim, "Available Commands:") || !inAvailable {
 			inAvailable = true
 			continue
 		}
-		if !inAvailable {
-			continue
-		}
-		if trim == "" {
-			break
-		}
-		if strings.HasSuffix(trim, ":") {
+
+		if trim == "" || strings.HasSuffix(trim, ":") {
 			break
 		}
 
@@ -346,6 +342,7 @@ func parseAvailableCommands(helpText string) []parsedCommand {
 		if name == "help" {
 			continue
 		}
+
 		commands = append(commands, parsedCommand{Name: name, Description: strings.TrimSpace(matches[2])})
 	}
 
@@ -353,9 +350,7 @@ func parseAvailableCommands(helpText string) []parsedCommand {
 }
 
 func sanitizeToolName(value string) string {
-	value = strings.ToLower(strings.TrimSpace(value))
-	value = strings.ReplaceAll(value, "-", "_")
-	value = strings.ReplaceAll(value, " ", "_")
+	value = strings.ReplaceAll(strings.ReplaceAll(value, "-", "_"), " ", "_")
 
 	b := strings.Builder{}
 	for _, r := range value {
