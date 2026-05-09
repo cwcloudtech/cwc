@@ -176,11 +176,14 @@ type OpenAIChatCompletionResponse struct {
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	ctx := context.Background()
 
+	if !agent.hasProviderCredentials() {
+		return "", fmt.Errorf("LLM credentials are required for provider %s", agent.provider)
+	}
+
 	if err := agent.initializeMCPClient(ctx); err != nil {
 		return "", fmt.Errorf("failed to initialize MCP client: %w", err)
 	}
 
-	// Get available tools from the MCP server
 	toolsResp, err := agent.client.ListTools(ctx, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to list MCP tools: %w", err)
@@ -206,7 +209,6 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		"required": []string{"command"},
 	}
 
-	// Build Claude and OpenAI tool definitions from MCP tools
 	claudeTools := make([]ClaudeTool, 0, len(toolsResp.Tools))
 	openAITools := make([]OpenAITool, 0, len(toolsResp.Tools))
 	for _, tool := range toolsResp.Tools {
@@ -214,21 +216,21 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		if tool.Description != nil {
 			description = *tool.Description
 		}
-		claudeTool := ClaudeTool{
+
+		claudeTools = append(claudeTools, ClaudeTool{
 			Name:        tool.Name,
 			Description: description,
 			InputSchema: toolSchema,
-		}
-		openAITool := OpenAITool{
+		})
+
+		openAITools = append(openAITools, OpenAITool{
 			Type: "function",
 			Function: OpenAIFunctionTool{
 				Name:        tool.Name,
 				Description: description,
 				Parameters:  toolSchema,
 			},
-		}
-		claudeTools = append(claudeTools, claudeTool)
-		openAITools = append(openAITools, openAITool)
+		})
 	}
 
 	modelText := ""
@@ -301,10 +303,12 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTo
 
 func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools []OpenAITool) (string, error) {
 	req := OpenAIChatCompletionRequest{
-		Model:      agent.modelName,
-		Messages:   []OpenAIMessage{{Role: "user", Content: prompt}},
-		Tools:      openAITools,
-		ToolChoice: "auto",
+		Model:    agent.modelName,
+		Messages: []OpenAIMessage{{Role: "user", Content: prompt}},
+	}
+	if len(openAITools) > 0 {
+		req.Tools = openAITools
+		req.ToolChoice = "auto"
 	}
 
 	resp, err := agent.callOpenAI(ctx, req)
