@@ -16,6 +16,7 @@ var SetCmd = &cobra.Command{
 
 func init() {
 	SetCmd.DisableFlagsInUseLine = true
+	SetCmd.AddCommand(SetKeyCmd)
 	SetCmd.AddCommand(SetEndpointCmd)
 	SetCmd.AddCommand(SetProviderCmd)
 	SetCmd.AddCommand(SetFormatCmd)
