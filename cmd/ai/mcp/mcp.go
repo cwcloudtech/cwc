@@ -302,7 +302,7 @@ func discoverCWCCommands(executable string) ([]commandSpec, error) {
 	for key := range collected {
 		keys = append(keys, key)
 	}
-	
+
 	sort.Strings(keys)
 	for _, key := range keys {
 		result = append(result, collected[key])
@@ -324,12 +324,18 @@ func parseAvailableCommands(helpText string) []parsedCommand {
 
 	for _, line := range lines {
 		trim := strings.TrimSpace(line)
-		if strings.HasPrefix(trim, "Available Commands:") || !inAvailable {
-			inAvailable = true
+		if !inAvailable {
+			if strings.HasPrefix(trim, "Available Commands:") {
+				inAvailable = true
+			}
 			continue
 		}
 
-		if trim == "" || strings.HasSuffix(trim, ":") {
+		if trim == "" {
+			continue
+		}
+
+		if strings.HasSuffix(trim, ":") {
 			break
 		}
 
