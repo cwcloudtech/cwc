@@ -17,23 +17,45 @@ import (
 
 // LLMAgent represents an LLM that can call MCP server tools
 type LLMAgent struct {
-	serverURL  string
-	modelName  string
-	client     *mcp_golang.Client
-	httpClient *http.Client
-	apiKey     string
+	serverURL      string
+	modelName      string
+	provider       string
+	client         *mcp_golang.Client
+	httpClient     *http.Client
+	anthropicAPIKey string
+	openAIAPIKey   string
+	openAIBaseURL  string
 }
 
 // NewLLMAgent creates a new LLM agent connected to an MCP server
-func NewLLMAgent(serverURL string, modelName string) *LLMAgent {
-	apiKey := os.Getenv("ANTHROPIC_API_KEY")
-	
-	return &LLMAgent{
-		serverURL:  serverURL,
-		modelName:  modelName,
-		httpClient: &http.Client{},
-		apiKey:     apiKey,
+func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
+	baseURL := strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
+	if baseURL == "" {
+		if strings.Contains(modelName, ":free") {
+			baseURL = "https://openrouter.ai/api/v1"
+		} else {
+			baseURL = "https://api.openai.com/v1"
+		}
 	}
+
+	return &LLMAgent{
+		serverURL:       serverURL,
+		modelName:       modelName,
+		provider:        strings.ToLower(strings.TrimSpace(provider)),
+		httpClient:      &http.Client{},
+		anthropicAPIKey: strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
+		openAIAPIKey:    strings.TrimSpace(firstNonEmpty(os.Getenv("OPENAI_API_KEY"), os.Getenv("OPENROUTER_API_KEY"))),
+		openAIBaseURL:   strings.TrimRight(baseURL, "/"),
+	}
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if strings.TrimSpace(value) != "" {
+			return value
+		}
+	}
+	return ""
 }
 
 // ClaudeMessage represents a message in Claude API format
@@ -78,6 +100,49 @@ type ErrorInfo struct {
 	Message string `json:"message"`
 }
 
+type OpenAIMessage struct {
+	Role       string           `json:"role"`
+	Content    string           `json:"content,omitempty"`
+	ToolCalls  []OpenAIToolCall `json:"tool_calls,omitempty"`
+	ToolCallID string           `json:"tool_call_id,omitempty"`
+}
+
+type OpenAITool struct {
+	Type     string             `json:"type"`
+	Function OpenAIFunctionTool `json:"function"`
+}
+
+type OpenAIFunctionTool struct {
+	Name        string      `json:"name"`
+	Description string      `json:"description,omitempty"`
+	Parameters  interface{} `json:"parameters"`
+}
+
+type OpenAIToolCall struct {
+	ID       string             `json:"id"`
+	Type     string             `json:"type"`
+	Function OpenAIFunctionCall `json:"function"`
+}
+
+type OpenAIFunctionCall struct {
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"`
+}
+
+type OpenAIChatCompletionRequest struct {
+	Model      string          `json:"model"`
+	Messages   []OpenAIMessage `json:"messages"`
+	Tools      []OpenAITool    `json:"tools,omitempty"`
+	ToolChoice string          `json:"tool_choice,omitempty"`
+}
+
+type OpenAIChatCompletionResponse struct {
+	Choices []struct {
+		Message OpenAIMessage `json:"message"`
+	} `json:"choices"`
+	Error *ErrorInfo `json:"error,omitempty"`
+}
+
 // ProcessPrompt processes a prompt using Claude LLM with MCP server tools
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	ctx := context.Background()
@@ -86,10 +151,10 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		return "", fmt.Errorf("failed to initialize MCP client: %w", err)
 	}
 
-	if strings.TrimSpace(agent.apiKey) == "" {
+	if !agent.hasProviderCredentials() {
 		command, args, ok := deriveCommandFromPrompt(prompt)
 		if !ok {
-			return "", fmt.Errorf("could not map prompt to a cwc command without LLM credentials; set ANTHROPIC_API_KEY or use an explicit command-like prompt such as 'instance ls'")
+			return "", fmt.Errorf("could not map prompt to a cwc command without LLM credentials; set OPENAI_API_KEY/OPENROUTER_API_KEY or ANTHROPIC_API_KEY, or use an explicit command-like prompt such as 'instance ls'")
 		}
 		return agent.callTool(ctx, "run_cwc_command", map[string]interface{}{
 			"command": command,
@@ -107,8 +172,25 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		return "", fmt.Errorf("no tools available from MCP server")
 	}
 
-	// Build Claude tool definitions from MCP tools
+	toolSchema := map[string]interface{}{
+		"type": "object",
+		"properties": map[string]interface{}{
+			"command": map[string]interface{}{
+				"type":        "string",
+				"description": "The cwc command to run",
+			},
+			"args": map[string]interface{}{
+				"type":        "array",
+				"items":       map[string]interface{}{"type": "string"},
+				"description": "Command arguments",
+			},
+		},
+		"required": []string{"command"},
+	}
+
+	// Build Claude and OpenAI tool definitions from MCP tools
 	claudeTools := make([]ClaudeTool, 0, len(toolsResp.Tools))
+	openAITools := make([]OpenAITool, 0, len(toolsResp.Tools))
 	for _, tool := range toolsResp.Tools {
 		description := ""
 		if tool.Description != nil {
@@ -117,26 +199,52 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		claudeTool := ClaudeTool{
 			Name:        tool.Name,
 			Description: description,
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"command": map[string]interface{}{
-						"type":        "string",
-						"description": "The cwc command to run",
-					},
-					"args": map[string]interface{}{
-						"type":        "array",
-						"items":       map[string]interface{}{"type": "string"},
-						"description": "Command arguments",
-					},
-				},
-				"required": []string{"command"},
+			InputSchema: toolSchema,
+		}
+		openAITool := OpenAITool{
+			Type: "function",
+			Function: OpenAIFunctionTool{
+				Name:        tool.Name,
+				Description: description,
+				Parameters:  toolSchema,
 			},
 		}
 		claudeTools = append(claudeTools, claudeTool)
+		openAITools = append(openAITools, openAITool)
 	}
 
-	// Call Claude with the prompt and available tools
+	modelText := ""
+	if agent.provider == "anthropic" {
+		modelText, err = agent.runAnthropic(ctx, prompt, claudeTools)
+	} else {
+		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
+	}
+	if err == nil && strings.TrimSpace(modelText) != "" {
+		return modelText, nil
+	}
+
+	if command, args, ok := deriveCommandFromPrompt(prompt); ok {
+		return agent.callTool(ctx, "run_cwc_command", map[string]interface{}{
+			"command": command,
+			"args":    args,
+		})
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	return "No response from model", nil
+}
+
+func (agent *LLMAgent) hasProviderCredentials() bool {
+	if agent.provider == "anthropic" {
+		return strings.TrimSpace(agent.anthropicAPIKey) != ""
+	}
+	return strings.TrimSpace(agent.openAIAPIKey) != ""
+}
+
+func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool) (string, error) {
 	claudeReq := ClaudeRequest{
 		Model:     agent.modelName,
 		MaxTokens: 1024,
@@ -154,42 +262,60 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		return "", err
 	}
 
-	// Process Claude's response - look for tool use
 	for _, block := range response.Content {
-		if block.Type == "tool_use" {
-			// Execute the tool call
-			argsMap, ok := block.Input.(map[string]interface{})
-			if !ok {
-				// Try to convert
-				inputJSON, _ := json.Marshal(block.Input)
-				if err := json.Unmarshal(inputJSON, &argsMap); err != nil {
-					return "", fmt.Errorf("failed to parse tool input: %w", err)
-				}
-			}
-
-			result, err := agent.callTool(ctx, block.Name, argsMap)
-			if err != nil {
-				return "", err
-			}
-			return result, nil
+		if block.Type != "tool_use" {
+			continue
 		}
+		argsMap, ok := block.Input.(map[string]interface{})
+		if !ok {
+			inputJSON, _ := json.Marshal(block.Input)
+			if unmarshalErr := json.Unmarshal(inputJSON, &argsMap); unmarshalErr != nil {
+				return "", fmt.Errorf("failed to parse tool input: %w", unmarshalErr)
+			}
+		}
+		return agent.callTool(ctx, block.Name, argsMap)
 	}
 
-	if command, args, ok := deriveCommandFromPrompt(prompt); ok {
-		return agent.callTool(ctx, "run_cwc_command", map[string]interface{}{
-			"command": command,
-			"args":    args,
-		})
-	}
-
-	// If no tool was called, return the text response
 	for _, block := range response.Content {
 		if block.Type == "text" {
 			return block.Text, nil
 		}
 	}
 
-	return "No response from Claude", nil
+	return "", nil
+}
+
+func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools []OpenAITool) (string, error) {
+	req := OpenAIChatCompletionRequest{
+		Model:      agent.modelName,
+		Messages:   []OpenAIMessage{{Role: "user", Content: prompt}},
+		Tools:      openAITools,
+		ToolChoice: "auto",
+	}
+
+	resp, err := agent.callOpenAI(ctx, req)
+	if err != nil {
+		return "", err
+	}
+	if len(resp.Choices) == 0 {
+		return "", nil
+	}
+
+	msg := resp.Choices[0].Message
+	for _, toolCall := range msg.ToolCalls {
+		if toolCall.Type != "function" {
+			continue
+		}
+		argsMap := map[string]interface{}{}
+		if strings.TrimSpace(toolCall.Function.Arguments) != "" {
+			if unmarshalErr := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap); unmarshalErr != nil {
+				return "", fmt.Errorf("failed to parse OpenAI tool arguments: %w", unmarshalErr)
+			}
+		}
+		return agent.callTool(ctx, toolCall.Function.Name, argsMap)
+	}
+
+	return msg.Content, nil
 }
 
 func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
@@ -242,7 +368,7 @@ func deriveCommandFromPrompt(prompt string) (string, []string, bool) {
 
 // callClaude calls the Claude API
 func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*ClaudeResponse, error) {
-	if agent.apiKey == "" {
+	if agent.anthropicAPIKey == "" {
 		return nil, fmt.Errorf("ANTHROPIC_API_KEY environment variable is not set")
 	}
 
@@ -257,7 +383,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("x-api-key", agent.apiKey)
+	httpReq.Header.Set("x-api-key", agent.anthropicAPIKey)
 	httpReq.Header.Set("anthropic-version", "2023-06-01")
 
 	httpResp, err := agent.httpClient.Do(httpReq)
@@ -282,6 +408,55 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 
 	if response.Error != nil {
 		return nil, fmt.Errorf("Claude error: %s", response.Error.Message)
+	}
+
+	return &response, nil
+}
+
+func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionRequest) (*OpenAIChatCompletionResponse, error) {
+	if agent.openAIAPIKey == "" {
+		return nil, fmt.Errorf("OPENAI_API_KEY or OPENROUTER_API_KEY environment variable is not set")
+	}
+
+	reqBody, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal OpenAI request: %w", err)
+	}
+
+	endpoint := agent.openAIBaseURL + "/chat/completions"
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create OpenAI request: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Authorization", "Bearer "+agent.openAIAPIKey)
+	if strings.Contains(agent.openAIBaseURL, "openrouter.ai") {
+		httpReq.Header.Set("HTTP-Referer", "https://github.com/ineumann/cwc")
+		httpReq.Header.Set("X-Title", "cwc-mcp-prompt")
+	}
+
+	httpResp, err := agent.httpClient.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call OpenAI API: %w", err)
+	}
+	defer httpResp.Body.Close()
+
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read OpenAI response: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("OpenAI API error: %s", string(body))
+	}
+
+	var response OpenAIChatCompletionResponse
+	if err := json.Unmarshal(body, &response); err != nil {
+		return nil, fmt.Errorf("failed to parse OpenAI response: %w", err)
+	}
+	if response.Error != nil {
+		return nil, fmt.Errorf("OpenAI error: %s", response.Error.Message)
 	}
 
 	return &response, nil
