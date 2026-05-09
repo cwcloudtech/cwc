@@ -44,18 +44,9 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		provider:        strings.ToLower(strings.TrimSpace(provider)),
 		httpClient:      &http.Client{},
 		anthropicAPIKey: strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
-		openAIAPIKey:    strings.TrimSpace(firstNonEmpty(os.Getenv("OPENAI_API_KEY")),
+		openAIAPIKey:    strings.TrimSpace(os.Getenv("OPENAI_API_KEY")),
 		openAIBaseURL:   strings.TrimRight(baseURL, "/"),
 	}
-}
-
-func firstNonEmpty(values ...string) string {
-	for _, value := range values {
-		if strings.TrimSpace(value) != "" {
-			return value
-		}
-	}
-	return ""
 }
 
 // ClaudeMessage represents a message in Claude API format
