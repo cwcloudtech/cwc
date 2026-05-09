@@ -61,6 +61,140 @@ func GetDefaultProvider() string {
 	return provider
 }
 
+func GetOpenAIBaseURL() string {
+	dirname, err := os.UserHomeDir()
+	defaultBaseURL := "https://api.openai.com/v1"
+	if nil != err {
+		return defaultBaseURL
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return defaultBaseURL
+	}
+
+	file_content := string(content)
+	baseURL := GetValueFromFile(file_content, "openai_base_url")
+	if utils.IsBlank(baseURL) {
+		return defaultBaseURL
+	}
+
+	return baseURL
+}
+
+func GetOpenAIAPIKey() string {
+	dirname, err := os.UserHomeDir()
+	if nil != err {
+		return ""
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return ""
+	}
+
+	file_content := string(content)
+	apiKey := GetValueFromFile(file_content, "openai_api_key")
+	return apiKey
+}
+
+func GetOpenRouterBaseURL() string {
+	dirname, err := os.UserHomeDir()
+	defaultBaseURL := "https://openrouter.ai/api/v1"
+	if nil != err {
+		return defaultBaseURL
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return defaultBaseURL
+	}
+
+	file_content := string(content)
+	baseURL := GetValueFromFile(file_content, "openrouter_base_url")
+	if utils.IsBlank(baseURL) {
+		return defaultBaseURL
+	}
+
+	return baseURL
+}
+
+func GetOpenRouterAPIKey() string {
+	dirname, err := os.UserHomeDir()
+	if nil != err {
+		return ""
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return ""
+	}
+
+	file_content := string(content)
+	apiKey := GetValueFromFile(file_content, "openrouter_api_key")
+	return apiKey
+}
+
+func GetAnthropicBaseURL() string {
+	dirname, err := os.UserHomeDir()
+	defaultBaseURL := "https://api.anthropic.com/v1"
+	if nil != err {
+		return defaultBaseURL
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return defaultBaseURL
+	}
+
+	file_content := string(content)
+	baseURL := GetValueFromFile(file_content, "anthropic_base_url")
+	if utils.IsBlank(baseURL) {
+		return defaultBaseURL
+	}
+
+	return baseURL
+}
+
+func GetAnthropicAPIKey() string {
+	dirname, err := os.UserHomeDir()
+	if nil != err {
+		return ""
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return ""
+	}
+
+	file_content := string(content)
+	apiKey := GetValueFromFile(file_content, "anthropic_api_key")
+	return apiKey
+}
+
+func GetLLMProviderAPIKey() string {
+	dirname, err := os.UserHomeDir()
+	if nil != err {
+		return ""
+	}
+
+	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
+	content, err := os.ReadFile(config_path)
+	if nil != err {
+		return ""
+	}
+
+	file_content := string(content)
+	apiKey := GetValueFromFile(file_content, "llm_provider_api_key")
+	return apiKey
+}
+
 func GetDefaultKubeConfigPath() string {
 	dirname, err := os.UserHomeDir()
 	if nil != err {
