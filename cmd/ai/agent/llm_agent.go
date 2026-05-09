@@ -44,7 +44,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		provider:        strings.ToLower(strings.TrimSpace(provider)),
 		httpClient:      &http.Client{},
 		anthropicAPIKey: strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
-		openAIAPIKey:    strings.TrimSpace(firstNonEmpty(os.Getenv("OPENAI_API_KEY"), os.Getenv("OPENROUTER_API_KEY"))),
+		openAIAPIKey:    strings.TrimSpace(firstNonEmpty(os.Getenv("OPENAI_API_KEY")),
 		openAIBaseURL:   strings.TrimRight(baseURL, "/"),
 	}
 }
@@ -154,7 +154,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	if !agent.hasProviderCredentials() {
 		command, args, ok := deriveCommandFromPrompt(prompt)
 		if !ok {
-			return "", fmt.Errorf("could not map prompt to a cwc command without LLM credentials; set OPENAI_API_KEY/OPENROUTER_API_KEY or ANTHROPIC_API_KEY, or use an explicit command-like prompt such as 'instance ls'")
+			return "", fmt.Errorf("could not map prompt to a cwc command without LLM credentials; set OPENAI_API_KEY or ANTHROPIC_API_KEY, or use an explicit command-like prompt such as 'instance ls'")
 		}
 		return agent.callTool(ctx, "run_cwc_command", map[string]interface{}{
 			"command": command,
@@ -415,7 +415,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 
 func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionRequest) (*OpenAIChatCompletionResponse, error) {
 	if agent.openAIAPIKey == "" {
-		return nil, fmt.Errorf("OPENAI_API_KEY or OPENROUTER_API_KEY environment variable is not set")
+		return nil, fmt.Errorf("OPENAI_API_KEY environment variable is not set")
 	}
 
 	reqBody, err := json.Marshal(req)
