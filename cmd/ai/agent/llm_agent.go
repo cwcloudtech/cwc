@@ -24,28 +24,37 @@ type LLMAgent struct {
 	httpClient      *http.Client
 	anthropicAPIKey string
 	openAIAPIKey    string
+	openRouterAPIKey string
 	openAIBaseURL   string
 }
 
 // NewLLMAgent creates a new LLM agent connected to an MCP server
 func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
-	baseURL := strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
-	if baseURL == "" {
-		if strings.Contains(modelName, ":free") {
+	providerName := strings.ToLower(strings.TrimSpace(provider))
+	baseURL := ""
+	
+	switch providerName {
+	case "openrouter":
+		baseURL = strings.TrimSpace(os.Getenv("OPENROUTER_BASE_URL"))
+		if baseURL == "" {
 			baseURL = "https://openrouter.ai/api/v1"
-		} else {
+		}
+	default:
+		baseURL = strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
+		if baseURL == "" {
 			baseURL = "https://api.openai.com/v1"
 		}
 	}
 
 	return &LLMAgent{
-		serverURL:       serverURL,
-		modelName:       modelName,
-		provider:        strings.ToLower(strings.TrimSpace(provider)),
-		httpClient:      &http.Client{},
-		anthropicAPIKey: strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
-		openAIAPIKey:    strings.TrimSpace(os.Getenv("OPENAI_API_KEY")),
-		openAIBaseURL:   strings.TrimRight(baseURL, "/"),
+		serverURL:        serverURL,
+		modelName:        modelName,
+		provider:         providerName,
+		httpClient:       &http.Client{},
+		anthropicAPIKey:  strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
+		openAIAPIKey:     strings.TrimSpace(os.Getenv("OPENAI_API_KEY")),
+		openRouterAPIKey: strings.TrimSpace(os.Getenv("OPENROUTER_API_KEY")),
+		openAIBaseURL:    strings.TrimRight(baseURL, "/"),
 	}
 }
 
@@ -232,6 +241,9 @@ func (agent *LLMAgent) hasProviderCredentials() bool {
 	if agent.provider == "anthropic" {
 		return strings.TrimSpace(agent.anthropicAPIKey) != ""
 	}
+	if agent.provider == "openrouter" {
+		return true
+	}
 	return strings.TrimSpace(agent.openAIAPIKey) != ""
 }
 
@@ -405,7 +417,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 }
 
 func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionRequest) (*OpenAIChatCompletionResponse, error) {
-	if agent.openAIAPIKey == "" {
+	if agent.provider == "openai" && agent.openAIAPIKey == "" {
 		return nil, fmt.Errorf("OPENAI_API_KEY environment variable is not set")
 	}
 
@@ -421,10 +433,14 @@ func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionR
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+agent.openAIAPIKey)
-	if strings.Contains(agent.openAIBaseURL, "openrouter.ai") {
+	if agent.provider == "openrouter" {
+		if agent.openRouterAPIKey != "" {
+			httpReq.Header.Set("Authorization", "Bearer "+agent.openRouterAPIKey)
+		}
 		httpReq.Header.Set("HTTP-Referer", "https://github.com/ineumann/cwc")
 		httpReq.Header.Set("X-Title", "cwc-mcp-prompt")
+	} else {
+		httpReq.Header.Set("Authorization", "Bearer "+agent.openAIAPIKey)
 	}
 
 	httpResp, err := agent.httpClient.Do(httpReq)
