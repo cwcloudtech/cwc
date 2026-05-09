@@ -178,23 +178,6 @@ func GetAnthropicAPIKey() string {
 	return apiKey
 }
 
-func GetLLMProviderAPIKey() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	apiKey := GetValueFromFile(file_content, "llm_provider_api_key")
-	return apiKey
-}
-
 func GetDefaultKubeConfigPath() string {
 	dirname, err := os.UserHomeDir()
 	if nil != err {

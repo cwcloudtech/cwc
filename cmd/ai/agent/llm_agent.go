@@ -3,12 +3,12 @@ package agent
 import (
 	"bytes"
 	"context"
+	"cwc/config"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"sort"
 	"strings"
 
@@ -50,30 +50,14 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 	
 	switch providerName {
 	case "openrouter":
-		baseURL = strings.TrimSpace(os.Getenv("OPENROUTER_BASE_URL"))
-		if baseURL == "" {
-			baseURL = "https://openrouter.ai/api/v1"
-		}
-
-		tokenKey = strings.TrimSpace(os.Getenv("OPENROUTER_API_KEY"))
+		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
+		tokenKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
 	case "anthropic":
-		baseURL = strings.TrimSpace(os.Getenv("ANTHROPIC_BASE_URL"))
-		if baseURL == "" {
-			baseURL = "https://api.anthropic.com/v1"
-		}
-
-		tokenKey = strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY"))
+		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
+		tokenKey = strings.TrimSpace(config.GetAnthropicAPIKey())
 	default:
-		baseURL = strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
-		if baseURL == "" {
-			baseURL = "https://api.openai.com/v1"
-		}
-
-		tokenKey = strings.TrimSpace(os.Getenv("OPENAI_API_KEY"))
-	}
-
-	if tokenKey == "" {
-		tokenKey = strings.TrimSpace(os.Getenv("LLM_PROVIDER_API_KEY"))
+		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
+		tokenKey = strings.TrimSpace(config.GetOpenAIAPIKey())
 	}
 
 	return &LLMAgent{
