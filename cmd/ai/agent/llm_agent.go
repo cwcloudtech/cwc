@@ -151,17 +151,6 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		return "", fmt.Errorf("failed to initialize MCP client: %w", err)
 	}
 
-	if !agent.hasProviderCredentials() {
-		command, args, ok := deriveCommandFromPrompt(prompt)
-		if !ok {
-			return "", fmt.Errorf("could not map prompt to a cwc command without LLM credentials; set OPENAI_API_KEY or ANTHROPIC_API_KEY, or use an explicit command-like prompt such as 'instance ls'")
-		}
-		return agent.callTool(ctx, "run_cwc_command", map[string]interface{}{
-			"command": command,
-			"args":    args,
-		})
-	}
-
 	// Get available tools from the MCP server
 	toolsResp, err := agent.client.ListTools(ctx, nil)
 	if err != nil {
@@ -221,13 +210,6 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	}
 	if err == nil && strings.TrimSpace(modelText) != "" {
 		return modelText, nil
-	}
-
-	if command, args, ok := deriveCommandFromPrompt(prompt); ok {
-		return agent.callTool(ctx, "run_cwc_command", map[string]interface{}{
-			"command": command,
-			"args":    args,
-		})
 	}
 
 	if err != nil {
@@ -341,32 +323,6 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 
 	_, err = agent.client.Initialize(ctx)
 	return err
-}
-
-func deriveCommandFromPrompt(prompt string) (string, []string, bool) {
-	normalized := strings.TrimSpace(strings.ToLower(prompt))
-	if normalized == "" {
-		return "", nil, false
-	}
-
-	if strings.HasPrefix(normalized, "cwc ") {
-		parts := strings.Fields(strings.TrimSpace(prompt))
-		if len(parts) >= 2 {
-			return parts[1], parts[2:], true
-		}
-	}
-
-	if (strings.Contains(normalized, "instance") || strings.Contains(normalized, "instances")) &&
-		(strings.Contains(normalized, "list") || strings.Contains(normalized, "listen") || strings.Contains(normalized, "show")) {
-		return "instance", []string{"ls"}, true
-	}
-
-	parts := strings.Fields(strings.TrimSpace(prompt))
-	if len(parts) >= 2 {
-		return parts[0], parts[1:], true
-	}
-
-	return "", nil, false
 }
 
 // callClaude calls the Claude API
