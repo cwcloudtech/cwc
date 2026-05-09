@@ -22,6 +22,10 @@ type runCwcCommandArgs struct {
 	Args    []string `json:"args" jsonschema:"description=Additional command arguments and flags"`
 }
 
+type getCwcCommandHelpArgs struct {
+	Command string `json:"command" jsonschema:"required,description=Top-level cwc command to get help for (e.g. instance, project, environment)"`
+}
+
 // McpCmd represents the MCP command group under ai.
 var McpCmd = &cobra.Command{
 	Use:   "mcp",
@@ -35,12 +39,75 @@ var McpCmd = &cobra.Command{
 			transport,
 			mcp_golang.WithName("cwc-mcp-server"),
 			mcp_golang.WithVersion("0.1.0"),
-			mcp_golang.WithInstructions("Use run_cwc_command to execute cwc CLI commands."),
+			mcp_golang.WithInstructions("Use list_cwc_commands and get_cwc_command_help to discover valid CLI commands, then execute with run_cwc_command."),
 		)
 
 		err := server.RegisterTool(
+			"list_cwc_commands",
+			"List top-level cwc commands by returning `cwc --help` output. Use this first before calling run_cwc_command.",
+			func(arguments struct{}) (*mcp_golang.ToolResponse, error) {
+				executable, err := os.Executable()
+				if err != nil {
+					return nil, fmt.Errorf("failed to resolve cwc executable: %w", err)
+				}
+
+				runCmd := exec.Command(executable, "--help")
+				output, err := runCmd.CombinedOutput()
+
+				exitCode := 0
+				if runCmd.ProcessState != nil {
+					exitCode = runCmd.ProcessState.ExitCode()
+				}
+
+				result := fmt.Sprintf("command: cwc --help\nexit_code: %d\noutput:\n%s", exitCode, string(output))
+				if err != nil {
+					return nil, fmt.Errorf("%s", result)
+				}
+
+				return mcp_golang.NewToolResponse(mcp_golang.NewTextContent(result)), nil
+			},
+		)
+		if err != nil {
+			return err
+		}
+
+		err = server.RegisterTool(
+			"get_cwc_command_help",
+			"Get help for a specific top-level cwc command by returning `cwc <command> --help` output.",
+			func(arguments getCwcCommandHelpArgs) (*mcp_golang.ToolResponse, error) {
+				commandName := strings.TrimSpace(arguments.Command)
+				if commandName == "" {
+					return nil, fmt.Errorf("command is required")
+				}
+
+				executable, err := os.Executable()
+				if err != nil {
+					return nil, fmt.Errorf("failed to resolve cwc executable: %w", err)
+				}
+
+				runCmd := exec.Command(executable, commandName, "--help")
+				output, err := runCmd.CombinedOutput()
+
+				exitCode := 0
+				if runCmd.ProcessState != nil {
+					exitCode = runCmd.ProcessState.ExitCode()
+				}
+
+				result := fmt.Sprintf("command: cwc %s --help\nexit_code: %d\noutput:\n%s", commandName, exitCode, string(output))
+				if err != nil {
+					return nil, fmt.Errorf("%s", result)
+				}
+
+				return mcp_golang.NewToolResponse(mcp_golang.NewTextContent(result)), nil
+			},
+		)
+		if err != nil {
+			return err
+		}
+
+		err = server.RegisterTool(
 			"run_cwc_command",
-			"Run any available cwc CLI command. Pass command and args without the leading cwc binary name.",
+			"Run a valid cwc CLI command. Pass command and args without the leading cwc binary name. Use list_cwc_commands/get_cwc_command_help first to avoid invalid command names.",
 			func(arguments runCwcCommandArgs) (*mcp_golang.ToolResponse, error) {
 				commandName := strings.TrimSpace(arguments.Command)
 				if commandName == "" {

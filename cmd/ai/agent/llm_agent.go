@@ -193,22 +193,6 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		return "", fmt.Errorf("no tools available from MCP server")
 	}
 
-	toolSchema := map[string]interface{}{
-		"type": "object",
-		"properties": map[string]interface{}{
-			"command": map[string]interface{}{
-				"type":        "string",
-				"description": "The cwc command to run",
-			},
-			"args": map[string]interface{}{
-				"type":        "array",
-				"items":       map[string]interface{}{"type": "string"},
-				"description": "Command arguments",
-			},
-		},
-		"required": []string{"command"},
-	}
-
 	claudeTools := make([]ClaudeTool, 0, len(toolsResp.Tools))
 	openAITools := make([]OpenAITool, 0, len(toolsResp.Tools))
 	for _, tool := range toolsResp.Tools {
@@ -217,10 +201,20 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			description = *tool.Description
 		}
 
+		inputSchema := map[string]interface{}{
+			"type":       "object",
+			"properties": map[string]interface{}{},
+		}
+		if tool.InputSchema != nil {
+			if typedSchema, ok := tool.InputSchema.(map[string]interface{}); ok {
+				inputSchema = typedSchema
+			}
+		}
+
 		claudeTools = append(claudeTools, ClaudeTool{
 			Name:        tool.Name,
 			Description: description,
-			InputSchema: toolSchema,
+			InputSchema: inputSchema,
 		})
 
 		openAITools = append(openAITools, OpenAITool{
@@ -228,7 +222,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			Function: OpenAIFunctionTool{
 				Name:        tool.Name,
 				Description: description,
-				Parameters:  toolSchema,
+				Parameters:  inputSchema,
 			},
 		})
 	}
