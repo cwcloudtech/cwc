@@ -50,6 +50,9 @@ var StartCmd = &cobra.Command{
 				if commandName == "mcp" && len(arguments.Args) > 0 && arguments.Args[0] == "start" {
 					return nil, fmt.Errorf("running mcp start from the MCP tool is blocked")
 				}
+				if commandName == "ai" && len(arguments.Args) > 1 && arguments.Args[0] == "mcp" && arguments.Args[1] == "start" {
+					return nil, fmt.Errorf("running ai mcp start from the MCP tool is blocked")
+				}
 
 				cliArgs := append([]string{commandName}, arguments.Args...)
 
