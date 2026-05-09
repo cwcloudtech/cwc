@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strings"
 
 	mcp_golang "github.com/metoro-io/mcp-golang"
@@ -38,7 +39,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		case "openrouter":
 			modelName = "meta-llama/llama-3.3-8b-instruct:free"
 		case "anthropic":
-			modelName = "claude-3-5-haiku-20241022"
+			modelName = "claude-haiku-4-5"
 		default:
 			modelName = "gpt-4o-mini"
 		}
@@ -193,21 +194,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		return "", fmt.Errorf("no tools available from MCP server")
 	}
 
-	toolSchema := map[string]interface{}{
-		"type": "object",
-		"properties": map[string]interface{}{
-			"command": map[string]interface{}{
-				"type":        "string",
-				"description": "The cwc command to run",
-			},
-			"args": map[string]interface{}{
-				"type":        "array",
-				"items":       map[string]interface{}{"type": "string"},
-				"description": "Command arguments",
-			},
-		},
-		"required": []string{"command"},
-	}
+	dynamicRunCmdSchema := agent.buildDynamicRunCommandSchema(ctx)
 
 	claudeTools := make([]ClaudeTool, 0, len(toolsResp.Tools))
 	openAITools := make([]OpenAITool, 0, len(toolsResp.Tools))
@@ -217,10 +204,23 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			description = *tool.Description
 		}
 
+		inputSchema := map[string]interface{}{
+			"type":       "object",
+			"properties": map[string]interface{}{},
+		}
+		if tool.InputSchema != nil {
+			if typedSchema, ok := tool.InputSchema.(map[string]interface{}); ok {
+				inputSchema = typedSchema
+			}
+		}
+		if tool.Name == "run_cwc_command" && dynamicRunCmdSchema != nil {
+			inputSchema = dynamicRunCmdSchema
+		}
+
 		claudeTools = append(claudeTools, ClaudeTool{
 			Name:        tool.Name,
 			Description: description,
-			InputSchema: toolSchema,
+			InputSchema: inputSchema,
 		})
 
 		openAITools = append(openAITools, OpenAITool{
@@ -228,10 +228,12 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			Function: OpenAIFunctionTool{
 				Name:        tool.Name,
 				Description: description,
-				Parameters:  toolSchema,
+				Parameters:  inputSchema,
 			},
 		})
 	}
+
+	openAITools = selectOpenAIToolsForPrompt(prompt, openAITools, 128)
 
 	modelText := ""
 	if agent.provider == "anthropic" {
@@ -248,6 +250,163 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	}
 
 	return "No response from model", nil
+}
+
+func (agent *LLMAgent) buildDynamicRunCommandSchema(ctx context.Context) map[string]interface{} {
+	raw, err := agent.callTool(ctx, "list_cwc_commands", map[string]interface{}{})
+	if err != nil || strings.TrimSpace(raw) == "" {
+		return nil
+	}
+
+	output := raw
+	if idx := strings.Index(raw, "output:\n"); idx >= 0 {
+		output = raw[idx+len("output:\n"):]
+	}
+
+	commands := extractTopLevelCWCCommands(output)
+	if len(commands) == 0 {
+		return nil
+	}
+
+	return map[string]interface{}{
+		"type": "object",
+		"properties": map[string]interface{}{
+			"command": map[string]interface{}{
+				"type":        "string",
+				"description": "Top-level cwc command name",
+				"enum":        commands,
+			},
+			"args": map[string]interface{}{
+				"type":        "array",
+				"items":       map[string]interface{}{"type": "string"},
+				"description": "Subcommand, resource id/name, flags and values",
+			},
+		},
+		"required": []string{"command"},
+	}
+}
+
+func extractTopLevelCWCCommands(helpText string) []string {
+	lines := strings.Split(helpText, "\n")
+	inSection := false
+	unique := map[string]bool{}
+
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" {
+			if inSection {
+				break
+			}
+			continue
+		}
+
+		if strings.HasPrefix(trimmed, "Available Commands:") {
+			inSection = true
+			continue
+		}
+		if !inSection {
+			continue
+		}
+
+		if strings.HasSuffix(trimmed, ":") {
+			break
+		}
+
+		parts := strings.Fields(trimmed)
+		if len(parts) == 0 {
+			continue
+		}
+
+		cmd := strings.TrimSpace(parts[0])
+		if cmd == "help" {
+			continue
+		}
+		if strings.Contains(cmd, "[") || strings.Contains(cmd, "<") {
+			continue
+		}
+		unique[cmd] = true
+	}
+
+	if len(unique) == 0 {
+		return nil
+	}
+
+	commands := make([]string, 0, len(unique))
+	for cmd := range unique {
+		commands = append(commands, cmd)
+	}
+	sort.Strings(commands)
+	return commands
+}
+
+func selectOpenAIToolsForPrompt(prompt string, tools []OpenAITool, maxTools int) []OpenAITool {
+	if len(tools) <= maxTools || maxTools <= 0 {
+		return tools
+	}
+
+	normalizedPrompt := strings.ToLower(prompt)
+	replacer := strings.NewReplacer("-", " ", "_", " ", "/", " ", ",", " ", ".", " ", ":", " ", ";", " ")
+	normalizedPrompt = replacer.Replace(normalizedPrompt)
+	promptTokens := map[string]bool{}
+	for _, part := range strings.Fields(normalizedPrompt) {
+		if len(part) >= 2 {
+			promptTokens[part] = true
+		}
+	}
+
+	essential := map[string]bool{
+		"list_cwc_commands":   true,
+		"get_cwc_command_help": true,
+		"run_cwc_command":     true,
+	}
+
+	type scoredTool struct {
+		tool  OpenAITool
+		score int
+	}
+	scored := make([]scoredTool, 0, len(tools))
+
+	for _, tool := range tools {
+		name := strings.ToLower(tool.Function.Name)
+		desc := strings.ToLower(tool.Function.Description)
+		score := 0
+
+		if essential[tool.Function.Name] {
+			score += 1000
+		}
+
+		nameForTokens := replacer.Replace(name)
+		for _, token := range strings.Fields(nameForTokens) {
+			if promptTokens[token] {
+				score += 10
+			}
+		}
+
+		for token := range promptTokens {
+			if strings.Contains(name, token) {
+				score += 6
+			}
+			if token != "" && strings.Contains(desc, token) {
+				score += 2
+			}
+		}
+
+		scored = append(scored, scoredTool{tool: tool, score: score})
+	}
+
+	sort.SliceStable(scored, func(i, j int) bool {
+		if scored[i].score == scored[j].score {
+			return scored[i].tool.Function.Name < scored[j].tool.Function.Name
+		}
+		return scored[i].score > scored[j].score
+	})
+
+	selected := make([]OpenAITool, 0, maxTools)
+	for i := 0; i < len(scored) && len(selected) < maxTools; i++ {
+		selected = append(selected, scored[i].tool)
+	}
+
+	return selected
 }
 
 func (agent *LLMAgent) hasProviderCredentials() bool {
