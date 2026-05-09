@@ -217,7 +217,20 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		})
 	}
 
-	openAITools = selectOpenAIToolsForPrompt(prompt, openAITools, 128)
+	openAITools = selectPreferredToolsForPrompt(
+		prompt,
+		openAITools,
+		128,
+		func(tool OpenAITool) string { return tool.Function.Name },
+		func(tool OpenAITool) string { return tool.Function.Description },
+	)
+	claudeTools = selectPreferredToolsForPrompt(
+		prompt,
+		claudeTools,
+		128,
+		func(tool ClaudeTool) string { return tool.Name },
+		func(tool ClaudeTool) string { return tool.Description },
+	)
 
 	modelText := ""
 	if agent.provider == "anthropic" {
@@ -323,7 +336,13 @@ func extractTopLevelCWCCommands(helpText string) []string {
 	return commands
 }
 
-func selectOpenAIToolsForPrompt(prompt string, tools []OpenAITool, maxTools int) []OpenAITool {
+func selectPreferredToolsForPrompt[T any](
+	prompt string,
+	tools []T,
+	maxTools int,
+	nameFn func(T) string,
+	descriptionFn func(T) string,
+) []T {
 	if len(tools) <= maxTools || maxTools <= 0 {
 		return tools
 	}
@@ -345,17 +364,18 @@ func selectOpenAIToolsForPrompt(prompt string, tools []OpenAITool, maxTools int)
 	}
 
 	type scoredTool struct {
-		tool  OpenAITool
+		tool  T
 		score int
 	}
 	scored := make([]scoredTool, 0, len(tools))
 
 	for _, tool := range tools {
-		name := strings.ToLower(tool.Function.Name)
-		desc := strings.ToLower(tool.Function.Description)
+		toolName := nameFn(tool)
+		name := strings.ToLower(toolName)
+		desc := strings.ToLower(descriptionFn(tool))
 		score := 0
 
-		if essential[tool.Function.Name] {
+		if essential[strings.ToLower(toolName)] {
 			score += 1000
 		}
 
@@ -380,12 +400,12 @@ func selectOpenAIToolsForPrompt(prompt string, tools []OpenAITool, maxTools int)
 
 	sort.SliceStable(scored, func(i, j int) bool {
 		if scored[i].score == scored[j].score {
-			return scored[i].tool.Function.Name < scored[j].tool.Function.Name
+			return nameFn(scored[i].tool) < nameFn(scored[j].tool)
 		}
 		return scored[i].score > scored[j].score
 	})
 
-	selected := make([]OpenAITool, 0, maxTools)
+	selected := make([]T, 0, maxTools)
 	for i := 0; i < len(scored) && len(selected) < maxTools; i++ {
 		selected = append(selected, scored[i].tool)
 	}
