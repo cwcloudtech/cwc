@@ -37,7 +37,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 	if strings.TrimSpace(modelName) == "" {
 		switch providerName {
 		case "openrouter":
-			modelName = "meta-llama/llama-3.3-8b-instruct:free"
+			modelName = "meta-llama/llama-3.3-8b-instruct"
 		case "anthropic":
 			modelName = "claude-haiku-4-5"
 		default:
@@ -524,7 +524,7 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 // callClaude calls the Claude API
 func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*ClaudeResponse, error) {
 	if agent.anthropicAPIKey == "" {
-		return nil, fmt.Errorf("ANTHROPIC_API_KEY or LLM_PROVIDER_API_KEY environment variable are not set")
+		return nil, fmt.Errorf("anthropic_api_key config is not set")
 	}
 
 	reqBody, err := json.Marshal(req)
@@ -569,10 +569,6 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 }
 
 func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionRequest) (*OpenAIChatCompletionResponse, error) {
-	if agent.provider == "openai" && agent.openAIAPIKey == "" {
-		return nil, fmt.Errorf("OPENAI_API_KEY or LLM_PROVIDER_API_KEY environment variable are not set")
-	}
-
 	reqBody, err := json.Marshal(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal OpenAI request: %w", err)
@@ -585,14 +581,12 @@ func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionR
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	if agent.provider == "openrouter" {
-		if agent.openRouterAPIKey != "" {
-			httpReq.Header.Set("Authorization", "Bearer "+agent.openRouterAPIKey)
-		}
-		httpReq.Header.Set("HTTP-Referer", "https://github.com/ineumann/cwc")
-		httpReq.Header.Set("X-Title", "cwc-mcp-prompt")
-	} else {
-		httpReq.Header.Set("Authorization", "Bearer "+agent.openAIAPIKey)
+	if agent.provider == "openrouter" && agent.openRouterAPIKey != "" {
+		httpReq.Header.Set("Authorization", "Bearer " + agent.openRouterAPIKey)
+	} else if agent.provider == "openai" && agent.openAIAPIKey != "" {
+		httpReq.Header.Set("Authorization", "Bearer " + agent.openAIAPIKey)
+	} else if agent.provider == "openai" {
+		return nil, fmt.Errorf("openai_api_key config is not set")
 	}
 
 	httpResp, err := agent.httpClient.Do(httpReq)
