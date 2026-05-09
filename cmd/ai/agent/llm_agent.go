@@ -32,6 +32,7 @@ type LLMAgent struct {
 func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
 	providerName := strings.ToLower(strings.TrimSpace(provider))
 	baseURL := ""
+	tokenKey := ""
 	
 	switch providerName {
 	case "openrouter":
@@ -39,16 +40,26 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		if baseURL == "" {
 			baseURL = "https://openrouter.ai/api/v1"
 		}
+
+		tokenKey = strings.TrimSpace(os.Getenv("OPENROUTER_API_KEY"))
 	case "anthropic":
 		baseURL = strings.TrimSpace(os.Getenv("ANTHROPIC_BASE_URL"))
 		if baseURL == "" {
 			baseURL = "https://api.anthropic.com/v1"
 		}
+
+		tokenKey = strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY"))
 	default:
 		baseURL = strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
 		if baseURL == "" {
 			baseURL = "https://api.openai.com/v1"
 		}
+
+		tokenKey = strings.TrimSpace(os.Getenv("OPENAI_API_KEY"))
+	}
+
+	if tokenKey == "" {
+		tokenKey = strings.TrimSpace(os.Getenv("LLM_PROVIDER_API_KEY"))
 	}
 
 	return &LLMAgent{
@@ -56,9 +67,9 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		modelName:        modelName,
 		provider:         providerName,
 		httpClient:       &http.Client{},
-		anthropicAPIKey:  strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")),
-		openAIAPIKey:     strings.TrimSpace(os.Getenv("OPENAI_API_KEY")),
-		openRouterAPIKey: strings.TrimSpace(os.Getenv("OPENROUTER_API_KEY")),
+		anthropicAPIKey:  tokenKey,
+		openAIAPIKey:     tokenKey,
+		openRouterAPIKey: tokenKey,
 		providerBaseUrl:  strings.TrimRight(baseURL, "/"),
 	}
 }
@@ -333,7 +344,7 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 // callClaude calls the Claude API
 func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*ClaudeResponse, error) {
 	if agent.anthropicAPIKey == "" {
-		return nil, fmt.Errorf("ANTHROPIC_API_KEY environment variable is not set")
+		return nil, fmt.Errorf("ANTHROPIC_API_KEY or LLM_PROVIDER_API_KEY environment variable are not set")
 	}
 
 	reqBody, err := json.Marshal(req)
@@ -379,7 +390,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 
 func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionRequest) (*OpenAIChatCompletionResponse, error) {
 	if agent.provider == "openai" && agent.openAIAPIKey == "" {
-		return nil, fmt.Errorf("OPENAI_API_KEY environment variable is not set")
+		return nil, fmt.Errorf("OPENAI_API_KEY or LLM_PROVIDER_API_KEY environment variable are not set")
 	}
 
 	reqBody, err := json.Marshal(req)
