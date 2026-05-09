@@ -37,7 +37,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 	if strings.TrimSpace(modelName) == "" {
 		switch providerName {
 		case "openrouter":
-			modelName = "meta-llama/llama-3.3-8b-instruct"
+			modelName = "meta-llama/llama-3.3-70b-instruct"
 		case "anthropic":
 			modelName = "claude-haiku-4-5"
 		default:
