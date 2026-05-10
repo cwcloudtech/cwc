@@ -3,6 +3,7 @@ package configure
 import (
 	"cwc/cmd/configure/get"
 	importConfig "cwc/cmd/configure/import"
+	"cwc/cmd/configure/keys"
 	"cwc/cmd/configure/ls"
 	"cwc/cmd/configure/set"
 	switchConfig "cwc/cmd/configure/switch"
@@ -61,6 +62,7 @@ func init() {
 	ConfigureCmd.DisableFlagsInUseLine = true
 	ConfigureCmd.AddCommand(set.SetCmd)
 	ConfigureCmd.AddCommand(get.GetCmd)
+	ConfigureCmd.AddCommand(keys.KeysCmd)
 	ConfigureCmd.AddCommand(ls.LsCmd)
 	ConfigureCmd.AddCommand(switchConfig.SwitchConfigCmd)
 	ConfigureCmd.AddCommand(importConfig.ImportConfigCmd)
