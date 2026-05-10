@@ -26,261 +26,80 @@ func GetValueFromFile(content_file string, key string) string {
 	return strings.Split(requested_line, " = ")[1]
 }
 
-func GetDefaultRegion() string {
+func GetConfigValue(key string, defaultValue string) string {
+	if envValue := os.Getenv(strings.ToUpper(key)); envValue != "" {
+		return envValue
+	}
+
 	dirname, err := os.UserHomeDir()
 	if nil != err {
-		return "fr-par"
+		return defaultValue
 	}
 
 	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
 	content, err := os.ReadFile(config_path)
 	if nil != err {
-		return "fr-par"
+		return defaultValue
 	}
 
 	file_content := string(content)
-	region := GetValueFromFile(file_content, "region")
+	return GetValueFromFile(file_content, key)
+}
 
-	return region
+func GetDefaultRegion() string {
+	return GetConfigValue("region", "fr-par")
 }
 
 func GetDefaultProvider() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	provider := GetValueFromFile(file_content, "provider")
-	return provider
+	return GetConfigValue("provider", "")
 }
 
 func GetOpenAIBaseURL() string {
-	dirname, err := os.UserHomeDir()
-	defaultBaseURL := "https://api.openai.com/v1"
-	if nil != err {
-		return defaultBaseURL
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return defaultBaseURL
-	}
-
-	file_content := string(content)
-	baseURL := GetValueFromFile(file_content, "openai_base_url")
-	if utils.IsBlank(baseURL) {
-		return defaultBaseURL
-	}
-
-	return baseURL
+	return GetConfigValue("openai_base_url", "https://api.openai.com/v1")
 }
 
 func GetOpenAIAPIKey() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	apiKey := GetValueFromFile(file_content, "openai_api_key")
-	return apiKey
+	return GetConfigValue("openai_api_key", "")
 }
 
 func GetOpenRouterBaseURL() string {
-	dirname, err := os.UserHomeDir()
-	defaultBaseURL := "https://openrouter.ai/api/v1"
-	if nil != err {
-		return defaultBaseURL
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return defaultBaseURL
-	}
-
-	file_content := string(content)
-	baseURL := GetValueFromFile(file_content, "openrouter_base_url")
-	if utils.IsBlank(baseURL) {
-		return defaultBaseURL
-	}
-
-	return baseURL
+	return GetConfigValue("openrouter_base_url", "https://openrouter.ai/api/v1")
 }
 
 func GetOpenRouterAPIKey() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	apiKey := GetValueFromFile(file_content, "openrouter_api_key")
-	return apiKey
+	return GetConfigValue("openrouter_api_key", "")
 }
 
 func GetAnthropicBaseURL() string {
-	dirname, err := os.UserHomeDir()
-	defaultBaseURL := "https://api.anthropic.com/v1"
-	if nil != err {
-		return defaultBaseURL
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return defaultBaseURL
-	}
-
-	file_content := string(content)
-	baseURL := GetValueFromFile(file_content, "anthropic_base_url")
-	if utils.IsBlank(baseURL) {
-		return defaultBaseURL
-	}
-
-	return baseURL
+	return GetConfigValue("anthropic_base_url", "https://api.anthropic.com/v1")
 }
 
 func GetAnthropicAPIKey() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	apiKey := GetValueFromFile(file_content, "anthropic_api_key")
-	return apiKey
+	return GetConfigValue("anthropic_api_key", "")
 }
 
 func GetDefaultKubeConfigPath() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
+	return GetConfigValue("kube_config_path", "")
+}
 
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	kube_config_path := GetValueFromFile(file_content, "kube_config_path")
-
-	return kube_config_path
+func GetDefaultFormat() string {
+	return GetConfigValue("format", "")
 }
 
 func IsPrettyFormatExpected(pretty *bool) bool {
 	return *pretty || GetDefaultFormat() == "pretty"
 }
 
-func GetDefaultFormat() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	format := GetValueFromFile(file_content, "format")
-	return format
-}
-
 func GetDefaultEndpoint() string {
-	dirname, err := os.UserHomeDir()
-	default_endpoint := env.API_URL
-	if nil != err {
-		return default_endpoint
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return default_endpoint
-	}
-
-	file_content := string(content)
-	endpoint := GetValueFromFile(file_content, "endpoint")
-	if utils.IsBlank(endpoint) {
-		return default_endpoint
-	}
-
-	return endpoint
+	return GetConfigValue("endpoint", env.API_URL)
 }
 
 func GetRepoURL() string {
-	dirname, err := os.UserHomeDir()
-	default_repo := env.REPO_URL
-	if nil != err {
-		return default_repo
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return default_repo
-	}
-
-	file_content := string(content)
-	repoURL := GetValueFromFile(file_content, "repo_url")
-	if utils.IsBlank(repoURL) {
-		return default_repo
-	}
-
-	return repoURL
+	return GetConfigValue("repo_url", env.REPO_URL)
 }
 
 func GetRepoBranch() string {
-	dirname, err := os.UserHomeDir()
-	default_branch := env.BRANCH
-	if nil != err {
-		return default_branch
-	}
-
-	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(config_path)
-	if nil != err {
-		return default_branch
-	}
-
-	file_content := string(content)
-	branch := GetValueFromFile(file_content, "repo_branch")
-	if utils.IsBlank(branch) {
-		return default_branch
-	}
-
-	return branch
+	return GetConfigValue("repo_branch", env.BRANCH)
 }
 
 func SetValueToKeyInFile(file string, key string, value string) {
@@ -336,7 +155,6 @@ func UpdateFileKeyValue(filename string, key string, value string) {
 	} else {
 		SetValueToKeyInFile(filename, key, value)
 	}
-
 }
 
 func SetDefaultRegion(region string) {
@@ -360,20 +178,7 @@ func SetDefaultKubeConfigPath(path string) {
 }
 
 func GetUserToken() string {
-	dirname, err := os.UserHomeDir()
-	if nil != err {
-		return ""
-	}
-
-	credentials_path := fmt.Sprintf("%s/.cwc/config", dirname)
-	content, err := os.ReadFile(credentials_path)
-	if nil != err {
-		return ""
-	}
-
-	file_content := string(content)
-	secret_key := GetValueFromFile(file_content, "cwc_secret_key")
-	return secret_key
+	return GetConfigValue("cwc_secret_key", "")
 }
 
 func AddUserCredentials(access_key string, secret_key string) {
