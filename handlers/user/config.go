@@ -9,8 +9,27 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
+
+var availableConfigKeys = []string{
+	"anthropic_api_key",
+	"anthropic_base_url",
+	"cwc_access_key",
+	"cwc_secret_key",
+	"endpoint",
+	"format",
+	"kube_config_path",
+	"openai_api_key",
+	"openai_base_url",
+	"openrouter_api_key",
+	"openrouter_base_url",
+	"provider",
+	"region",
+	"repo_branch",
+	"repo_url",
+}
 
 func HandlerGetConfigKey(key string) {
 	value := config.GetConfigValue(key, "")
@@ -118,6 +137,20 @@ func HandleGetConfigFiles() {
 	println("available config files:")
 	for _, fileName := range fileNames {
 		println(fileName)
+	}
+}
+
+func HandleGetConfigKeys(pretty *bool) {
+	keys := make([]string, len(availableConfigKeys))
+	copy(keys, availableConfigKeys)
+	sort.Strings(keys)
+
+	if config.IsPrettyFormatExpected(pretty) {
+		utils.PrintPrettyArray("Available configuration keys", keys)
+	} else if config.GetDefaultFormat() == "json" {
+		utils.PrintJson(keys)
+	} else {
+		utils.PrintArray(keys)
 	}
 }
 
