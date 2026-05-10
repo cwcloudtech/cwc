@@ -1,24 +1,22 @@
 package get
 
 import (
+	"cwc/handlers/user"
+
 	"github.com/spf13/cobra"
 )
 
 // lsCmd represents the ls command
 var GetCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Retrieve informations about your default configurations",
-	Long:  `This command lets you retrieve informations about your default configurations`,
+	Use:   "get <key>",
+	Short: "Get a configuration value by key",
+	Long:  `This command lets you retrieve any configuration value by its key`,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		user.HandlerGetConfigKey(args[0])
 	},
 }
 
 func init() {
 	GetCmd.DisableFlagsInUseLine = true
-	GetCmd.AddCommand(GetEndpointCmd)
-	GetCmd.AddCommand(GetFormatCmd)
-	GetCmd.AddCommand(GetKeyCmd)
-	GetCmd.AddCommand(GetProviderCmd)
-	GetCmd.AddCommand(GetRegionCmd)
 }
