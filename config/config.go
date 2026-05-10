@@ -43,9 +43,7 @@ func GetConfigValue(key string, defaultValue string) string {
 	}
 
 	file_content := string(content)
-	value := GetValueFromFile(file_content, key)
-
-	return value
+	return GetValueFromFile(file_content, key)
 }
 
 func GetDefaultRegion() string {
