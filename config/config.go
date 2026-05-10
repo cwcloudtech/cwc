@@ -43,7 +43,11 @@ func GetConfigValue(key string, defaultValue string) string {
 	}
 
 	file_content := string(content)
-	return GetValueFromFile(file_content, key)
+	if value := GetValueFromFile(file_content, key); !utils.IsBlank(value) {
+		return value
+	}
+	
+	return defaultValue
 }
 
 func GetDefaultRegion() string {
