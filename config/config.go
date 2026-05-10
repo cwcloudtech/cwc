@@ -27,7 +27,7 @@ func GetValueFromFile(content_file string, key string) string {
 }
 
 func GetConfigValue(key string, defaultValue string) string {
-	if envValue := os.Getenv(strings.ToUpper(key)); envValue != "" {
+	if envValue := os.Getenv("CWC_" + strings.ToUpper(key)); envValue != "" {
 		return envValue
 	}
 
