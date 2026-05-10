@@ -18,6 +18,8 @@ var availableConfigKeys = []string{
 	"anthropic_base_url",
 	"cwc_access_key",
 	"cwc_secret_key",
+	"deepseek_api_key",
+	"deepseek_base_url",
 	"endpoint",
 	"format",
 	"kube_config_path",
