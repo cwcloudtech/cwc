@@ -12,6 +12,11 @@ import (
 	"strings"
 )
 
+func HandlerGetConfigKey(key string) {
+	value := config.GetConfigValue(key, "")
+	fmt.Printf("%v = %v\n", key, value)
+}
+
 func HandleSwitchConfigFile(configFileName *string) {
 	availableFiles, err := getFilesInFolder(".cwc")
 	utils.ExitIfError(err)

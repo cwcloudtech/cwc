@@ -18,6 +18,7 @@ func init() {
 	GetCmd.DisableFlagsInUseLine = true
 	GetCmd.AddCommand(GetEndpointCmd)
 	GetCmd.AddCommand(GetFormatCmd)
+	GetCmd.AddCommand(GetKeyCmd)
 	GetCmd.AddCommand(GetProviderCmd)
 	GetCmd.AddCommand(GetRegionCmd)
 }
