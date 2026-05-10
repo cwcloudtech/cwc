@@ -74,6 +74,14 @@ func GetOpenRouterAPIKey() string {
 	return GetConfigValue("openrouter_api_key", "")
 }
 
+func GetDeepSeekBaseURL() string {
+	return GetConfigValue("deepseek_base_url", "https://api.deepseek.com/v1")
+}
+
+func GetDeepSeekAPIKey() string {
+	return GetConfigValue("deepseek_api_key", "")
+}
+
 func GetAnthropicBaseURL() string {
 	return GetConfigValue("anthropic_base_url", "https://api.anthropic.com/v1")
 }

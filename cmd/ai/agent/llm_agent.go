@@ -40,6 +40,10 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
 		defaultModel = "meta-llama/llama-3.3-70b-instruct"
+	case "deepseek":
+		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
+		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
+		defaultModel = "deepseek-chat"
 	case "anthropic":
 		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
 		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
