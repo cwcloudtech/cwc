@@ -1,24 +1,26 @@
 package set
 
 import (
+	"cwc/config"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
 // lsCmd represents the ls command
 var SetCmd = &cobra.Command{
-	Use:   "set",
-	Short: "Update your default configurations",
-	Long:  `This command lets you update your default configurations`,
+	Use:   "set <key> <value>",
+	Short: "Set a configuration value by key",
+	Long:  `This command lets you update any configuration key in the default configuration file`,
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		keyName := args[0]
+		value := args[1]
+		config.UpdateFileKeyValue("config", keyName, value)
+		fmt.Printf("%s = %v\n", keyName, value)
 	},
 }
 
 func init() {
 	SetCmd.DisableFlagsInUseLine = true
-	SetCmd.AddCommand(SetKeyCmd)
-	SetCmd.AddCommand(SetEndpointCmd)
-	SetCmd.AddCommand(SetProviderCmd)
-	SetCmd.AddCommand(SetFormatCmd)
-	SetCmd.AddCommand(SetRegionCmd)
 }
