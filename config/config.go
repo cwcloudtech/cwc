@@ -27,6 +27,10 @@ func GetValueFromFile(content_file string, key string) string {
 }
 
 func GetConfigValue(key string, defaultValue string) string {
+	if envValue := os.Getenv(strings.ToUpper(key)); envValue != "" {
+		return envValue
+	}
+
 	dirname, err := os.UserHomeDir()
 	if nil != err {
 		return defaultValue
@@ -41,7 +45,7 @@ func GetConfigValue(key string, defaultValue string) string {
 	file_content := string(content)
 	value := GetValueFromFile(file_content, key)
 
-	return value	
+	return value
 }
 
 func GetDefaultRegion() string {
