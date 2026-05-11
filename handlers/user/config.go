@@ -27,6 +27,8 @@ var availableConfigKeys = []string{
 	"openai_base_url",
 	"openrouter_api_key",
 	"openrouter_base_url",
+	"gemini_api_key",
+	"gemini_base_url",
 	"provider",
 	"region",
 	"repo_branch",
