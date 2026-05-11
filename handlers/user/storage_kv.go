@@ -12,7 +12,7 @@ import (
 )
 
 func PrepareCreateStorageKV(storageKV *client.StorageKVCreateRequest) (*client.StorageKVResponse, error) {
-	if storageKV.Key == "" {
+	if utils.IsBlank(storageKV.Key) {
 		return nil, fmt.Errorf("key cannot be empty")
 	}
 
@@ -123,7 +123,7 @@ func displayStorageKVsAsTable(kvs []client.StorageKV) {
 }
 
 func PrepareUpdateStorageKV(key string, updateRequest *client.StorageKVUpdateRequest) (*client.StorageKVResponse, error) {
-	if key == "" {
+	if utils.IsBlank(key) {
 		return nil, fmt.Errorf("key cannot be empty")
 	}
 

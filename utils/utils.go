@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"bytes"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 	"net/mail"
@@ -218,16 +219,18 @@ func GetSystemEditor() string {
 }
 
 func ShortName(name string, hash string) string {
-	if name == "" {
+	if utils.IsBlank(name) {
 		return ""
 	}
-	if hash == "" {
+
+	if utils.IsBlank(hash) {
 		lastDashIndex := strings.LastIndex(name, "-")
 		if lastDashIndex != -1 {
 			return name[:lastDashIndex]
 		}
 		return name
 	}
+
 	hashWithDash := "-" + hash
 	if strings.HasSuffix(name, hashWithDash) {
 		return name[:len(name)-len(hashWithDash)]

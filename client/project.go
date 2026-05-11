@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -58,7 +59,7 @@ func (c *Client) DeleteProjectByUrl(projectUrl string) error {
 	return nil
 }
 func (c *Client) GetAllProjects(projectType string) (*[]Project, error) {
-	if projectType == "" {
+	if utils.IsBlank(projectType) {
 		projectType = "vm"
 	}
 	body, err := c.httpRequest(fmt.Sprintf("/project?type=%s", projectType), "GET", bytes.Buffer{})

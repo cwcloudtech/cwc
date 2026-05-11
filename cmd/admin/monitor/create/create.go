@@ -97,7 +97,7 @@ func parseHeaders(raw string) ([]adminClient.Header, error) {
 
 // ? Helper function to parse callbacks string into []CallbacksContent
 func parseCallbacks(raw string) ([]adminClient.CallbacksContent, error) {
-	if raw == "" {
+	if utils.IsBlank(raw) {
 		return []adminClient.CallbacksContent{}, nil
 	}
 
@@ -147,10 +147,11 @@ func parseCallbacks(raw string) ([]adminClient.CallbacksContent, error) {
 		}
 
 		// Validate required fields based on callback type
-		if cb.Type == "" {
+		if utils.IsBlank(cb.Type) {
 			return nil, fmt.Errorf("callback type is required")
 		}
-		if cb.Endpoint == "" {
+
+		if utils.IsBlank(cb.Endpoint) {
 			return nil, fmt.Errorf("callback endpoint is required")
 		}
 

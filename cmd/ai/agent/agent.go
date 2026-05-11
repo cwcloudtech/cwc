@@ -2,6 +2,7 @@ package agent
 
 import (
 	"bufio"
+	"cwc/utils"
 	"fmt"
 	"os"
 	"strings"
@@ -23,7 +24,7 @@ var AgentCmd = &cobra.Command{
 	Short: "Send a prompt to an AI agent backed by MCP server tools",
 	Long:  "Send a prompt to an AI agent that uses MCP server tools to execute the request",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if !interactive && strings.TrimSpace(promptText) == "" {
+		if !interactive && utils.IsBlank(promptText) {
 			return fmt.Errorf("prompt is required (use -p or --prompt)")
 		}
 
@@ -81,7 +82,7 @@ func runInteractiveMode(agent *LLMAgent, initialPrompt string) error {
 		}
 
 		input := strings.TrimSpace(scanner.Text())
-		if input == "" {
+		if utils.IsBlank(input) {
 			continue
 		}
 

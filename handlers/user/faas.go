@@ -169,9 +169,10 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 			fmt.Print("  ➤ Type (Current available types are http, websocket, and mqtt): ")
 			callback.Type, _ = reader.ReadString('\n')
 			callback.Type = strings.TrimSpace(callback.Type)
-			if callback.Type == "" {
+			if utils.IsBlank(callback.Type) {
 				break
 			}
+
 			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
 				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
 			} else {
@@ -404,9 +405,10 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 			fmt.Print("  ➤ Type (Current available types are http, websocket, and mqtt): ")
 			callback.Type, _ = reader.ReadString('\n')
 			callback.Type = strings.TrimSpace(callback.Type)
-			if callback.Type == "" {
+			if utils.IsBlank(callback.Type) {
 				break
 			}
+
 			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
 				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
 			} else {

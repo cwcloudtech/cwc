@@ -1,6 +1,7 @@
 package mcp
 
 import (
+	"cwc/utils"
 	"fmt"
 	"os"
 	"os/exec"
@@ -68,9 +69,10 @@ var McpCmd = &cobra.Command{
 			}
 			toolName := "cwc_" + sanitizeToolName(strings.Join(spec.Path, "_"))
 			desc := strings.TrimSpace(spec.Description)
-			if desc == "" {
+			if utils.IsBlank(desc) {
 				desc = "(no description)"
 			}
+
 			dynamicToolLines = append(dynamicToolLines, fmt.Sprintf("- %s => cwc %s | %s", toolName, strings.Join(spec.Path, " "), desc))
 		}
 		sort.Strings(dynamicToolLines)
@@ -111,7 +113,7 @@ var McpCmd = &cobra.Command{
 			"Get help for a specific top-level cwc command by returning `cwc <command> --help` output.",
 			func(arguments getCwcCommandHelpArgs) (*mcp_golang.ToolResponse, error) {
 				commandName := strings.TrimSpace(arguments.Command)
-				if commandName == "" {
+				if utils.IsBlank(commandName) {
 					return nil, fmt.Errorf("command is required")
 				}
 
@@ -154,15 +156,17 @@ var McpCmd = &cobra.Command{
 			if len(spec.Path) == 0 {
 				continue
 			}
+
 			if len(spec.Path) >= 2 && spec.Path[0] == "ai" && spec.Path[1] == "mcp" {
 				continue
 			}
 
 			toolName := "cwc_" + sanitizeToolName(strings.Join(spec.Path, "_"))
 			desc := strings.TrimSpace(spec.Description)
-			if desc == "" {
+			if utils.IsBlank(desc) {
 				desc = fmt.Sprintf("Run command path: cwc %s", strings.Join(spec.Path, " "))
 			}
+
 			fullPath := append([]string{}, spec.Path...)
 
 			err = server.RegisterTool(
@@ -331,7 +335,7 @@ func parseAvailableCommands(helpText string) []parsedCommand {
 			continue
 		}
 
-		if trim == "" {
+		if utils.IsBlank(trim) {
 			continue
 		}
 
@@ -365,8 +369,9 @@ func sanitizeToolName(value string) string {
 		}
 	}
 	out := b.String()
-	if out == "" {
+	if utils.IsBlank(out) {
 		return "command"
 	}
+
 	return out
 }

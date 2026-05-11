@@ -26,7 +26,7 @@ func AddObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 	// Prompt for the decoding function of the object type
 	fmt.Print("Enter the decoding function of the object type: ")
 	fmt.Scanln(&objectType.Content.DecodingFunction)
-	if objectType.Content.DecodingFunction == "" {
+	if utils.IsBlank(objectType.Content.DecodingFunction) {
 		fmt.Println("The decoding function is required")
 		fmt.Print("--------------------")
 		fmt.Print("Enter the decoding function of the object type")
@@ -44,9 +44,10 @@ func AddObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 			var trigger string
 			fmt.Print("  ➤ Trigger id: ")
 			fmt.Scanln(&trigger)
-			if trigger == "" {
+			if utils.IsBlank(trigger) {
 				break
 			}
+
 			objectType.Content.Triggers = append(objectType.Content.Triggers, trigger)
 		}
 		if len(objectType.Content.Triggers) == 0 {
@@ -169,7 +170,7 @@ func UpdateObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 	fmt.Println("Current decoding function: ", objectType.Content.DecodingFunction)
 	fmt.Print("Enter the decoding function of the object type (or press Enter to skip): ")
 	fmt.Scanln(&objectType.Content.DecodingFunction)
-	if objectType.Content.DecodingFunction == "" {
+	if utils.IsBlank(objectType.Content.DecodingFunction) {
 		fmt.Println("The decoding function is required")
 		fmt.Print("--------------------")
 		fmt.Print("Enter the decoding function of the object type")
@@ -188,9 +189,10 @@ func UpdateObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 			var trigger string
 			fmt.Print("  ➤ Trigger id: ")
 			fmt.Scanln(&trigger)
-			if trigger == "" {
+			if utils.IsBlank(trigger) {
 				break
 			}
+
 			objectType.Content.Triggers = append(objectType.Content.Triggers, trigger)
 		}
 		if len(objectType.Content.Triggers) == 0 {
