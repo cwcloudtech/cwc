@@ -40,6 +40,11 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
 		defaultModel = "meta-llama/llama-3.3-70b-instruct"
+	case "google", "gemini":
+		baseURL = strings.TrimSpace(config.GetGeminiBaseURL())
+		apiKey = strings.TrimSpace(config.GetGeminiAPIKey())
+		defaultModel = "gemini-2.5-flash"
+		providerName = "gemini"
 	case "deepseek":
 		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
 		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
@@ -260,6 +265,8 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			inputSchema = dynamicRunCmdSchema
 		}
 
+		geminiInputSchema := sanitizeGeminiSchema(inputSchema)
+
 		claudeTools = append(claudeTools, ClaudeTool{
 			Name:        tool.Name,
 			Description: description,
@@ -279,7 +286,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			FunctionDeclarations: []GeminiFunctionDeclaration{{
 				Name:        tool.Name,
 				Description: description,
-				Parameters:  inputSchema,
+				Parameters:  geminiInputSchema,
 			}},
 		})
 	}
@@ -497,6 +504,28 @@ func selectPreferredToolsForPrompt[T any](
 	}
 
 	return selected
+}
+
+func sanitizeGeminiSchema(value interface{}) interface{} {
+	switch typed := value.(type) {
+	case map[string]interface{}:
+		sanitized := make(map[string]interface{}, len(typed))
+		for key, child := range typed {
+			if key == "$schema" {
+				continue
+			}
+			sanitized[key] = sanitizeGeminiSchema(child)
+		}
+		return sanitized
+	case []interface{}:
+		sanitized := make([]interface{}, len(typed))
+		for index, child := range typed {
+			sanitized[index] = sanitizeGeminiSchema(child)
+		}
+		return sanitized
+	default:
+		return value
+	}
 }
 
 func (agent *LLMAgent) hasProviderCredentials() bool {
