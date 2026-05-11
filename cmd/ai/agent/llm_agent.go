@@ -37,8 +37,8 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 	
 	switch providerName {
 	case "openrouter":
-		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
-		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
+		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
+		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
 		defaultModel = "meta-llama/llama-3.3-70b-instruct"
 	case "deepseek":
 		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
@@ -49,8 +49,8 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
 		defaultModel = "claude-haiku-4-5"
 	default:
-		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
-		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
+		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
+		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
 		defaultModel = "gpt-4o-mini"
 		providerName = "openai"
 	}
