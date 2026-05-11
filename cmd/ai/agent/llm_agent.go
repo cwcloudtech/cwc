@@ -40,11 +40,6 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
 		defaultModel = "meta-llama/llama-3.3-70b-instruct"
-	case "google", "gemini":
-		baseURL = strings.TrimSpace(config.GetGeminiBaseURL())
-		apiKey = strings.TrimSpace(config.GetGeminiAPIKey())
-		defaultModel = "gemini-2.5-flash"
-		providerName = "gemini"
 	case "deepseek":
 		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
 		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
