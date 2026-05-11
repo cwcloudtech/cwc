@@ -44,7 +44,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
 		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
 		defaultModel = "deepseek-chat"
-	case "anthropic":
+	case "anthropic", "claude":
 		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
 		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
 		defaultModel = "claude-haiku-4-5"
