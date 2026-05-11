@@ -28,6 +28,7 @@ var AgentCmd = &cobra.Command{
 		}
 
 		agent := NewLLMAgent(serverURL, modelName, provider)
+		fmt.Printf("Using model: %s (provider: %s)\n", agent.modelName, agent.provider)
 		if interactive {
 			return runInteractiveMode(agent, promptText)
 		}
