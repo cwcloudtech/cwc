@@ -19,7 +19,7 @@ func HandleListStorageKVs(search string, userId string, startIndex int, maxResul
 
 	var kvs *admin.StorageKVListResponse
 
-	if userId != "" {
+	if utils.IsNotBlank(userId) {
 		kvs, err = c.GetUserStorageKVs(userId, search, startIndex, maxResults)
 		if err != nil {
 			return fmt.Errorf("error listing user's storage key-values: %v", err)

@@ -84,17 +84,17 @@ func HandleImportConfigFile(configFilePath string) {
 	accessKey, accessKeyExists := configMap["cwc_access_key"]
 	secretKey, secretKeyExists := configMap["cwc_secret_key"]
 
-	if endpointExists && endpoint != "" {
+	if endpointExists && utils.IsNotBlank(endpoint) {
 		config.SetDefaultEndpoint(endpoint)
 		fmt.Printf("Default endpoint = %v\n", endpoint)
 	}
 
-	if formatExists && format != "" {
+	if formatExists && utils.IsNotBlank(format) {
 		config.SetDefaultFormat(format)
 		fmt.Printf("Default output format = %v\n", format)
 	}
 
-	if providerExists && provider != "" {
+	if providerExists && utils.IsNotBlank(provider) {
 		providers, err := client.GetProviders()
 		utils.ExitIfError(err)
 
@@ -109,7 +109,7 @@ func HandleImportConfigFile(configFilePath string) {
 		fmt.Printf("Default provider = %v\n", provider)
 	}
 
-	if regionExists && region != "" {
+	if regionExists && utils.IsNotBlank(region) {
 		providerRegions, err := client.GetProviderRegions()
 		utils.ExitIfError(err)
 

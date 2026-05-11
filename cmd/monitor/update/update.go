@@ -23,7 +23,7 @@ var UpdateCmd = &cobra.Command{
 	Long: `This command lets you update a particular monitor.
 To use this command you have to provide the monitor ID`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if rawHeaders != "" {
+		if utils.IsNotBlank(rawHeaders) {
 			headers, err := parseHeaders(rawHeaders)
 			utils.ExitIfError(err)
 			monitor.Headers = headers
@@ -31,7 +31,7 @@ To use this command you have to provide the monitor ID`,
 			monitor.Headers = []client.Header{}
 		}
 
-		if rawCallbacks != "" {
+		if utils.IsNotBlank(rawCallbacks) {
 			callbacks, err := parseCallbacks(rawCallbacks)
 			utils.ExitIfError(err)
 			monitor.Callbacks = callbacks
@@ -86,7 +86,7 @@ func parseHeaders(raw string) ([]client.Header, error) {
 
 // ? Helper function to parse callbacks string into []CallbacksContent
 func parseCallbacks(raw string) ([]client.CallbacksContent, error) {
-	if raw == "" {
+	if utils.IsBlank(raw) {
 		return []client.CallbacksContent{}, nil
 	}
 
@@ -134,10 +134,11 @@ func parseCallbacks(raw string) ([]client.CallbacksContent, error) {
 		}
 
 		// Validate required fields
-		if cb.Type == "" {
+		if utils.IsBlank(cb.Type) {
 			return nil, fmt.Errorf("callback type is required")
 		}
-		if cb.Endpoint == "" {
+
+		if utils.IsBlank(cb.Endpoint) {
 			return nil, fmt.Errorf("callback endpoint is required")
 		}
 

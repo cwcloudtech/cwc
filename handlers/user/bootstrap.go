@@ -29,13 +29,13 @@ func GetRepoConfig() RepoConfig {
 	repoURL := config.GetRepoURL()
 	branch := config.GetRepoBranch()
 
-	if repoURL == "" {
+	if utils.IsBlank(repoURL) {
 		repoURL = env.REPO_URL
 	} else {
 		env.REPO_URL = repoURL
 	}
 
-	if branch == "" {
+	if utils.IsBlank(branch) {
 		branch = env.BRANCH
 	} else {
 		env.BRANCH = branch
@@ -54,10 +54,11 @@ func HandleTemporaryConfig(tempConfig *RepoConfig) (cleanup func()) {
 
 	originalConfig := GetRepoConfig()
 
-	if tempConfig.RepoURL != "" {
+	if utils.IsNotBlank(tempConfig.RepoURL) {
 		env.REPO_URL = tempConfig.RepoURL
 	}
-	if tempConfig.Branch != "" {
+
+	if utils.IsNotBlank(tempConfig.Branch) {
 		env.BRANCH = tempConfig.Branch
 	}
 
@@ -78,19 +79,19 @@ func (c *RepoConfig) SetRepoBranch(branch string) {
 }
 
 func SaveRepoConfig(config *RepoConfig) {
-	if config.RepoURL != "" {
+	if utils.IsNotBlank(config.RepoURL) {
 		config.SetRepoURL(config.RepoURL)
 	}
 
-	if config.Branch != "" {
+	if utils.IsNotBlank(config.Branch) {
 		config.SetRepoBranch(config.Branch)
 	}
 
-	if config.Username != "" {
+	if utils.IsNotBlank(config.Username) {
 		env.REPO_USERNAME = config.Username
 	}
 
-	if config.Password != "" {
+	if utils.IsNotBlank(config.Password) {
 		env.REPO_PASSWORD = config.Password
 	}
 }
@@ -257,7 +258,7 @@ func CloneRepo(repoURL, directory, branch string, keepDir bool, username, passwo
 		Progress:      os.Stdout,
 	}
 
-	if username != "" || password != "" {
+	if utils.IsNotBlank(username) || utils.IsNotBlank(password) {
 		cloneOptions.Auth = &http.BasicAuth{
 			Username: username,
 			Password: password,

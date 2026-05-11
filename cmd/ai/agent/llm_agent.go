@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"cwc/config"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,18 +24,18 @@ type LLMAgent struct {
 	provider        string
 	client          *mcp_golang.Client
 	httpClient      *http.Client
-	apiKey    string
-	providerBaseUrl  string
+	apiKey          string
+	providerBaseUrl string
 }
 
 // NewLLMAgent creates a new LLM agent connected to an MCP server
 func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent {
 	providerName := strings.ToLower(strings.TrimSpace(provider))
-	
+
 	baseURL := ""
 	apiKey := ""
 	defaultModel := ""
-	
+
 	switch providerName {
 	case "openrouter":
 		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
@@ -61,17 +62,17 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		providerName = "openai"
 	}
 
-	if modelName == "" {
+	if utils.IsBlank(modelName) {
 		modelName = defaultModel
 	}
 
 	return &LLMAgent{
-		serverURL:        serverURL,
-		modelName:        modelName,
-		provider:         providerName,
-		httpClient:       &http.Client{},
-		apiKey:           apiKey,
-		providerBaseUrl:  strings.TrimRight(baseURL, "/"),
+		serverURL:       serverURL,
+		modelName:       modelName,
+		provider:        providerName,
+		httpClient:      &http.Client{},
+		apiKey:          apiKey,
+		providerBaseUrl: strings.TrimRight(baseURL, "/"),
 	}
 }
 
@@ -161,13 +162,13 @@ type OpenAIChatCompletionResponse struct {
 }
 
 type GeminiContent struct {
-	Role  string        `json:"role,omitempty"`
-	Parts []GeminiPart  `json:"parts"`
+	Role  string       `json:"role,omitempty"`
+	Parts []GeminiPart `json:"parts"`
 }
 
 type GeminiPart struct {
-	Text          string               `json:"text,omitempty"`
-	FunctionCall  *GeminiFunctionCall   `json:"functionCall,omitempty"`
+	Text             string                  `json:"text,omitempty"`
+	FunctionCall     *GeminiFunctionCall     `json:"functionCall,omitempty"`
 	FunctionResponse *GeminiFunctionResponse `json:"functionResponse,omitempty"`
 }
 
@@ -194,8 +195,8 @@ type GeminiTool struct {
 }
 
 type GeminiFunctionCallingConfig struct {
-	Mode                  string   `json:"mode,omitempty"`
-	AllowedFunctionNames   []string `json:"allowedFunctionNames,omitempty"`
+	Mode                 string   `json:"mode,omitempty"`
+	AllowedFunctionNames []string `json:"allowedFunctionNames,omitempty"`
 }
 
 type GeminiToolConfig struct {
@@ -208,16 +209,16 @@ type GeminiGenerationConfig struct {
 }
 
 type GeminiGenerateContentRequest struct {
-	Contents         []GeminiContent          `json:"contents"`
-	Tools            []GeminiTool             `json:"tools,omitempty"`
-	ToolConfig       *GeminiToolConfig        `json:"toolConfig,omitempty"`
-	GenerationConfig *GeminiGenerationConfig  `json:"generationConfig,omitempty"`
+	Contents         []GeminiContent         `json:"contents"`
+	Tools            []GeminiTool            `json:"tools,omitempty"`
+	ToolConfig       *GeminiToolConfig       `json:"toolConfig,omitempty"`
+	GenerationConfig *GeminiGenerationConfig `json:"generationConfig,omitempty"`
 }
 
 type GeminiGenerateContentResponse struct {
 	Candidates []struct {
 		Content      GeminiContent `json:"content"`
-		FinishReason  string        `json:"finishReason,omitempty"`
+		FinishReason string        `json:"finishReason,omitempty"`
 	} `json:"candidates"`
 }
 
@@ -225,7 +226,7 @@ type GeminiGenerateContentResponse struct {
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	ctx := context.Background()
 
-	if !agent.hasProviderCredentials() {
+	if utils.IsBlank(agent.apiKey) {
 		return "", fmt.Errorf("LLM credentials are required for provider %s", agent.provider)
 	}
 
@@ -332,7 +333,8 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	} else {
 		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
 	}
-	if err == nil && strings.TrimSpace(modelText) != "" {
+
+	if err == nil && utils.IsNotBlank(modelText) {
 		return modelText, nil
 	}
 
@@ -345,7 +347,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 
 func (agent *LLMAgent) buildDynamicRunCommandSchema(ctx context.Context) map[string]interface{} {
 	raw, err := agent.callTool(ctx, "list_cwc_commands", map[string]interface{}{})
-	if err != nil || strings.TrimSpace(raw) == "" {
+	if err != nil || utils.IsBlank(raw) {
 		return nil
 	}
 
@@ -384,10 +386,11 @@ func extractTopLevelCWCCommands(helpText string) []string {
 
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		if trimmed == "" {
+		if utils.IsBlank(trimmed) {
 			if inSection {
 				break
 			}
+
 			continue
 		}
 
@@ -452,9 +455,9 @@ func selectPreferredToolsForPrompt[T any](
 	}
 
 	essential := map[string]bool{
-		"list_cwc_commands":   true,
+		"list_cwc_commands":    true,
 		"get_cwc_command_help": true,
-		"run_cwc_command":     true,
+		"run_cwc_command":      true,
 	}
 
 	type scoredTool struct {
@@ -484,7 +487,8 @@ func selectPreferredToolsForPrompt[T any](
 			if strings.Contains(name, token) {
 				score += 6
 			}
-			if token != "" && strings.Contains(desc, token) {
+
+			if utils.IsNotBlank(token) && strings.Contains(desc, token) {
 				score += 2
 			}
 		}
@@ -527,10 +531,6 @@ func sanitizeGeminiSchema(value interface{}) interface{} {
 	default:
 		return value
 	}
-}
-
-func (agent *LLMAgent) hasProviderCredentials() bool {
-	return strings.TrimSpace(agent.apiKey) != ""
 }
 
 func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool) (string, error) {
@@ -576,7 +576,7 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTo
 
 func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools []GeminiTool) (string, error) {
 	contents := []GeminiContent{{
-		Role: "user",
+		Role:  "user",
 		Parts: []GeminiPart{{Text: prompt}},
 	}}
 
@@ -609,7 +609,8 @@ func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools
 				functionCalls = append(functionCalls, *part.FunctionCall)
 				continue
 			}
-			if strings.TrimSpace(part.Text) != "" {
+
+			if utils.IsNotBlank(part.Text) {
 				textParts = append(textParts, part.Text)
 			}
 		}
@@ -667,11 +668,12 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools
 			continue
 		}
 		argsMap := map[string]interface{}{}
-		if strings.TrimSpace(toolCall.Function.Arguments) != "" {
+		if utils.IsNotBlank(toolCall.Function.Arguments) {
 			if unmarshalErr := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap); unmarshalErr != nil {
 				return "", fmt.Errorf("failed to parse OpenAI tool arguments: %w", unmarshalErr)
 			}
 		}
+
 		return agent.callTool(ctx, toolCall.Function.Name, argsMap)
 	}
 
@@ -720,12 +722,13 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("invalid server URL: %w", err)
 	}
-	if parsedURL.Scheme == "" || parsedURL.Host == "" {
+
+	if utils.IsBlank(parsedURL.Scheme) || utils.IsBlank(parsedURL.Host) {
 		return fmt.Errorf("server URL must include scheme and host, e.g. http://127.0.0.1:8080/mcp")
 	}
 
 	endpoint := parsedURL.Path
-	if endpoint == "" {
+	if utils.IsBlank(endpoint) {
 		endpoint = "/mcp"
 	}
 
@@ -739,7 +742,7 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 
 // callClaude calls the Claude API
 func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*ClaudeResponse, error) {
-	if agent.apiKey == "" {
+	if utils.IsBlank(agent.apiKey) {
 		return nil, fmt.Errorf("anthropic_api_key config is not set")
 	}
 
@@ -748,7 +751,7 @@ func (agent *LLMAgent) callClaude(ctx context.Context, req ClaudeRequest) (*Clau
 		return nil, fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", agent.providerBaseUrl + "/messages", bytes.NewReader(reqBody))
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", agent.providerBaseUrl+"/messages", bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -796,12 +799,12 @@ func (agent *LLMAgent) callOpenAI(ctx context.Context, req OpenAIChatCompletionR
 		return nil, fmt.Errorf("failed to create OpenAI request: %w", err)
 	}
 
-	if agent.apiKey == "" {
+	if utils.IsBlank(agent.apiKey) {
 		return nil, fmt.Errorf("api key config is not set")
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer " + agent.apiKey)
+	httpReq.Header.Set("Authorization", "Bearer "+agent.apiKey)
 
 	httpResp, err := agent.httpClient.Do(httpReq)
 	if err != nil {
