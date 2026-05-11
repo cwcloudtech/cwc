@@ -44,7 +44,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetGeminiBaseURL())
 		apiKey = strings.TrimSpace(config.GetGeminiAPIKey())
 		defaultModel = "gemini-2.5-flash"
-		providerName = "gemini"
+		providerName = "google"
 	case "deepseek":
 		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
 		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
@@ -53,6 +53,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
 		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
 		defaultModel = "claude-haiku-4-5"
+		providerName = "anthropic"
 	default:
 		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
@@ -326,7 +327,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	modelText := ""
 	if agent.provider == "anthropic" {
 		modelText, err = agent.runAnthropic(ctx, prompt, claudeTools)
-	} else if agent.provider == "gemini" {
+	} else if agent.provider == "google" {
 		modelText, err = agent.runGemini(ctx, prompt, geminiTools)
 	} else {
 		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
