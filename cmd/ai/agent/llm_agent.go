@@ -40,11 +40,16 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
 		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
 		defaultModel = "meta-llama/llama-3.3-70b-instruct"
+	case "google", "gemini":
+		baseURL = strings.TrimSpace(config.GetGeminiBaseURL())
+		apiKey = strings.TrimSpace(config.GetGeminiAPIKey())
+		defaultModel = "gemini-2.5-flash"
+		providerName = "gemini"
 	case "deepseek":
 		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
 		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
 		defaultModel = "deepseek-chat"
-	case "anthropic":
+	case "anthropic", "claude":
 		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
 		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
 		defaultModel = "claude-haiku-4-5"
@@ -154,6 +159,67 @@ type OpenAIChatCompletionResponse struct {
 	Error *ErrorInfo `json:"error,omitempty"`
 }
 
+type GeminiContent struct {
+	Role  string        `json:"role,omitempty"`
+	Parts []GeminiPart  `json:"parts"`
+}
+
+type GeminiPart struct {
+	Text          string               `json:"text,omitempty"`
+	FunctionCall  *GeminiFunctionCall   `json:"functionCall,omitempty"`
+	FunctionResponse *GeminiFunctionResponse `json:"functionResponse,omitempty"`
+}
+
+type GeminiFunctionCall struct {
+	ID   string                 `json:"id,omitempty"`
+	Name string                 `json:"name,omitempty"`
+	Args map[string]interface{} `json:"args,omitempty"`
+}
+
+type GeminiFunctionResponse struct {
+	ID       string                 `json:"id,omitempty"`
+	Name     string                 `json:"name,omitempty"`
+	Response map[string]interface{} `json:"response,omitempty"`
+}
+
+type GeminiFunctionDeclaration struct {
+	Name        string      `json:"name"`
+	Description string      `json:"description,omitempty"`
+	Parameters  interface{} `json:"parameters"`
+}
+
+type GeminiTool struct {
+	FunctionDeclarations []GeminiFunctionDeclaration `json:"functionDeclarations,omitempty"`
+}
+
+type GeminiFunctionCallingConfig struct {
+	Mode                  string   `json:"mode,omitempty"`
+	AllowedFunctionNames   []string `json:"allowedFunctionNames,omitempty"`
+}
+
+type GeminiToolConfig struct {
+	FunctionCallingConfig *GeminiFunctionCallingConfig `json:"functionCallingConfig,omitempty"`
+}
+
+type GeminiGenerationConfig struct {
+	MaxOutputTokens int     `json:"maxOutputTokens,omitempty"`
+	Temperature     float64 `json:"temperature,omitempty"`
+}
+
+type GeminiGenerateContentRequest struct {
+	Contents         []GeminiContent          `json:"contents"`
+	Tools            []GeminiTool             `json:"tools,omitempty"`
+	ToolConfig       *GeminiToolConfig        `json:"toolConfig,omitempty"`
+	GenerationConfig *GeminiGenerationConfig  `json:"generationConfig,omitempty"`
+}
+
+type GeminiGenerateContentResponse struct {
+	Candidates []struct {
+		Content      GeminiContent `json:"content"`
+		FinishReason  string        `json:"finishReason,omitempty"`
+	} `json:"candidates"`
+}
+
 // ProcessPrompt processes a prompt using the configured LLM with MCP server tools
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	ctx := context.Background()
@@ -179,6 +245,7 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 
 	claudeTools := make([]ClaudeTool, 0, len(toolsResp.Tools))
 	openAITools := make([]OpenAITool, 0, len(toolsResp.Tools))
+	geminiTools := make([]GeminiTool, 0, len(toolsResp.Tools))
 	for _, tool := range toolsResp.Tools {
 		description := ""
 		if tool.Description != nil {
@@ -198,6 +265,8 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 			inputSchema = dynamicRunCmdSchema
 		}
 
+		geminiInputSchema := sanitizeGeminiSchema(inputSchema)
+
 		claudeTools = append(claudeTools, ClaudeTool{
 			Name:        tool.Name,
 			Description: description,
@@ -211,6 +280,14 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 				Description: description,
 				Parameters:  inputSchema,
 			},
+		})
+
+		geminiTools = append(geminiTools, GeminiTool{
+			FunctionDeclarations: []GeminiFunctionDeclaration{{
+				Name:        tool.Name,
+				Description: description,
+				Parameters:  geminiInputSchema,
+			}},
 		})
 	}
 
@@ -228,10 +305,29 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		func(tool ClaudeTool) string { return tool.Name },
 		func(tool ClaudeTool) string { return tool.Description },
 	)
+	geminiTools = selectPreferredToolsForPrompt(
+		prompt,
+		geminiTools,
+		128,
+		func(tool GeminiTool) string {
+			if len(tool.FunctionDeclarations) == 0 {
+				return ""
+			}
+			return tool.FunctionDeclarations[0].Name
+		},
+		func(tool GeminiTool) string {
+			if len(tool.FunctionDeclarations) == 0 {
+				return ""
+			}
+			return tool.FunctionDeclarations[0].Description
+		},
+	)
 
 	modelText := ""
 	if agent.provider == "anthropic" {
 		modelText, err = agent.runAnthropic(ctx, prompt, claudeTools)
+	} else if agent.provider == "gemini" {
+		modelText, err = agent.runGemini(ctx, prompt, geminiTools)
 	} else {
 		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
 	}
@@ -410,6 +506,28 @@ func selectPreferredToolsForPrompt[T any](
 	return selected
 }
 
+func sanitizeGeminiSchema(value interface{}) interface{} {
+	switch typed := value.(type) {
+	case map[string]interface{}:
+		sanitized := make(map[string]interface{}, len(typed))
+		for key, child := range typed {
+			if key == "$schema" {
+				continue
+			}
+			sanitized[key] = sanitizeGeminiSchema(child)
+		}
+		return sanitized
+	case []interface{}:
+		sanitized := make([]interface{}, len(typed))
+		for index, child := range typed {
+			sanitized[index] = sanitizeGeminiSchema(child)
+		}
+		return sanitized
+	default:
+		return value
+	}
+}
+
 func (agent *LLMAgent) hasProviderCredentials() bool {
 	return strings.TrimSpace(agent.apiKey) != ""
 }
@@ -455,6 +573,75 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTo
 	return "", nil
 }
 
+func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools []GeminiTool) (string, error) {
+	contents := []GeminiContent{{
+		Role: "user",
+		Parts: []GeminiPart{{Text: prompt}},
+	}}
+
+	req := GeminiGenerateContentRequest{
+		Contents: contents,
+	}
+	if len(geminiTools) > 0 {
+		req.Tools = geminiTools
+		req.ToolConfig = &GeminiToolConfig{
+			FunctionCallingConfig: &GeminiFunctionCallingConfig{Mode: "AUTO"},
+		}
+	}
+	req.GenerationConfig = &GeminiGenerationConfig{MaxOutputTokens: 1024}
+
+	for round := 0; round < 5; round++ {
+		resp, err := agent.callGemini(ctx, req)
+		if err != nil {
+			return "", err
+		}
+		if len(resp.Candidates) == 0 {
+			return "", nil
+		}
+
+		candidate := resp.Candidates[0]
+		modelContent := candidate.Content
+		functionCalls := make([]GeminiFunctionCall, 0)
+		textParts := make([]string, 0)
+		for _, part := range modelContent.Parts {
+			if part.FunctionCall != nil {
+				functionCalls = append(functionCalls, *part.FunctionCall)
+				continue
+			}
+			if strings.TrimSpace(part.Text) != "" {
+				textParts = append(textParts, part.Text)
+			}
+		}
+
+		if len(functionCalls) == 0 {
+			return strings.Join(textParts, "\n"), nil
+		}
+
+		contents = append(contents, modelContent)
+		responseParts := make([]GeminiPart, 0, len(functionCalls))
+		for _, functionCall := range functionCalls {
+			toolOutput, err := agent.callTool(ctx, functionCall.Name, functionCall.Args)
+			if err != nil {
+				return "", err
+			}
+			responseParts = append(responseParts, GeminiPart{
+				FunctionResponse: &GeminiFunctionResponse{
+					ID:       functionCall.ID,
+					Name:     functionCall.Name,
+					Response: map[string]interface{}{"result": toolOutput},
+				},
+			})
+		}
+		contents = append(contents, GeminiContent{
+			Role:  "user",
+			Parts: responseParts,
+		})
+		req.Contents = contents
+	}
+
+	return "", fmt.Errorf("tool loop exceeded maximum iterations")
+}
+
 func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools []OpenAITool) (string, error) {
 	req := OpenAIChatCompletionRequest{
 		Model:    agent.modelName,
@@ -488,6 +675,43 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools
 	}
 
 	return msg.Content, nil
+}
+
+func (agent *LLMAgent) callGemini(ctx context.Context, req GeminiGenerateContentRequest) (*GeminiGenerateContentResponse, error) {
+	reqBody, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal Gemini request: %w", err)
+	}
+
+	endpoint := strings.TrimRight(agent.providerBaseUrl, "/") + "/models/" + url.PathEscape(agent.modelName) + ":generateContent?key=" + url.QueryEscape(agent.apiKey)
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Gemini request: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	httpResp, err := agent.httpClient.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call Gemini API: %w", err)
+	}
+	defer httpResp.Body.Close()
+
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read Gemini response: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Gemini API error: %s", string(body))
+	}
+
+	var response GeminiGenerateContentResponse
+	if err := json.Unmarshal(body, &response); err != nil {
+		return nil, fmt.Errorf("failed to parse Gemini response: %w", err)
+	}
+
+	return &response, nil
 }
 
 func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
