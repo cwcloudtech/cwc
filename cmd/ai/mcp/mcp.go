@@ -192,9 +192,10 @@ var McpCmd = &cobra.Command{
 			func(arguments runCwcCommandArgs) (*mcp_golang.ToolResponse, error) {
 				commandName := strings.TrimSpace(arguments.Command)
 				cliArgs := make([]string, 0, 1+len(arguments.Args))
-				if commandName != "" {
+				if utils.IsNotBlank(commandName) {
 					cliArgs = append(cliArgs, strings.Fields(commandName)...)
 				}
+
 				cliArgs = append(cliArgs, arguments.Args...)
 
 				for len(cliArgs) > 0 && strings.EqualFold(strings.TrimSpace(cliArgs[0]), "cwc") {

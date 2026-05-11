@@ -26,7 +26,7 @@ var CreateCmd = &cobra.Command{
 
 		created, err := user.PrepareCreateStorageKV(&storageKV)
 		utils.ExitIfError(err)
-		
+
 		err = user.HandleCreateStorageKV(created, &pretty)
 		utils.ExitIfError(err)
 	},
@@ -42,7 +42,7 @@ func init() {
 	if nil != err {
 		fmt.Println(err)
 	}
-	
+
 	err = CreateCmd.MarkFlagRequired("payload")
 	if nil != err {
 		fmt.Println(err)
@@ -50,7 +50,7 @@ func init() {
 
 	CreateCmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 		payloadStr, _ := cmd.Flags().GetString("payload")
-		if payloadStr != "" {
+		if utils.IsNotBlank(payloadStr) {
 			payload, err := utils.ParseJSONPayload(payloadStr)
 			if err != nil {
 				return err

@@ -67,7 +67,7 @@ func runInteractiveMode(agent *LLMAgent, initialPrompt string) error {
 		fmt.Println(result)
 	}
 
-	if strings.TrimSpace(initialPrompt) != "" {
+	if utils.IsNotBlank(initialPrompt) {
 		processPrompt(initialPrompt)
 	}
 

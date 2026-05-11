@@ -22,7 +22,7 @@ var CreateCmd = &cobra.Command{
 	Short: "Create a monitor with cwcloud",
 	Long:  "This command lets you create a monitor with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
-		if rawHeaders != "" {
+		if utils.IsNotBlank(rawHeaders) {
 			headers, err := parseHeaders(rawHeaders)
 			utils.ExitIfError(err)
 			monitor.Headers = headers
@@ -30,7 +30,7 @@ var CreateCmd = &cobra.Command{
 			monitor.Headers = []client.Header{}
 		}
 
-		if rawCallbacks != "" {
+		if utils.IsNotBlank(rawCallbacks) {
 			callbacks, err := parseCallbacks(rawCallbacks)
 			utils.ExitIfError(err)
 			monitor.Callbacks = callbacks

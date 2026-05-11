@@ -22,7 +22,7 @@ var UpdateCmd = &cobra.Command{
 	Short: "Update a monitor with cwcloud",
 	Long:  "This command lets you update a monitor with cwcloud.",
 	Run: func(cmd *cobra.Command, args []string) {
-		if rawHeaders != "" {
+		if utils.IsNotBlank(rawHeaders) {
 			headers, err := parseHeaders(rawHeaders)
 			utils.ExitIfError(err)
 			monitor.Headers = headers

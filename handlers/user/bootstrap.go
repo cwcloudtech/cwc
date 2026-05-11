@@ -258,7 +258,7 @@ func CloneRepo(repoURL, directory, branch string, keepDir bool, username, passwo
 		Progress:      os.Stdout,
 	}
 
-	if username != "" || password != "" {
+	if utils.IsNotBlank(username) || utils.IsNotBlank(password) {
 		cloneOptions.Auth = &http.BasicAuth{
 			Username: username,
 			Password: password,

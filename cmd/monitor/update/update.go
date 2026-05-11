@@ -23,7 +23,7 @@ var UpdateCmd = &cobra.Command{
 	Long: `This command lets you update a particular monitor.
 To use this command you have to provide the monitor ID`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if rawHeaders != "" {
+		if utils.IsNotBlank(rawHeaders) {
 			headers, err := parseHeaders(rawHeaders)
 			utils.ExitIfError(err)
 			monitor.Headers = headers
@@ -31,7 +31,7 @@ To use this command you have to provide the monitor ID`,
 			monitor.Headers = []client.Header{}
 		}
 
-		if rawCallbacks != "" {
+		if utils.IsNotBlank(rawCallbacks) {
 			callbacks, err := parseCallbacks(rawCallbacks)
 			utils.ExitIfError(err)
 			monitor.Callbacks = callbacks

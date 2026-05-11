@@ -2,6 +2,7 @@ package admin
 
 import (
 	"bytes"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -9,9 +10,10 @@ import (
 
 func (c *Client) GetAllStorageKVs(search string, startIndex int, maxResults int, userId string) (*StorageKVListResponse, error) {
 	query := url.Values{}
-	if search != "" {
+	if utils.IsNotBlank(search) {
 		query.Add("search", search)
 	}
+
 	query.Add("start_index", fmt.Sprintf("%d", startIndex))
 	query.Add("max_results", fmt.Sprintf("%d", maxResults))
 
@@ -32,9 +34,10 @@ func (c *Client) GetAllStorageKVs(search string, startIndex int, maxResults int,
 
 func (c *Client) GetUserStorageKVs(userId string, search string, startIndex int, maxResults int) (*StorageKVListResponse, error) {
 	query := url.Values{}
-	if search != "" {
+	if utils.IsNotBlank(search) {
 		query.Add("search", search)
 	}
+
 	query.Add("start_index", fmt.Sprintf("%d", startIndex))
 	query.Add("max_results", fmt.Sprintf("%d", maxResults))
 

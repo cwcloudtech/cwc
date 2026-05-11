@@ -226,7 +226,7 @@ type GeminiGenerateContentResponse struct {
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	ctx := context.Background()
 
-	if !agent.hasProviderCredentials() {
+	if utils.IsBlank(agent.apiKey) {
 		return "", fmt.Errorf("LLM credentials are required for provider %s", agent.provider)
 	}
 
@@ -333,7 +333,8 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	} else {
 		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
 	}
-	if err == nil && strings.TrimSpace(modelText) != "" {
+
+	if err == nil && utils.IsNotBlank(modelText) {
 		return modelText, nil
 	}
 
@@ -486,7 +487,8 @@ func selectPreferredToolsForPrompt[T any](
 			if strings.Contains(name, token) {
 				score += 6
 			}
-			if token != "" && strings.Contains(desc, token) {
+
+			if utils.IsNotBlank(token) && strings.Contains(desc, token) {
 				score += 2
 			}
 		}
@@ -529,10 +531,6 @@ func sanitizeGeminiSchema(value interface{}) interface{} {
 	default:
 		return value
 	}
-}
-
-func (agent *LLMAgent) hasProviderCredentials() bool {
-	return strings.TrimSpace(agent.apiKey) != ""
 }
 
 func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool) (string, error) {
@@ -611,7 +609,8 @@ func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools
 				functionCalls = append(functionCalls, *part.FunctionCall)
 				continue
 			}
-			if strings.TrimSpace(part.Text) != "" {
+
+			if utils.IsNotBlank(part.Text) {
 				textParts = append(textParts, part.Text)
 			}
 		}
@@ -669,11 +668,12 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools
 			continue
 		}
 		argsMap := map[string]interface{}{}
-		if strings.TrimSpace(toolCall.Function.Arguments) != "" {
+		if utils.IsNotBlank(toolCall.Function.Arguments) {
 			if unmarshalErr := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap); unmarshalErr != nil {
 				return "", fmt.Errorf("failed to parse OpenAI tool arguments: %w", unmarshalErr)
 			}
 		}
+
 		return agent.callTool(ctx, toolCall.Function.Name, argsMap)
 	}
 

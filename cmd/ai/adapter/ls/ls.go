@@ -22,7 +22,7 @@ var LsCmd = &cobra.Command{
 		c, err := client.NewClient()
 		utils.ExitIfError(err)
 
-		if adapterId != "" {
+		if utils.IsNotBlank(adapterId) {
 			adapter, err := c.GetAIAdapterById(adapterId)
 			utils.ExitIfError(err)
 			user.HandleGetAIAdapter(adapter, &pretty)
