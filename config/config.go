@@ -90,6 +90,14 @@ func GetAnthropicAPIKey() string {
 	return GetConfigValue("anthropic_api_key", "")
 }
 
+func GetGeminiBaseURL() string {
+	return GetConfigValue("gemini_base_url", "https://generativelanguage.googleapis.com/v1beta")
+}
+
+func GetGeminiAPIKey() string {
+	return GetConfigValue("gemini_api_key", "")
+}
+
 func GetDefaultKubeConfigPath() string {
 	return GetConfigValue("kube_config_path", "")
 }
