@@ -98,6 +98,14 @@ func GetGeminiAPIKey() string {
 	return GetConfigValue("gemini_api_key", "")
 }
 
+func GetDefaultAiProvider() string {
+	return GetConfigValue("default_ai_provider", "openai")
+}
+
+func GetDefaultAiModel() string {
+	return GetConfigValue("default_ai_model", "")
+}
+
 func GetDefaultKubeConfigPath() string {
 	return GetConfigValue("kube_config_path", "")
 }
