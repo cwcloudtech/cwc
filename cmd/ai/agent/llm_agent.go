@@ -38,26 +38,26 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 
 	switch providerName {
 	case "openrouter":
-		baseURL = strings.TrimSpace(config.GetOpenRouterBaseURL())
-		apiKey = strings.TrimSpace(config.GetOpenRouterAPIKey())
+		baseURL = config.GetOpenRouterBaseURL()
+		apiKey = config.GetOpenRouterAPIKey()
 		defaultModel = "meta-llama/llama-3.3-70b-instruct"
 	case "google", "gemini":
-		baseURL = strings.TrimSpace(config.GetGeminiBaseURL())
-		apiKey = strings.TrimSpace(config.GetGeminiAPIKey())
+		baseURL = config.GetGeminiBaseURL()
+		apiKey = config.GetGeminiAPIKey()
 		defaultModel = "gemini-2.5-flash"
 		providerName = "google"
 	case "deepseek":
-		baseURL = strings.TrimSpace(config.GetDeepSeekBaseURL())
-		apiKey = strings.TrimSpace(config.GetDeepSeekAPIKey())
+		baseURL = config.GetDeepSeekBaseURL()
+		apiKey = config.GetDeepSeekAPIKey()
 		defaultModel = "deepseek-chat"
 	case "anthropic", "claude":
-		baseURL = strings.TrimSpace(config.GetAnthropicBaseURL())
-		apiKey = strings.TrimSpace(config.GetAnthropicAPIKey())
+		baseURL = config.GetAnthropicBaseURL()
+		apiKey = config.GetAnthropicAPIKey()
 		defaultModel = "claude-haiku-4-5"
 		providerName = "anthropic"
 	default:
-		baseURL = strings.TrimSpace(config.GetOpenAIBaseURL())
-		apiKey = strings.TrimSpace(config.GetOpenAIAPIKey())
+		baseURL = config.GetOpenAIBaseURL()
+		apiKey = config.GetOpenAIAPIKey()
 		defaultModel = "gpt-4o-mini"
 		providerName = "openai"
 	}

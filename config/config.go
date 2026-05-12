@@ -23,31 +23,32 @@ func GetValueFromFile(content_file string, key string) string {
 		return ""
 	}
 
-	return strings.Split(requested_line, " = ")[1]
+	return strings.TrimSpace(strings.Split(requested_line, " = ")[1])
 }
 
 func GetConfigValue(key string, defaultValue string) string {
+	trimedDefaultValue := strings.TrimSpace(defaultValue)
 	if envValue := os.Getenv("CWC_" + strings.ToUpper(key)); utils.IsNotBlank(envValue) {
 		return envValue
 	}
 
 	dirname, err := os.UserHomeDir()
 	if nil != err {
-		return defaultValue
+		return trimedDefaultValue
 	}
 
 	config_path := fmt.Sprintf("%s/.cwc/config", dirname)
 	content, err := os.ReadFile(config_path)
 	if nil != err {
-		return defaultValue
+		return trimedDefaultValue
 	}
 
 	file_content := string(content)
-	if value := GetValueFromFile(file_content, key); !utils.IsBlank(value) {
+	if value := GetValueFromFile(file_content, key); utils.IsNotBlank(value) {
 		return value
 	}
 
-	return defaultValue
+	return trimedDefaultValue
 }
 
 func GetDefaultRegion() string {
