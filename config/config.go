@@ -14,7 +14,7 @@ func GetValueFromFile(content_file string, key string) string {
 	lines := strings.Split(content_file, "\n")
 	var requested_line string
 	for i, line := range lines {
-		if strings.Contains(line, key+" =") {
+		if strings.HasPrefix(line, key+" =") {
 			requested_line = lines[i]
 		}
 	}
@@ -141,7 +141,7 @@ func SetValueToKeyInFile(file string, key string, value string) {
 	file_content := string(file_output)
 	lines := strings.Split(file_content, "\n")
 	for i, line := range lines {
-		if strings.Contains(line, key+" =") {
+		if strings.HasPrefix(line, key+" =") {
 			lines[i] = fmt.Sprintf("%s = %s", key, value)
 		}
 	}
