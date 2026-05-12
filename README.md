@@ -8,7 +8,7 @@
 
 This is a CLI written in go that will help you work with [CWCloud API](./README.md).  
 It's pretty easy to ship into your IaC pipelines.  
-You'll find everything you need in [our documentation](https://doc.cloud.comwork.io/docs/tutorials/api/cli).  
+You'll find everything you need in [our documentation](https://www.cwcloud.tech/docs/tutorials/cli).
 
 ## Installation
 

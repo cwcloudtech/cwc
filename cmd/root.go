@@ -39,7 +39,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "cwc",
 	Short: "\nA Command Line interface to manage your cloud resources in CWCloud",
-	Long:  "\nA Command Line interface to manage your cloud resources in CWCloud.\nComplete documentation is available here: https://doc.cloud.comwork.io/docs/tutorials/api/cli/",
+	Long:  "\nA Command Line interface to manage your cloud resources in CWCloud.\nComplete documentation is available here: https://www.cwcloud.tech/docs/tutorials/cli",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
