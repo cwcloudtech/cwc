@@ -179,7 +179,7 @@ func formatWebAgentMessage(raw string) string {
 	output = strings.TrimRight(output, "\n")
 
 	var builder strings.Builder
-	builder.WriteString("```shell\n")
+	builder.WriteString("```console\n")
 
 	if strings.TrimSpace(command) != "" {
 		builder.WriteString("$ ")
