@@ -36,10 +36,11 @@ func FormatWebAgentMessage(raw string) string {
 		builder.WriteString("\n```")
 	}
 
+	if builder.Len() > 0 {
+		builder.WriteString("\n\n")
+	}
+
 	if hasPrettyTable && IsNotBlank(convertedOutput) {
-		if builder.Len() > 0 {
-			builder.WriteString("\n\n")
-		}
 		builder.WriteString(convertedOutput)
 	} else if IsNotBlank(output) {
 		builder.WriteString("```console\n")
@@ -48,10 +49,11 @@ func FormatWebAgentMessage(raw string) string {
 		builder.WriteString("```")
 	}
 
+	if builder.Len() > 0 {
+		builder.WriteString("\n\n")
+	}
+
 	if IsNotBlank(exitCode) && exitCode != "0" {
-		if builder.Len() > 0 {
-			builder.WriteString("\n\n")
-		}
 		builder.WriteString("# exit_code: ")
 		builder.WriteString(exitCode)
 		builder.WriteString("\n")
