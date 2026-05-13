@@ -5,6 +5,7 @@ import (
 	"cwc/cmd/ai/agent"
 	"cwc/cmd/ai/mcp"
 	"cwc/cmd/ai/prompt"
+	"cwc/cmd/ai/web_agent"
 
 	"github.com/spf13/cobra"
 )
@@ -24,4 +25,5 @@ func init() {
 	AiCmd.AddCommand(agent.AgentCmd)
 	AiCmd.AddCommand(mcp.McpCmd)
 	AiCmd.AddCommand(prompt.PromptCmd)
+	AiCmd.AddCommand(web_agent.WebAgentCmd)
 }

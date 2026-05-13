@@ -150,6 +150,7 @@ type OpenAIFunctionCall struct {
 type OpenAIChatCompletionRequest struct {
 	Model      string          `json:"model"`
 	Messages   []OpenAIMessage `json:"messages"`
+	MaxTokens  int             `json:"max_tokens,omitempty"`
 	Tools      []OpenAITool    `json:"tools,omitempty"`
 	ToolChoice string          `json:"tool_choice,omitempty"`
 }
@@ -222,12 +223,49 @@ type GeminiGenerateContentResponse struct {
 	} `json:"candidates"`
 }
 
+// AgentConversationMessage is an input message for multi-message conversations.
+type AgentConversationMessage struct {
+	Role    string `json:"role"`
+	Message string `json:"message"`
+}
+
+// AgentSettings controls runtime behavior for the provider request.
+type AgentSettings struct {
+	MaxTokens int `json:"max_tokens,omitempty"`
+}
+
+const defaultAgentMaxTokens = 1024
+
 // ProcessPrompt processes a prompt using the configured LLM with MCP server tools
 func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
+	messages := []AgentConversationMessage{{
+		Role:    "user",
+		Message: prompt,
+	}}
+
+	return agent.ProcessConversation(messages, AgentSettings{})
+}
+
+// ProcessConversation processes a conversation using the configured LLM with MCP server tools.
+func (agent *LLMAgent) ProcessConversation(messages []AgentConversationMessage, settings AgentSettings) (string, error) {
 	ctx := context.Background()
 
 	if utils.IsBlank(agent.apiKey) {
 		return "", fmt.Errorf("LLM credentials are required for provider %s", agent.provider)
+	}
+
+	if len(messages) == 0 {
+		return "", fmt.Errorf("at least one message is required")
+	}
+
+	maxTokens := settings.MaxTokens
+	if maxTokens <= 0 {
+		maxTokens = defaultAgentMaxTokens
+	}
+
+	prompt := latestUserMessage(messages)
+	if utils.IsBlank(prompt) {
+		return "", fmt.Errorf("at least one user message is required")
 	}
 
 	if err := agent.initializeMCPClient(ctx); err != nil {
@@ -327,11 +365,11 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 
 	modelText := ""
 	if agent.provider == "anthropic" {
-		modelText, err = agent.runAnthropic(ctx, prompt, claudeTools)
+		modelText, err = agent.runAnthropic(ctx, messages, maxTokens, claudeTools)
 	} else if agent.provider == "google" {
-		modelText, err = agent.runGemini(ctx, prompt, geminiTools)
+		modelText, err = agent.runGemini(ctx, messages, maxTokens, geminiTools)
 	} else {
-		modelText, err = agent.runOpenAI(ctx, prompt, openAITools)
+		modelText, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
 	}
 
 	if err == nil && utils.IsNotBlank(modelText) {
@@ -343,6 +381,17 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 	}
 
 	return "No response from model", nil
+}
+
+func latestUserMessage(messages []AgentConversationMessage) string {
+	for i := len(messages) - 1; i >= 0; i-- {
+		role := strings.ToLower(strings.TrimSpace(messages[i].Role))
+		if role == "user" && utils.IsNotBlank(messages[i].Message) {
+			return messages[i].Message
+		}
+	}
+
+	return ""
 }
 
 func (agent *LLMAgent) buildDynamicRunCommandSchema(ctx context.Context) map[string]interface{} {
@@ -533,17 +582,34 @@ func sanitizeGeminiSchema(value interface{}) interface{} {
 	}
 }
 
-func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTools []ClaudeTool) (string, error) {
+func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConversationMessage, maxTokens int, claudeTools []ClaudeTool) (string, error) {
+	claudeMessages := make([]ClaudeMessage, 0, len(messages))
+	for _, input := range messages {
+		role := strings.ToLower(strings.TrimSpace(input.Role))
+		if utils.IsBlank(input.Message) {
+			continue
+		}
+
+		switch role {
+		case "assistant", "user":
+			claudeMessages = append(claudeMessages, ClaudeMessage{Role: role, Content: input.Message})
+		case "system":
+			// Keep support for system role by passing it as user content for Anthropic.
+			claudeMessages = append(claudeMessages, ClaudeMessage{Role: "user", Content: "System: " + input.Message})
+		default:
+			claudeMessages = append(claudeMessages, ClaudeMessage{Role: "user", Content: input.Message})
+		}
+	}
+
+	if len(claudeMessages) == 0 {
+		return "", fmt.Errorf("at least one non-empty message is required")
+	}
+
 	claudeReq := ClaudeRequest{
 		Model:     agent.modelName,
-		MaxTokens: 1024,
+		MaxTokens: maxTokens,
 		Tools:     claudeTools,
-		Messages: []ClaudeMessage{
-			{
-				Role:    "user",
-				Content: prompt,
-			},
-		},
+		Messages:  claudeMessages,
 	}
 
 	response, err := agent.callClaude(ctx, claudeReq)
@@ -574,11 +640,35 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, prompt string, claudeTo
 	return "", nil
 }
 
-func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools []GeminiTool) (string, error) {
-	contents := []GeminiContent{{
-		Role:  "user",
-		Parts: []GeminiPart{{Text: prompt}},
-	}}
+func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversationMessage, maxTokens int, geminiTools []GeminiTool) (string, error) {
+	contents := make([]GeminiContent, 0, len(messages))
+	for _, input := range messages {
+		if utils.IsBlank(input.Message) {
+			continue
+		}
+
+		role := strings.ToLower(strings.TrimSpace(input.Role))
+		switch role {
+		case "model", "assistant":
+			role = "model"
+		default:
+			role = "user"
+		}
+
+		text := input.Message
+		if strings.ToLower(strings.TrimSpace(input.Role)) == "system" {
+			text = "System: " + input.Message
+		}
+
+		contents = append(contents, GeminiContent{
+			Role:  role,
+			Parts: []GeminiPart{{Text: text}},
+		})
+	}
+
+	if len(contents) == 0 {
+		return "", fmt.Errorf("at least one non-empty message is required")
+	}
 
 	req := GeminiGenerateContentRequest{
 		Contents: contents,
@@ -589,7 +679,7 @@ func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools
 			FunctionCallingConfig: &GeminiFunctionCallingConfig{Mode: "AUTO"},
 		}
 	}
-	req.GenerationConfig = &GeminiGenerationConfig{MaxOutputTokens: 1024}
+	req.GenerationConfig = &GeminiGenerationConfig{MaxOutputTokens: maxTokens}
 
 	for round := 0; round < 5; round++ {
 		resp, err := agent.callGemini(ctx, req)
@@ -644,10 +734,31 @@ func (agent *LLMAgent) runGemini(ctx context.Context, prompt string, geminiTools
 	return "", fmt.Errorf("tool loop exceeded maximum iterations")
 }
 
-func (agent *LLMAgent) runOpenAI(ctx context.Context, prompt string, openAITools []OpenAITool) (string, error) {
+func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversationMessage, maxTokens int, openAITools []OpenAITool) (string, error) {
+	openAIMessages := make([]OpenAIMessage, 0, len(messages))
+	for _, input := range messages {
+		if utils.IsBlank(input.Message) {
+			continue
+		}
+
+		role := strings.ToLower(strings.TrimSpace(input.Role))
+		switch role {
+		case "system", "assistant", "user", "tool":
+		default:
+			role = "user"
+		}
+
+		openAIMessages = append(openAIMessages, OpenAIMessage{Role: role, Content: input.Message})
+	}
+
+	if len(openAIMessages) == 0 {
+		return "", fmt.Errorf("at least one non-empty message is required")
+	}
+
 	req := OpenAIChatCompletionRequest{
-		Model:    agent.modelName,
-		Messages: []OpenAIMessage{{Role: "user", Content: prompt}},
+		Model:     agent.modelName,
+		Messages:  openAIMessages,
+		MaxTokens: maxTokens,
 	}
 	if len(openAITools) > 0 {
 		req.Tools = openAITools
