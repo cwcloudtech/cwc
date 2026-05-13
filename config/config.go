@@ -29,11 +29,11 @@ func GetValueFromFile(content_file string, key string) string {
 func GetConfigValue(key string, defaultValue string) string {
 	trimedDefaultValue := strings.TrimSpace(defaultValue)
 	if envValue := os.Getenv("CWC_" + strings.ToUpper(key)); utils.IsNotBlank(envValue) {
-		return envValue
+		return strings.TrimSpace(envValue)
 	}
 
 	if envValue := os.Getenv(strings.ToUpper(key)); strings.HasPrefix(key, "cwc_") && utils.IsNotBlank(envValue) {
-		return envValue
+		return strings.TrimSpace(envValue)
 	}
 
 	dirname, err := os.UserHomeDir()
