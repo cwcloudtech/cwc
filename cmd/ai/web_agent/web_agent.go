@@ -149,57 +149,7 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(webAgentResponse{
 		Status:  "ok",
-		Message: formatWebAgentMessage(result.Response),
+		Message: utils.FormatWebAgentMessage(result.Response),
 		Usage:   usage,
 	})
-}
-
-func formatWebAgentMessage(raw string) string {
-	if !strings.HasPrefix(raw, "command: cwc ") || !strings.Contains(raw, "\noutput:\n") {
-		return raw
-	}
-
-	command := ""
-	exitCode := ""
-	lines := strings.Split(raw, "\n")
-	for _, line := range lines {
-		if strings.HasPrefix(line, "command: ") {
-			command = strings.TrimSpace(strings.TrimPrefix(line, "command: "))
-			continue
-		}
-
-		if strings.HasPrefix(line, "exit_code: ") {
-			exitCode = strings.TrimSpace(strings.TrimPrefix(line, "exit_code: "))
-		}
-	}
-
-	output := raw
-	if idx := strings.Index(raw, "\noutput:\n"); idx >= 0 {
-		output = raw[idx+len("\noutput:\n"):]
-	}
-	output = strings.TrimRight(output, "\n")
-
-	var builder strings.Builder
-
-	builder.WriteString("```console\n")
-
-	if utils.IsNotBlank(command) {
-		builder.WriteString("$ ")
-		builder.WriteString(command)
-		builder.WriteString("\n")
-	}
-
-	if utils.IsNotBlank(output) {
-		builder.WriteString(output)
-		builder.WriteString("\n")
-	}
-
-	if utils.IsNotBlank(exitCode) && exitCode != "0" {
-		builder.WriteString("# exit_code: ")
-		builder.WriteString(exitCode)
-		builder.WriteString("\n")
-	}
-
-	builder.WriteString("```")
-	return builder.String()
 }
