@@ -125,7 +125,7 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 		return
 	}
 
-	result, err := llmAgent.ProcessConversation(messages, agent.AgentSettings{MaxTokens: req.Settings.MaxTokens})
+	result, err := llmAgent.ProcessConversationWithUsage(messages, agent.AgentSettings{MaxTokens: req.Settings.MaxTokens})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(webAgentResponse{
@@ -136,10 +136,19 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 		return
 	}
 
+	usage := map[string]interface{}{}
+	if result.Usage != nil {
+		usage = map[string]interface{}{
+			"total":      result.Usage.Total,
+			"prompt":     result.Usage.Prompt,
+			"completion": result.Usage.Completion,
+		}
+	}
+
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(webAgentResponse{
 		Status:   "ok",
-		Response: result,
-		Usage:    map[string]interface{}{},
+		Response: result.Response,
+		Usage:    usage,
 	})
 }

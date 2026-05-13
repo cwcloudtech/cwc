@@ -100,7 +100,14 @@ type ClaudeTool struct {
 // ClaudeResponse represents Claude's response
 type ClaudeResponse struct {
 	Content []ContentBlock `json:"content"`
+	Usage   *ClaudeUsage   `json:"usage,omitempty"`
 	Error   *ErrorInfo     `json:"error,omitempty"`
+}
+
+// ClaudeUsage represents token usage in Claude's response
+type ClaudeUsage struct {
+	InputTokens  int `json:"input_tokens,omitempty"`
+	OutputTokens int `json:"output_tokens,omitempty"`
 }
 
 // ContentBlock represents a block in Claude's response
@@ -159,7 +166,15 @@ type OpenAIChatCompletionResponse struct {
 	Choices []struct {
 		Message OpenAIMessage `json:"message"`
 	} `json:"choices"`
-	Error *ErrorInfo `json:"error,omitempty"`
+	Usage *OpenAIUsage `json:"usage,omitempty"`
+	Error *ErrorInfo   `json:"error,omitempty"`
+}
+
+// OpenAIUsage represents token usage in OpenAI's response
+type OpenAIUsage struct {
+	PromptTokens     int `json:"prompt_tokens,omitempty"`
+	CompletionTokens int `json:"completion_tokens,omitempty"`
+	TotalTokens      int `json:"total_tokens,omitempty"`
 }
 
 type GeminiContent struct {
@@ -221,6 +236,14 @@ type GeminiGenerateContentResponse struct {
 		Content      GeminiContent `json:"content"`
 		FinishReason string        `json:"finishReason,omitempty"`
 	} `json:"candidates"`
+	UsageMetadata *GeminiUsage `json:"usageMetadata,omitempty"`
+}
+
+// GeminiUsage represents token usage in Gemini's response
+type GeminiUsage struct {
+	PromptTokenCount     int `json:"promptTokenCount,omitempty"`
+	CandidatesTokenCount int `json:"candidatesTokenCount,omitempty"`
+	TotalTokenCount      int `json:"totalTokenCount,omitempty"`
 }
 
 // AgentConversationMessage is an input message for multi-message conversations.
@@ -234,6 +257,19 @@ type AgentSettings struct {
 	MaxTokens int `json:"max_tokens,omitempty"`
 }
 
+// ConversationResult holds the response text and token usage
+type ConversationResult struct {
+	Response string
+	Usage    *TokenUsage
+}
+
+// TokenUsage represents token usage across all providers
+type TokenUsage struct {
+	Total      int `json:"total"`
+	Prompt     int `json:"prompt"`
+	Completion int `json:"completion"`
+}
+
 const defaultAgentMaxTokens = 1024
 
 // ProcessPrompt processes a prompt using the configured LLM with MCP server tools
@@ -243,19 +279,32 @@ func (agent *LLMAgent) ProcessPrompt(prompt string) (string, error) {
 		Message: prompt,
 	}}
 
-	return agent.ProcessConversation(messages, AgentSettings{})
+	result, err := agent.ProcessConversationWithUsage(messages, AgentSettings{})
+	if err != nil {
+		return "", err
+	}
+	return result.Response, nil
 }
 
 // ProcessConversation processes a conversation using the configured LLM with MCP server tools.
 func (agent *LLMAgent) ProcessConversation(messages []AgentConversationMessage, settings AgentSettings) (string, error) {
+	result, err := agent.ProcessConversationWithUsage(messages, settings)
+	if err != nil {
+		return "", err
+	}
+	return result.Response, nil
+}
+
+// ProcessConversationWithUsage processes a conversation and returns both response and token usage.
+func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversationMessage, settings AgentSettings) (*ConversationResult, error) {
 	ctx := context.Background()
 
 	if utils.IsBlank(agent.apiKey) {
-		return "", fmt.Errorf("LLM credentials are required for provider %s", agent.provider)
+		return nil, fmt.Errorf("LLM credentials are required for provider %s", agent.provider)
 	}
 
 	if len(messages) == 0 {
-		return "", fmt.Errorf("at least one message is required")
+		return nil, fmt.Errorf("at least one message is required")
 	}
 
 	maxTokens := settings.MaxTokens
@@ -265,20 +314,20 @@ func (agent *LLMAgent) ProcessConversation(messages []AgentConversationMessage, 
 
 	prompt := latestUserMessage(messages)
 	if utils.IsBlank(prompt) {
-		return "", fmt.Errorf("at least one user message is required")
+		return nil, fmt.Errorf("at least one user message is required")
 	}
 
 	if err := agent.initializeMCPClient(ctx); err != nil {
-		return "", fmt.Errorf("failed to initialize MCP client: %w", err)
+		return nil, fmt.Errorf("failed to initialize MCP client: %w", err)
 	}
 
 	toolsResp, err := agent.client.ListTools(ctx, nil)
 	if err != nil {
-		return "", fmt.Errorf("failed to list MCP tools: %w", err)
+		return nil, fmt.Errorf("failed to list MCP tools: %w", err)
 	}
 
 	if toolsResp == nil || len(toolsResp.Tools) == 0 {
-		return "", fmt.Errorf("no tools available from MCP server")
+		return nil, fmt.Errorf("no tools available from MCP server")
 	}
 
 	dynamicRunCmdSchema := agent.buildDynamicRunCommandSchema(ctx)
@@ -363,24 +412,24 @@ func (agent *LLMAgent) ProcessConversation(messages []AgentConversationMessage, 
 		},
 	)
 
-	modelText := ""
+	var result *ConversationResult
 	if agent.provider == "anthropic" {
-		modelText, err = agent.runAnthropic(ctx, messages, maxTokens, claudeTools)
+		result, err = agent.runAnthropic(ctx, messages, maxTokens, claudeTools)
 	} else if agent.provider == "google" {
-		modelText, err = agent.runGemini(ctx, messages, maxTokens, geminiTools)
+		result, err = agent.runGemini(ctx, messages, maxTokens, geminiTools)
 	} else {
-		modelText, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
+		result, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
 	}
 
-	if err == nil && utils.IsNotBlank(modelText) {
-		return modelText, nil
+	if err == nil && result != nil && utils.IsNotBlank(result.Response) {
+		return result, nil
 	}
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return "No response from model", nil
+	return &ConversationResult{Response: "No response from model", Usage: &TokenUsage{}}, nil
 }
 
 func latestUserMessage(messages []AgentConversationMessage) string {
@@ -582,7 +631,7 @@ func sanitizeGeminiSchema(value interface{}) interface{} {
 	}
 }
 
-func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConversationMessage, maxTokens int, claudeTools []ClaudeTool) (string, error) {
+func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConversationMessage, maxTokens int, claudeTools []ClaudeTool) (*ConversationResult, error) {
 	claudeMessages := make([]ClaudeMessage, 0, len(messages))
 	for _, input := range messages {
 		role := strings.ToLower(strings.TrimSpace(input.Role))
@@ -602,7 +651,7 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConvers
 	}
 
 	if len(claudeMessages) == 0 {
-		return "", fmt.Errorf("at least one non-empty message is required")
+		return nil, fmt.Errorf("at least one non-empty message is required")
 	}
 
 	claudeReq := ClaudeRequest{
@@ -614,7 +663,16 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConvers
 
 	response, err := agent.callClaude(ctx, claudeReq)
 	if err != nil {
-		return "", err
+		return nil, err
+	}
+
+	var tokenUsage *TokenUsage
+	if response.Usage != nil {
+		tokenUsage = &TokenUsage{
+			Prompt:     response.Usage.InputTokens,
+			Completion: response.Usage.OutputTokens,
+			Total:      response.Usage.InputTokens + response.Usage.OutputTokens,
+		}
 	}
 
 	for _, block := range response.Content {
@@ -625,22 +683,26 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConvers
 		if !ok {
 			inputJSON, _ := json.Marshal(block.Input)
 			if unmarshalErr := json.Unmarshal(inputJSON, &argsMap); unmarshalErr != nil {
-				return "", fmt.Errorf("failed to parse tool input: %w", unmarshalErr)
+				return nil, fmt.Errorf("failed to parse tool input: %w", unmarshalErr)
 			}
 		}
-		return agent.callTool(ctx, block.Name, argsMap)
+		toolResult, err := agent.callTool(ctx, block.Name, argsMap)
+		if err != nil {
+			return nil, err
+		}
+		return &ConversationResult{Response: toolResult, Usage: tokenUsage}, nil
 	}
 
 	for _, block := range response.Content {
 		if block.Type == "text" {
-			return block.Text, nil
+			return &ConversationResult{Response: block.Text, Usage: tokenUsage}, nil
 		}
 	}
 
-	return "", nil
+	return &ConversationResult{Response: "", Usage: tokenUsage}, nil
 }
 
-func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversationMessage, maxTokens int, geminiTools []GeminiTool) (string, error) {
+func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversationMessage, maxTokens int, geminiTools []GeminiTool) (*ConversationResult, error) {
 	contents := make([]GeminiContent, 0, len(messages))
 	for _, input := range messages {
 		if utils.IsBlank(input.Message) {
@@ -667,7 +729,7 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 	}
 
 	if len(contents) == 0 {
-		return "", fmt.Errorf("at least one non-empty message is required")
+		return nil, fmt.Errorf("at least one non-empty message is required")
 	}
 
 	req := GeminiGenerateContentRequest{
@@ -684,10 +746,18 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 	for round := 0; round < 5; round++ {
 		resp, err := agent.callGemini(ctx, req)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		if len(resp.Candidates) == 0 {
-			return "", nil
+			var tokenUsage *TokenUsage
+			if resp.UsageMetadata != nil {
+				tokenUsage = &TokenUsage{
+					Prompt:     resp.UsageMetadata.PromptTokenCount,
+					Completion: resp.UsageMetadata.CandidatesTokenCount,
+					Total:      resp.UsageMetadata.TotalTokenCount,
+				}
+			}
+			return &ConversationResult{Response: "", Usage: tokenUsage}, nil
 		}
 
 		candidate := resp.Candidates[0]
@@ -705,8 +775,17 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 			}
 		}
 
+		var tokenUsage *TokenUsage
+		if resp.UsageMetadata != nil {
+			tokenUsage = &TokenUsage{
+				Prompt:     resp.UsageMetadata.PromptTokenCount,
+				Completion: resp.UsageMetadata.CandidatesTokenCount,
+				Total:      resp.UsageMetadata.TotalTokenCount,
+			}
+		}
+
 		if len(functionCalls) == 0 {
-			return strings.Join(textParts, "\n"), nil
+			return &ConversationResult{Response: strings.Join(textParts, "\n"), Usage: tokenUsage}, nil
 		}
 
 		contents = append(contents, modelContent)
@@ -714,7 +793,7 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 		for _, functionCall := range functionCalls {
 			toolOutput, err := agent.callTool(ctx, functionCall.Name, functionCall.Args)
 			if err != nil {
-				return "", err
+				return nil, err
 			}
 			responseParts = append(responseParts, GeminiPart{
 				FunctionResponse: &GeminiFunctionResponse{
@@ -731,10 +810,10 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 		req.Contents = contents
 	}
 
-	return "", fmt.Errorf("tool loop exceeded maximum iterations")
+	return nil, fmt.Errorf("tool loop exceeded maximum iterations")
 }
 
-func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversationMessage, maxTokens int, openAITools []OpenAITool) (string, error) {
+func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversationMessage, maxTokens int, openAITools []OpenAITool) (*ConversationResult, error) {
 	openAIMessages := make([]OpenAIMessage, 0, len(messages))
 	for _, input := range messages {
 		if utils.IsBlank(input.Message) {
@@ -752,7 +831,7 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 	}
 
 	if len(openAIMessages) == 0 {
-		return "", fmt.Errorf("at least one non-empty message is required")
+		return nil, fmt.Errorf("at least one non-empty message is required")
 	}
 
 	req := OpenAIChatCompletionRequest{
@@ -767,10 +846,20 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 
 	resp, err := agent.callOpenAI(ctx, req)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
+
+	var tokenUsage *TokenUsage
+	if resp.Usage != nil {
+		tokenUsage = &TokenUsage{
+			Prompt:     resp.Usage.PromptTokens,
+			Completion: resp.Usage.CompletionTokens,
+			Total:      resp.Usage.TotalTokens,
+		}
+	}
+
 	if len(resp.Choices) == 0 {
-		return "", nil
+		return &ConversationResult{Response: "", Usage: tokenUsage}, nil
 	}
 
 	msg := resp.Choices[0].Message
@@ -781,14 +870,18 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 		argsMap := map[string]interface{}{}
 		if utils.IsNotBlank(toolCall.Function.Arguments) {
 			if unmarshalErr := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap); unmarshalErr != nil {
-				return "", fmt.Errorf("failed to parse OpenAI tool arguments: %w", unmarshalErr)
+				return nil, fmt.Errorf("failed to parse OpenAI tool arguments: %w", unmarshalErr)
 			}
 		}
 
-		return agent.callTool(ctx, toolCall.Function.Name, argsMap)
+		toolResult, err := agent.callTool(ctx, toolCall.Function.Name, argsMap)
+		if err != nil {
+			return nil, err
+		}
+		return &ConversationResult{Response: toolResult, Usage: tokenUsage}, nil
 	}
 
-	return msg.Content, nil
+	return &ConversationResult{Response: msg.Content, Usage: tokenUsage}, nil
 }
 
 func (agent *LLMAgent) callGemini(ctx context.Context, req GeminiGenerateContentRequest) (*GeminiGenerateContentResponse, error) {
