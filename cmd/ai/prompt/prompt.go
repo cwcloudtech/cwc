@@ -17,7 +17,7 @@ var (
 var PromptCmd = &cobra.Command{
 	Use:   "prompt",
 	Short: "Send a prompt",
-	Long:  `This command allows you to send prompt using cwai api`,
+	Long:  `This command allows you to send prompt using cwcloud AI api`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user.HandleSendPrompt(&adapter, &message, &listId, &pretty)
 	},

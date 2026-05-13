@@ -12,8 +12,8 @@ import (
 
 var AiCmd = &cobra.Command{
 	Use:   "ai",
-	Short: "Cwai APIs",
-	Long:  `This command lets you call the CWAI endpoints`,
+	Short: "AI features and tools",
+	Long:  `This command lets you call the AI agent, manage prompts, and more.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
