@@ -3,6 +3,7 @@ package web_agent
 import (
 	"cwc/cmd/ai/agent"
 	"cwc/config"
+	"cwc/utils"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -179,19 +180,21 @@ func formatWebAgentMessage(raw string) string {
 	output = strings.TrimRight(output, "\n")
 
 	var builder strings.Builder
+
 	builder.WriteString("```console\n")
 
-	if strings.TrimSpace(command) != "" {
+	if utils.IsNotBlank(command) {
 		builder.WriteString("$ ")
 		builder.WriteString(command)
 		builder.WriteString("\n")
 	}
-	if output != "" {
+
+	if utils.IsNotBlank(output) {
 		builder.WriteString(output)
 		builder.WriteString("\n")
 	}
 
-	if exitCode != "" && exitCode != "0" {
+	if utils.IsNotBlank(exitCode) && exitCode != "0" {
 		builder.WriteString("# exit_code: ")
 		builder.WriteString(exitCode)
 		builder.WriteString("\n")
