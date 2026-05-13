@@ -1,14 +1,13 @@
-package web_agent
+package utils
 
 import (
-	"cwc/utils"
 	"strings"
 	"testing"
 )
 
 func TestFormatWebAgentMessageReturnsRawWhenNotCommandOutput(t *testing.T) {
 	raw := "plain response"
-	got := utils.FormatWebAgentMessage(raw)
+	got := FormatWebAgentMessage(raw)
 
 	if got != raw {
 		t.Fatalf("expected raw response to be unchanged, got %q", got)
@@ -24,7 +23,7 @@ func TestFormatWebAgentMessageFormatsConsoleOutput(t *testing.T) {
 		"project-b",
 	}, "\n")
 
-	got := utils.FormatWebAgentMessage(raw)
+	got := FormatWebAgentMessage(raw)
 
 	if !strings.HasPrefix(got, "```console\n$ cwc project list\n") {
 		t.Fatalf("expected console fence with command, got %q", got)
@@ -56,7 +55,7 @@ func TestFormatWebAgentMessageConvertsPrettyTableToMarkdown(t *testing.T) {
 		"+------+--------+",
 	}, "\n")
 
-	got := utils.FormatWebAgentMessage(raw)
+	got := FormatWebAgentMessage(raw)
 
 	if !strings.Contains(got, "```console\n$ cwc project list\n```") {
 		t.Fatalf("expected command to stay in console fence, got %q", got)
