@@ -66,7 +66,7 @@ var WebAgentCmd = &cobra.Command{
 
 func init() {
 	WebAgentCmd.DisableFlagsInUseLine = true
-	WebAgentCmd.Flags().IntVarP(&listenPort, "listen", "l", 8081, "Web-agent listen port")
+	WebAgentCmd.Flags().IntVarP(&listenPort, "port", "p", 8081, "Web-agent listen port")
 	WebAgentCmd.Flags().StringVarP(&listenAddr, "address", "a", "127.0.0.1", "Web-agent listen address")
 	WebAgentCmd.Flags().StringVarP(&serverURL, "server", "s", "http://127.0.0.1:8080/mcp", "The MCP server URL")
 	WebAgentCmd.Flags().StringVarP(&modelName, "model", "m", config.GetDefaultAiModel(), "The LLM model to use")
