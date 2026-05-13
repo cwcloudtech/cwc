@@ -35,9 +35,9 @@ type webAgentRequest struct {
 }
 
 type webAgentResponse struct {
-	Status   string                 `json:"status"`
-	Response string                 `json:"response"`
-	Usage    map[string]interface{} `json:"usage"`
+	Status  string                 `json:"status"`
+	Message string                 `json:"message"`
+	Usage   map[string]interface{} `json:"usage"`
 }
 
 var WebAgentCmd = &cobra.Command{
@@ -79,9 +79,9 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		_ = json.NewEncoder(w).Encode(webAgentResponse{
-			Status:   "error",
-			Response: "method not allowed",
-			Usage:    map[string]interface{}{},
+			Status:  "error",
+			Message: "method not allowed",
+			Usage:   map[string]interface{}{},
 		})
 		return
 	}
@@ -91,9 +91,9 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 	if err := decoder.Decode(&req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(webAgentResponse{
-			Status:   "error",
-			Response: "invalid JSON payload",
-			Usage:    map[string]interface{}{},
+			Status:  "error",
+			Message: "invalid JSON payload",
+			Usage:   map[string]interface{}{},
 		})
 		return
 	}
@@ -118,9 +118,9 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 	if len(messages) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(webAgentResponse{
-			Status:   "error",
-			Response: "either message or messages is required",
-			Usage:    map[string]interface{}{},
+			Status:  "error",
+			Message: "either message or messages is required",
+			Usage:   map[string]interface{}{},
 		})
 		return
 	}
@@ -129,9 +129,9 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(webAgentResponse{
-			Status:   "error",
-			Response: err.Error(),
-			Usage:    map[string]interface{}{},
+			Status:  "error",
+			Message: err.Error(),
+			Usage:   map[string]interface{}{},
 		})
 		return
 	}
@@ -147,8 +147,8 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(webAgentResponse{
-		Status:   "ok",
-		Response: result.Response,
-		Usage:    usage,
+		Status:  "ok",
+		Message: result.Response,
+		Usage:   usage,
 	})
 }
