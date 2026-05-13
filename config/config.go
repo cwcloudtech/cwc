@@ -32,6 +32,10 @@ func GetConfigValue(key string, defaultValue string) string {
 		return envValue
 	}
 
+	if envValue := os.Getenv(strings.ToUpper(key)); strings.HasPrefix(key, "cwc_") && utils.IsNotBlank(envValue) {
+		return envValue
+	}
+
 	dirname, err := os.UserHomeDir()
 	if nil != err {
 		return trimedDefaultValue
