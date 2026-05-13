@@ -39,7 +39,7 @@ checksum:
 
 dockers:
   - image_templates: 
-      - "rg.fr-par.scw.cloud/comworkio/cwc:{{ .Version }}"
+      - "rg.fr-par.scw.cloud/cwcloud-ce-u7u1q0/cwc:{{ .Version }}"
     dockerfile: Dockerfile
     build_flag_templates:
       - --label=org.opencontainers.image.title={{ .ProjectName }}
