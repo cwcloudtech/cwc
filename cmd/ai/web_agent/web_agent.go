@@ -88,9 +88,11 @@ var WebAgentCmd = &cobra.Command{
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			handleWebAgentRequest(w, r, agt)
 		})
+
 		mux.HandleFunc("/gitlab", func(w http.ResponseWriter, r *http.Request) {
 			handleGitLabWebhook(w, r, agt)
 		})
+
 		mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
@@ -140,7 +142,7 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 	messages := make([]agent.AgentConversationMessage, 0, len(req.Messages)+1)
 	for _, message := range req.Messages {
 		role := strings.ToLower(strings.TrimSpace(message.Role))
-		if role == "" {
+		if utils.IsBlank(role) {
 			role = "user"
 		}
 
@@ -150,7 +152,7 @@ func handleWebAgentRequest(w http.ResponseWriter, r *http.Request, llmAgent *age
 		})
 	}
 
-	if strings.TrimSpace(req.Message) != "" {
+	if utils.IsNotBlank(req.Message) {
 		messages = append(messages, agent.AgentConversationMessage{Role: "user", Message: req.Message})
 	}
 
@@ -202,7 +204,7 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 	}
 
 	webhookSecret := strings.TrimSpace(config.GetGitLabWebhookSecret())
-	if webhookSecret != "" && strings.TrimSpace(r.Header.Get("X-Gitlab-Token")) != webhookSecret {
+	if utils.IsNotBlank(webhookSecret) && strings.TrimSpace(r.Header.Get("X-Gitlab-Token")) != webhookSecret {
 		w.WriteHeader(http.StatusUnauthorized)
 		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": "invalid webhook token"})
 		return
@@ -224,7 +226,7 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 
 	prompt := strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(event.ObjectAttributes.Note), "/cwc"))
 	responseText := ""
-	if prompt == "" {
+	if utils.IsBlank(prompt) {
 		responseText = "Usage: /cwc <prompt>"
 	} else {
 		messages := []agent.AgentConversationMessage{{
