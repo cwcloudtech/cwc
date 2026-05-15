@@ -87,8 +87,7 @@ func runInteractiveMode(agent *LLMAgent, initialPrompt string) error {
 			continue
 		}
 
-		switch strings.ToLower(input) {
-		case "exit", "quit":
+		if utils.ContainsValue(strings.ToLower(input), []string{"exit", "quit"}) {
 			return nil
 		}
 
