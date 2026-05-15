@@ -264,7 +264,7 @@ func isGitLabIssueCommand(event gitLabNoteEvent) bool {
 		return false
 	}
 
-	if event.Issue == nil || event.Project.ID <= 0 || event.Issue.IID <= 0 {
+	if utils.IsEmpty(event.Issue) || event.Project.ID <= 0 || event.Issue.IID <= 0 {
 		return false
 	}
 
@@ -278,9 +278,9 @@ func buildGitLabPrompt(event gitLabNoteEvent, command string) string {
 		fmt.Sprintf("Project ID: %d", event.Project.ID),
 	}
 
-	if event.Issue != nil {
+	if utils.IsNotEmpty(event.Issue) {
 		parts = append(parts, fmt.Sprintf("Issue IID: %d", event.Issue.IID))
-		if strings.TrimSpace(event.Issue.Title) != "" {
+		if utils.IsNotBlank(event.Issue.Title) {
 			parts = append(parts, fmt.Sprintf("Issue title: %s", event.Issue.Title))
 		}
 	}

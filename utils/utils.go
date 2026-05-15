@@ -58,6 +58,10 @@ func IsEmpty(value interface{}) bool {
 	}
 }
 
+func IsNotEmpty(value interface{}) bool {
+	return !IsEmpty(value)
+}
+
 func IsValidEmail(email string) bool {
 	if IsBlank(email) {
 		return false
