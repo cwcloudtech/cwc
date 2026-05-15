@@ -223,7 +223,15 @@ var McpCmd = &cobra.Command{
 					}
 
 					if utils.ContainsValue(verb, []string{"delete", "remove", "supprimer", "supprime", "rm"}) {
-						commandArgs[0] = "rm"
+						commandArgs[0] = "delete"
+					}
+
+					if utils.ContainsValue(verb, []string{"update", "modifier", "modifie"}) {
+						commandArgs[0] = "update"
+					}
+
+					if utils.ContainsValue(verb, []string{"create", "creer", "cree", "new"}) {
+						commandArgs[0] = "create"
 					}
 				}
 
