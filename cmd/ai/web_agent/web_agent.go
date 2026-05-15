@@ -218,9 +218,9 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 		return
 	}
 
-	if !isGitLabIssueCommand(event) {
+	if ok, reason := isGitLabIssueCommand(event); !ok {
 		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ignored"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ignored", "reason": reason})
 		return
 	}
 
@@ -255,21 +255,26 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 	_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
 
-func isGitLabIssueCommand(event gitLabNoteEvent) bool {
+func isGitLabIssueCommand(event gitLabNoteEvent) (bool, string) {
 	if !strings.EqualFold(strings.TrimSpace(event.ObjectKind), "note") {
-		return false
+		return false, "not a note event"
 	}
 
 	if !strings.EqualFold(strings.TrimSpace(event.ObjectAttributes.NoteableType), "Issue") {
-		return false
+		return false, "not an issue note"
 	}
 
 	if utils.IsEmpty(event.Issue) || event.Project.ID <= 0 || event.Issue.IID <= 0 {
-		return false
+		return false, "missing issue or project ids"
 	}
 
 	note := strings.TrimSpace(event.ObjectAttributes.Note)
-	return strings.HasPrefix(note, fmt.Sprintf("!%s,", config.GetAgentName()))
+	trigger := fmt.Sprintf("!%s", config.GetAgentName())
+	if strings.Contains(note, trigger)) {
+		return true, ""
+	}
+
+	return false, fmt.Sprintf("not a command for the agent because it doesn't contain the trigger '%s'", trigger)
 }
 
 func buildGitLabPrompt(event gitLabNoteEvent, command string) string {
