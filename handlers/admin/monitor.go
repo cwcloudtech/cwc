@@ -46,7 +46,7 @@ func HandleGetMonitor(monitor *admin.Monitor, pretty *bool) {
 	monitorDisplay.Url = monitor.Url
 	monitorDisplay.Method = monitor.Method
 	monitorDisplay.Expected_http_code = monitor.Expected_http_code
-	if monitor.Method == "POST" || monitor.Method == "PUT" {
+	if utils.ContainsValue(monitor.Method, []string{"POST", "PUT"}) {
 		monitorDisplay.Body = monitor.Body
 	}
 	monitorDisplay.Timeout = monitor.Timeout
