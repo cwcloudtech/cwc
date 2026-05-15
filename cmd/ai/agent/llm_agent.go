@@ -823,9 +823,7 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 		}
 
 		role := strings.ToLower(strings.TrimSpace(input.Role))
-		switch role {
-		case "system", "assistant", "user", "tool":
-		default:
+		if utils.ContainsValue(role, []string{"system", "assistant", "user", "tool"}) {
 			role = "user"
 		}
 
