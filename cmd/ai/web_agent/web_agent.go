@@ -203,7 +203,7 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 		return
 	}
 
-	webhookSecret := strings.TrimSpace(config.GetGitLabWebhookSecret())
+	webhookSecret := config.GetGitLabWebhookSecret()
 	if utils.IsNotBlank(webhookSecret) && strings.TrimSpace(r.Header.Get("X-Gitlab-Token")) != webhookSecret {
 		w.WriteHeader(http.StatusUnauthorized)
 		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": "invalid webhook token"})
@@ -285,9 +285,9 @@ func buildGitLabPrompt(event gitLabNoteEvent, command string) string {
 		}
 	}
 
-	if strings.TrimSpace(event.User.Username) != "" {
+	if utils.IsNotBlank(event.User.Username) {
 		parts = append(parts, fmt.Sprintf("Requested by GitLab user: @%s", event.User.Username))
-	} else if strings.TrimSpace(event.User.Name) != "" {
+	} else if utils.IsNotBlank(event.User.Name) {
 		parts = append(parts, fmt.Sprintf("Requested by GitLab user: %s", event.User.Name))
 	}
 
