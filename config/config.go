@@ -111,6 +111,18 @@ func GetDefaultAiModel() string {
 	return GetConfigValue("default_ai_model", "")
 }
 
+func GetGitLabBaseURL() string {
+	return GetConfigValue("gitlab_base_url", "")
+}
+
+func GetGitLabToken() string {
+	return GetConfigValue("gitlab_token", "")
+}
+
+func GetGitLabWebhookSecret() string {
+	return GetConfigValue("gitlab_webhook_secret", "")
+}
+
 func GetDefaultKubeConfigPath() string {
 	return GetConfigValue("kube_config_path", "")
 }
