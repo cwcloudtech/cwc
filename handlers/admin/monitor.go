@@ -69,15 +69,15 @@ func HandleGetMonitor(monitor *admin.Monitor, pretty *bool) {
 }
 
 func checkMonitorConfig(monitor *admin.Monitor) error {
-	if monitor.Type != "http" && monitor.Type != "tcp" {
+	if utils.ForbidValue(monitor.Type, []string{"http", "tcp"}) {
 		return fmt.Errorf("invalid monitor type. Monitor type must be either http or tcp")
 	}
 
-	if monitor.Method != "GET" && monitor.Method != "POST" && monitor.Method != "PUT" {
+	if utils.ForbidValue(monitor.Method, []string{"GET", "POST", "PUT"}) {
 		return fmt.Errorf("invalid method. Method must be either GET, POST or PUT")
 	}
 
-	if monitor.Level != "info" && monitor.Level != "debug" {
+	if utils.ForbidValue(monitor.Level, []string{"info", "debug"}) {
 		return fmt.Errorf("invalid log level. Log level must be either info or debug")
 	}
 

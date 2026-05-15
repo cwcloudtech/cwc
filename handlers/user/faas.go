@@ -173,7 +173,7 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 				break
 			}
 
-			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
+			if utils.ForbidValue(callback.Type, []string{"http", "websocket", "mqtt"}) {
 				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
 			} else {
 				fmt.Print("  ➤ Endpoint: ")
@@ -219,7 +219,7 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 				callback.Topic = strings.TrimSpace(callback.Topic)
 			}
 
-			if callback.Type == "mqtt" || callback.Type == "websocket" || callback.Type == "http" {
+			if utils.ContainsValue(callback.Type, []string{"mqtt", "websocket", "http"}) {
 				function.Content.Callbacks = append(function.Content.Callbacks, callback)
 			}
 
@@ -409,7 +409,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 				break
 			}
 
-			if callback.Type != "http" && callback.Type != "websocket" && callback.Type != "mqtt" {
+			if utils.ForbidValue(callback.Type, []string{"http", "websocket", "mqtt"}) {
 				fmt.Println("Invalid callback type. Available types are http, websocket, and mqtt")
 			} else {
 				fmt.Print("  ➤ Endpoint: ")
@@ -455,7 +455,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 				callback.Topic = strings.TrimSpace(callback.Topic)
 			}
 
-			if callback.Type == "mqtt" || callback.Type == "websocket" || callback.Type == "http" {
+			if utils.ContainsValue(callback.Type, []string{"mqtt", "websocket", "http"}) {
 				function.Content.Callbacks = append(function.Content.Callbacks, callback)
 			}
 

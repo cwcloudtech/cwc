@@ -58,6 +58,20 @@ func IsEmpty(value interface{}) bool {
 	}
 }
 
+func ForbidValue(value string, terms []string) bool {
+	if IsBlank(value) {
+		return true
+	}
+
+	for _, term := range terms {
+		if value == term {
+			return false
+		}
+	}
+
+	return true
+}
+
 func ContainsValue(value string, terms []string) bool {
 	if IsBlank(value) {
 		return false
