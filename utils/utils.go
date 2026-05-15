@@ -58,6 +58,24 @@ func IsEmpty(value interface{}) bool {
 	}
 }
 
+func ContainsValue(value string, terms []string) bool {
+	if IsBlank(value) {
+		return false
+	}
+
+	for _, term := range terms {
+		if value == term {
+			return true
+		}
+	}
+
+	return false
+}
+
+func IsYes(value string) bool {
+	return ContainsValue(value, []string{"y", "Y"})
+}
+
 func IsNotEmpty(value interface{}) bool {
 	return !IsEmpty(value)
 }

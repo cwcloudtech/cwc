@@ -133,7 +133,7 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 	fmt.Print("Do you want to add environment variables? [Y/N]: ")
 	var addEnvVars string
 	fmt.Scanln(&addEnvVars)
-	if addEnvVars == "y" || addEnvVars == "Y" {
+	if utils.IsYes(addEnvVars) {
 		fmt.Println("Enter environment variables (one per line, press Enter for each entry; leave an empty line to finish):")
 		function.Content.Env = make(map[string]string) // Initialize the map
 		for {
@@ -160,7 +160,7 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 	fmt.Print("Do you want to add callbacks? [Y/N]: ")
 	var addCallbacks string
 	fmt.Scanln(&addCallbacks)
-	if addCallbacks == "y" || addCallbacks == "Y" {
+	if utils.IsYes(addCallbacks) {
 		fmt.Println("Enter callbacks (press Enter for each callback; leave an empty line to finish):")
 		function.Content.Callbacks = []client.CallbacksContent{}
 		reader := bufio.NewReader(os.Stdin)
@@ -238,7 +238,7 @@ func AddFunctionInInteractiveMode(function *client.Function) {
 	var addCode string
 	fmt.Scanln(&addCode)
 
-	if addCode == "y" || addCode == "Y" {
+	if utils.IsYes(addCode) {
 		editorCommand := utils.GetSystemEditor()
 
 		// Create a temporary file with a specific name and path
@@ -337,7 +337,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 
 	var answer string
 	fmt.Scanln(&answer)
-	if answer == "y" || answer == "Y" {
+	if utils.IsYes(answer) {
 		function.Is_public = !function.Is_public
 	}
 
@@ -347,7 +347,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 	fmt.Print("Do you want to recreate args? [Y/N]: ")
 	var addArgs string
 	fmt.Scanln(&addArgs)
-	if addArgs == "y" || addArgs == "Y" {
+	if utils.IsYes(addArgs) {
 		fmt.Println("Enter new Args (one per line, press Enter for each entry; leave an empty line to finish):")
 		for {
 			var arg string
@@ -363,7 +363,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 	fmt.Print("Do you want to recreate environment variables? [Y/N]: ")
 	var addEnvVars string
 	fmt.Scanln(&addEnvVars)
-	if addEnvVars == "y" || addEnvVars == "Y" {
+	if utils.IsYes(addEnvVars) {
 		fmt.Println("Enter environment variables (one per line, press Enter for each entry; leave an empty line to finish):")
 		function.Content.Env = make(map[string]string) // Initialize the map
 		for {
@@ -396,7 +396,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 	fmt.Print("Do you want to recreate callbacks? [Y/N]: ")
 	var addCallbacks string
 	fmt.Scanln(&addCallbacks)
-	if addCallbacks == "y" || addCallbacks == "Y" {
+	if utils.IsYes(addCallbacks) {
 		fmt.Println("Enter callbacks (press Enter for each callback; leave an empty line to finish):")
 		function.Content.Callbacks = []client.CallbacksContent{}
 		reader := bufio.NewReader(os.Stdin)
@@ -468,7 +468,7 @@ func UpdateFunctionInInteractiveMode(function *client.Function) {
 	var updateCode string
 	fmt.Scanln(&updateCode)
 
-	if updateCode == "y" || updateCode == "Y" {
+	if utils.IsYes(updateCode) {
 		editorCommand := utils.GetSystemEditor()
 
 		// Create a temporary file with a specific name and path

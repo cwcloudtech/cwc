@@ -37,7 +37,7 @@ func AddObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 	fmt.Print("Do you want to add triggers? (Y/N): ")
 	var addTriggers string
 	fmt.Scanln(&addTriggers)
-	if addTriggers == "y" || addTriggers == "Y" {
+	if utils.IsYes(addTriggers) {
 		// Prompt for the triggers of the object type
 		fmt.Println("Enter the trigger id (one per line, press Enter for each entry; leave an empty line to finish): ")
 		for {
@@ -182,7 +182,7 @@ func UpdateObjectTypeInInteractiveMode(objectType *admin.ObjectType) {
 	fmt.Print("Do you want to recreate triggers? (Y/N): ")
 	var addTriggers string
 	fmt.Scanln(&addTriggers)
-	if addTriggers == "y" || addTriggers == "Y" {
+	if utils.IsYes(addTriggers) {
 		// Prompt for the triggers of the object type
 		fmt.Println("Enter the trigger id (one per line, press Enter for each entry; leave an empty line to finish): ")
 		for {

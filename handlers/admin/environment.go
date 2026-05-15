@@ -28,7 +28,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	var add_env_template string
 	fmt.Scanln(&add_env_template)
 
-	if add_env_template == "Y" || add_env_template == "y" {
+	if utils.IsYes(add_env_template) {
 		editorCommand := utils.GetSystemEditor()
 
 		// Create a temporary file with a specific name and path
@@ -61,7 +61,7 @@ func HandleAddEnvironment(name *string, path *string, roles *string, is_private 
 	var add_doc_template string
 	fmt.Scanln(&add_doc_template)
 
-	if add_doc_template == "Y" || add_doc_template == "y" {
+	if utils.IsYes(add_doc_template) {
 		editorCommand := utils.GetSystemEditor()
 
 		// Create a temporary file with a specific name and path

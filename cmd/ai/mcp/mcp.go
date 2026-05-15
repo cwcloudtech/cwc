@@ -214,8 +214,16 @@ var McpCmd = &cobra.Command{
 
 				if len(commandArgs) > 0 {
 					verb := strings.ToLower(strings.TrimSpace(commandArgs[0]))
-					if verb == "list" || verb == "liste" || verb == "lister" || verb == "show" || verb == "display" {
+					if utils.ContainsValue(verb, []string{"list", "liste", "lister", "show", "display", "montrer"}) {
 						commandArgs[0] = "ls"
+					}
+
+					if utils.ContainsValue(verb, []string{"reboot", "restart", "redemarre"}) {
+						commandArgs[0] = "restart"
+					}
+
+					if utils.ContainsValue(verb, []string{"delete", "remove", "supprimer", "supprime", "rm"}) {
+						commandArgs[0] = "rm"
 					}
 				}
 

@@ -72,14 +72,17 @@ func (c *Client) UpdateInstance(id string, status string) error {
 	UpdateInstanceRequest := &UpdateInstanceRequest{
 		Status: status,
 	}
+
 	err := json.NewEncoder(&buf).Encode(UpdateInstanceRequest)
 	if nil != err {
 		return err
 	}
+
 	_, err = c.httpRequest(fmt.Sprintf("/instance/%s/%s/%s", c.provider, c.region, id), "PATCH", buf)
 	if nil != err {
 		return err
 	}
+
 	return nil
 }
 

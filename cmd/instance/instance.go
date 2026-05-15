@@ -4,6 +4,7 @@ import (
 	"cwc/cmd/instance/create"
 	"cwc/cmd/instance/delete"
 	"cwc/cmd/instance/ls"
+	"cwc/cmd/instance/restart"
 	size "cwc/cmd/instance/type"
 
 	"cwc/cmd/instance/update"
@@ -27,6 +28,7 @@ func init() {
 	InstanceCmd.DisableFlagsInUseLine = true
 	InstanceCmd.AddCommand(ls.LsCmd)
 	InstanceCmd.AddCommand(update.UpdateCmd)
+	InstanceCmd.AddCommand(restart.RestartCmd)
 	InstanceCmd.AddCommand(create.CreateCmd)
 	InstanceCmd.AddCommand(delete.DeleteCmd)
 	InstanceCmd.AddCommand(size.TypeCmd)
