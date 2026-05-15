@@ -111,6 +111,10 @@ func GetDefaultAiModel() string {
 	return GetConfigValue("default_ai_model", "")
 }
 
+func GetAgentName() string {
+	return GetConfigValue("web_agent_name", "cwc")
+}
+
 func GetGitLabBaseURL() string {
 	return GetConfigValue("gitlab_base_url", "https://gitlab.com/api/v4")
 }

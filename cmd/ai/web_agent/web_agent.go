@@ -224,10 +224,11 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 		return
 	}
 
-	prompt := strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(event.ObjectAttributes.Note), "/cwc"))
+	trigger := fmt.Sprintf("!%s", config.GetAgentName())
+	prompt := strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(event.ObjectAttributes.Note), trigger))
 	responseText := ""
 	if utils.IsBlank(prompt) {
-		responseText = "Usage: /cwc <prompt>"
+		responseText = fmt.Sprintf("Usage: %s <prompt>", trigger)
 	} else {
 		messages := []agent.AgentConversationMessage{{
 			Role:    "user",
@@ -268,7 +269,7 @@ func isGitLabIssueCommand(event gitLabNoteEvent) bool {
 	}
 
 	note := strings.TrimSpace(event.ObjectAttributes.Note)
-	return strings.HasPrefix(note, "/cwc")
+	return strings.HasPrefix(note, fmt.Sprintf("!%s,", config.GetAgentName()))
 }
 
 func buildGitLabPrompt(event gitLabNoteEvent, command string) string {
