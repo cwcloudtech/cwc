@@ -112,7 +112,7 @@ func GetDefaultAiModel() string {
 }
 
 func GetGitLabBaseURL() string {
-	return GetConfigValue("gitlab_base_url", "")
+	return GetConfigValue("gitlab_base_url", "https://gitlab.com/api/v4")
 }
 
 func GetGitLabToken() string {

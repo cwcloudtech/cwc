@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -297,13 +296,15 @@ func buildGitLabPrompt(event gitLabNoteEvent, command string) string {
 }
 
 func postGitLabIssueComment(r *http.Request, event gitLabNoteEvent, body string) error {
-	apiBaseURL, err := resolveGitLabAPIBaseURL(r, event)
-	if err != nil {
-		return err
+	baseUrl := config.GetGitLabBaseURL()
+	if utils.IsBlank(baseUrl) {
+		return fmt.Errorf("gitlab_base_url configuration is required to post issue comments")
 	}
 
+	apiUrl := fmt.Sprintf("%s/api/v4", baseUrl)
+
 	gitlabToken := strings.TrimSpace(config.GetGitLabToken())
-	if gitlabToken == "" {
+	if utils.IsBlank(gitlabToken) {
 		return fmt.Errorf("gitlab_token is required to post issue comments")
 	}
 
@@ -313,7 +314,7 @@ func postGitLabIssueComment(r *http.Request, event gitLabNoteEvent, body string)
 		return err
 	}
 
-	commentURL := fmt.Sprintf("%s/projects/%d/issues/%d/notes", apiBaseURL, event.Project.ID, event.Issue.IID)
+	commentURL := fmt.Sprintf("%s/projects/%d/issues/%d/notes", apiUrl, event.Project.ID, event.Issue.IID)
 	httpReq, err := http.NewRequest(http.MethodPost, commentURL, bytes.NewReader(payload))
 	if err != nil {
 		return err
@@ -338,33 +339,4 @@ func postGitLabIssueComment(r *http.Request, event gitLabNoteEvent, body string)
 	}
 
 	return fmt.Errorf("gitlab comment failed with status %d: %s", httpResp.StatusCode, strings.TrimSpace(string(responseBody)))
-}
-
-func resolveGitLabAPIBaseURL(r *http.Request, event gitLabNoteEvent) (string, error) {
-	if configuredURL := strings.TrimSpace(config.GetGitLabBaseURL()); configuredURL != "" {
-		return strings.TrimRight(configuredURL, "/"), nil
-	}
-
-	if event.Project.WebURL != "" {
-		parsedURL, err := url.Parse(event.Project.WebURL)
-		if err != nil {
-			return "", fmt.Errorf("invalid GitLab project URL: %w", err)
-		}
-
-		return fmt.Sprintf("%s://%s/api/v4", parsedURL.Scheme, parsedURL.Host), nil
-	}
-
-	if r.Host == "" {
-		return "", fmt.Errorf("could not determine GitLab API base URL")
-	}
-
-	scheme := "https"
-	if r.TLS == nil {
-		scheme = "http"
-		if forwardedProto := strings.TrimSpace(r.Header.Get("X-Forwarded-Proto")); forwardedProto != "" {
-			scheme = forwardedProto
-		}
-	}
-
-	return fmt.Sprintf("%s://%s/api/v4", scheme, r.Host), nil
 }
