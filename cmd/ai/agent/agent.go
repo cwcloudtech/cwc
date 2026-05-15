@@ -19,7 +19,6 @@ var (
 	interactive bool
 )
 
-// AgentCmd sends a prompt to an AI agent that can call MCP server tools.
 var AgentCmd = &cobra.Command{
 	Use:   "agent",
 	Short: "Send a prompt to an AI agent backed by MCP server tools",
