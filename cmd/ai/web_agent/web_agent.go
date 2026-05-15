@@ -270,7 +270,7 @@ func isGitLabIssueCommand(event gitLabNoteEvent) (bool, string) {
 
 	note := strings.TrimSpace(event.ObjectAttributes.Note)
 	trigger := fmt.Sprintf("!%s", config.GetAgentName())
-	if strings.Contains(note, trigger)) {
+	if strings.Contains(note, trigger) {
 		return true, ""
 	}
 
