@@ -337,7 +337,7 @@ func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversation
 	geminiTools := make([]GeminiTool, 0, len(toolsResp.Tools))
 	for _, tool := range toolsResp.Tools {
 		description := ""
-		if tool.Description != nil {
+		if utils.IsNotEmpty(tool.Description) {
 			description = *tool.Description
 		}
 
@@ -345,12 +345,14 @@ func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversation
 			"type":       "object",
 			"properties": map[string]interface{}{},
 		}
-		if tool.InputSchema != nil {
+
+		if utils.IsNotEmpty(tool.InputSchema) {
 			if typedSchema, ok := tool.InputSchema.(map[string]interface{}); ok {
 				inputSchema = typedSchema
 			}
 		}
-		if tool.Name == "run_cwc_command" && dynamicRunCmdSchema != nil {
+
+		if tool.Name == "run_cwc_command" && utils.IsNotEmpty(dynamicRunCmdSchema) {
 			inputSchema = dynamicRunCmdSchema
 		}
 
@@ -421,7 +423,7 @@ func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversation
 		result, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
 	}
 
-	if err == nil && result != nil && utils.IsNotBlank(result.Response) {
+	if err == nil && utils.IsNotEmpty(result) && utils.IsNotBlank(result.Response) {
 		return result, nil
 	}
 
@@ -667,7 +669,7 @@ func (agent *LLMAgent) runAnthropic(ctx context.Context, messages []AgentConvers
 	}
 
 	var tokenUsage *TokenUsage
-	if response.Usage != nil {
+	if utils.IsNotEmpty(response.Usage) {
 		tokenUsage = &TokenUsage{
 			Prompt:     response.Usage.InputTokens,
 			Completion: response.Usage.OutputTokens,
@@ -750,7 +752,7 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 		}
 		if len(resp.Candidates) == 0 {
 			var tokenUsage *TokenUsage
-			if resp.UsageMetadata != nil {
+			if utils.IsNotEmpty(resp.UsageMetadata) {
 				tokenUsage = &TokenUsage{
 					Prompt:     resp.UsageMetadata.PromptTokenCount,
 					Completion: resp.UsageMetadata.CandidatesTokenCount,
@@ -765,7 +767,7 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 		functionCalls := make([]GeminiFunctionCall, 0)
 		textParts := make([]string, 0)
 		for _, part := range modelContent.Parts {
-			if part.FunctionCall != nil {
+			if utils.IsNotEmpty(part.FunctionCall) {
 				functionCalls = append(functionCalls, *part.FunctionCall)
 				continue
 			}
@@ -776,7 +778,7 @@ func (agent *LLMAgent) runGemini(ctx context.Context, messages []AgentConversati
 		}
 
 		var tokenUsage *TokenUsage
-		if resp.UsageMetadata != nil {
+		if utils.IsNotEmpty(resp.UsageMetadata) {
 			tokenUsage = &TokenUsage{
 				Prompt:     resp.UsageMetadata.PromptTokenCount,
 				Completion: resp.UsageMetadata.CandidatesTokenCount,
@@ -850,7 +852,7 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 	}
 
 	var tokenUsage *TokenUsage
-	if resp.Usage != nil {
+	if utils.IsNotEmpty(resp.Usage) {
 		tokenUsage = &TokenUsage{
 			Prompt:     resp.Usage.PromptTokens,
 			Completion: resp.Usage.CompletionTokens,
