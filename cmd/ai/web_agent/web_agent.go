@@ -245,7 +245,10 @@ func handleGitLabWebhook(w http.ResponseWriter, r *http.Request, llmAgent *agent
 		responseText = utils.FormatWebAgentMessage(result.Response)
 	}
 
-	if err := postGitLabIssueComment(r, event, responseText); err != nil {
+	agentName := config.GetAgentName()
+	signedResponse := fmt.Sprintf("%s\n\n_Answered by %s_", responseText, agentName)
+
+	if err := postGitLabIssueComment(r, event, signedResponse); err != nil {
 		w.WriteHeader(http.StatusBadGateway)
 		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": err.Error()})
 		return
