@@ -103,6 +103,14 @@ func GetGeminiAPIKey() string {
 	return GetConfigValue("gemini_api_key", "")
 }
 
+func GetMistralBaseURL() string {
+	return GetConfigValue("mistral_base_url", "https://api.mistral.ai/v1")
+}
+
+func GetMistralAPIKey() string {
+	return GetConfigValue("mistral_api_key", "")
+}
+
 func GetDefaultAiProvider() string {
 	return GetConfigValue("default_ai_provider", "openai")
 }

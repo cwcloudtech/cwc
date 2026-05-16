@@ -55,6 +55,10 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		apiKey = config.GetAnthropicAPIKey()
 		defaultModel = "claude-haiku-4-5"
 		providerName = "anthropic"
+	case "mistral":
+		baseURL = config.GetMistralBaseURL()
+		apiKey = config.GetMistralAPIKey()
+		defaultModel = "mistral-large-latest"
 	default:
 		baseURL = config.GetOpenAIBaseURL()
 		apiKey = config.GetOpenAIAPIKey()
