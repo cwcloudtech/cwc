@@ -55,6 +55,10 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 		apiKey = config.GetAnthropicAPIKey()
 		defaultModel = "claude-haiku-4-5"
 		providerName = "anthropic"
+	case "mistral":
+		baseURL = config.GetMistralBaseURL()
+		apiKey = config.GetMistralAPIKey()
+		defaultModel = "open-mistral-7b"
 	default:
 		baseURL = config.GetOpenAIBaseURL()
 		apiKey = config.GetOpenAIAPIKey()
@@ -415,11 +419,14 @@ func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversation
 	)
 
 	var result *ConversationResult
-	if agent.provider == "anthropic" {
+	switch agent.provider {
+	case "anthropic":
 		result, err = agent.runAnthropic(ctx, messages, maxTokens, claudeTools)
-	} else if agent.provider == "google" {
+	case "google":
 		result, err = agent.runGemini(ctx, messages, maxTokens, geminiTools)
-	} else {
+	case "mistral":
+		result, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
+	default:
 		result, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
 	}
 
@@ -839,6 +846,7 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 		Messages:  openAIMessages,
 		MaxTokens: maxTokens,
 	}
+
 	if len(openAITools) > 0 {
 		req.Tools = openAITools
 		req.ToolChoice = "auto"
@@ -863,10 +871,12 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 	}
 
 	msg := resp.Choices[0].Message
+
 	for _, toolCall := range msg.ToolCalls {
-		if toolCall.Type != "function" {
+		if toolCall.Type != "function" && utils.IsNotBlank(toolCall.Type) {
 			continue
 		}
+
 		argsMap := map[string]interface{}{}
 		if utils.IsNotBlank(toolCall.Function.Arguments) {
 			if unmarshalErr := json.Unmarshal([]byte(toolCall.Function.Arguments), &argsMap); unmarshalErr != nil {
