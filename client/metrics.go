@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"cwc/httpcli"
 	"cwc/utils"
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -22,14 +23,19 @@ type DisplayMetricSample struct {
 }
 
 func GetMetrics() ([]MetricSample, error) {
-	return fetchAndParseMetrics("")
+	return fetchAndParseMetrics("", "")
 }
 
-func GetMetricByName(name string) ([]MetricSample, error) {
-	return fetchAndParseMetrics(name)
+func GetMetricByName(name string, filter string) ([]MetricSample, error) {
+	return fetchAndParseMetrics(name, filter)
 }
 
-func fetchAndParseMetrics(filterName string) ([]MetricSample, error) {
+func fetchAndParseMetrics(filterName string, filterLabel string) ([]MetricSample, error) {
+	labelKey, labelValue, err := parseLabelFilter(filterLabel)
+	if err != nil {
+		return nil, err
+	}
+
 	cli := &http.Client{}
 	body, err := httpcli.HttpRequest(cli, "/metrics", "GET", bytes.Buffer{})
 	if err != nil {
@@ -56,6 +62,13 @@ func fetchAndParseMetrics(filterName string) ([]MetricSample, error) {
 			continue
 		}
 
+		if utils.IsNotBlank(labelKey) {
+			label, ok := sample.Labels[labelKey]
+			if !ok || label != labelValue {
+				continue
+			}
+		}
+
 		samples = append(samples, sample)
 	}
 
@@ -64,6 +77,26 @@ func fetchAndParseMetrics(filterName string) ([]MetricSample, error) {
 	}
 
 	return samples, nil
+}
+
+func parseLabelFilter(filter string) (string, string, error) {
+	if utils.IsBlank(filter) {
+		return "", "", nil
+	}
+
+	trimmed := strings.TrimSpace(filter)
+	sepIdx := strings.IndexAny(trimmed, ":=")
+	if sepIdx < 0 {
+		return "", "", fmt.Errorf("invalid filter format %q: expected label:value or label=value", filter)
+	}
+
+	key := strings.TrimSpace(trimmed[:sepIdx])
+	value := strings.TrimSpace(trimmed[sepIdx+1:])
+	if utils.IsBlank(key) || utils.IsBlank(value) {
+		return "", "", fmt.Errorf("invalid filter format %q: expected label:value or label=value", filter)
+	}
+
+	return key, value, nil
 }
 
 func parseMetricLine(line string) (MetricSample, bool) {
