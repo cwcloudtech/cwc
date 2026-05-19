@@ -58,7 +58,7 @@ func fetchAndParseMetrics(filterName string, filterLabel string) ([]MetricSample
 			continue
 		}
 
-		if utils.IsNotBlank(filterName) && sample.Name != filterName {
+		if utils.IsNotBlank(filterName) && !matchesMetricNameFilter(sample.Name, filterName) {
 			continue
 		}
 
@@ -77,6 +77,15 @@ func fetchAndParseMetrics(filterName string, filterLabel string) ([]MetricSample
 	}
 
 	return samples, nil
+}
+
+func matchesMetricNameFilter(metricName string, filterName string) bool {
+	if strings.HasSuffix(filterName, "*") {
+		prefix := strings.ToLower(strings.TrimSuffix(filterName, "*"))
+		return strings.HasPrefix(strings.ToLower(metricName), prefix)
+	}
+
+	return strings.ToLower(metricName) == strings.ToLower(filterName)
 }
 
 func parseLabelFilter(filter string) (string, string, error) {
