@@ -29,10 +29,11 @@ func HandleGetMetric(name string, samples []client.MetricSample, pretty *bool, v
 		return
 	}
 
-	if len(samples) == 0 {
+	if utils.IsEmpty(samples) {
 		fmt.Printf("No metrics found for name: %s\n", name)
 		return
 	}
+
 	if config.IsPrettyFormatExpected(pretty) {
 		displayMetricsAsTable(samples)
 	} else if config.GetDefaultFormat() == "json" {
@@ -65,18 +66,21 @@ func toDisplaySamples(samples []client.MetricSample) []client.DisplayMetricSampl
 }
 
 func formatMetricLabels(labels map[string]string) string {
-	if len(labels) == 0 {
+	if utils.IsEmpty(labels) {
 		return ""
 	}
+
 	keys := make([]string, 0, len(labels))
 	for k := range labels {
 		keys = append(keys, k)
 	}
+
 	sort.Strings(keys)
 	parts := make([]string, 0, len(keys))
 	for _, k := range keys {
 		parts = append(parts, fmt.Sprintf("%s=%s", k, labels[k]))
 	}
+
 	return strings.Join(parts, ", ")
 }
 
@@ -86,7 +90,7 @@ func displayMetricsAsTable(samples []client.MetricSample) {
 	table.SetAutoWrapText(false)
 	table.SetColWidth(60)
 
-	if len(samples) == 0 {
+	if utils.IsEmpty(samples) {
 		table.Append([]string{"No metrics available", "", ""})
 		table.Render()
 		return
