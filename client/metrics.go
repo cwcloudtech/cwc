@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"cwc/httpcli"
+	"cwc/utils"
 	"net/http"
 	"strings"
 )
@@ -34,10 +35,12 @@ func fetchAndParseMetrics(filterName string) ([]MetricSample, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer body.Close()
 
 	var samples []MetricSample
 	scanner := bufio.NewScanner(body)
+
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -52,9 +55,11 @@ func fetchAndParseMetrics(filterName string) ([]MetricSample, error) {
 		}
 		samples = append(samples, sample)
 	}
+
 	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
+
 	return samples, nil
 }
 
@@ -63,6 +68,7 @@ func parseMetricLine(line string) (MetricSample, bool) {
 	if lastSpace < 0 {
 		return MetricSample{}, false
 	}
+
 	value := strings.TrimSpace(line[lastSpace+1:])
 	rest := strings.TrimSpace(line[:lastSpace])
 
@@ -89,9 +95,10 @@ func parseMetricLine(line string) (MetricSample, bool) {
 func parsePrometheusLabels(s string) map[string]string {
 	result := map[string]string{}
 	s = strings.TrimSpace(s)
-	if s == "" {
+	if utils.IsBlank(s) {
 		return result
 	}
+
 	parts := strings.Split(s, ",")
 	for _, part := range parts {
 		part = strings.TrimSpace(part)
@@ -99,10 +106,12 @@ func parsePrometheusLabels(s string) map[string]string {
 		if eqIdx < 0 {
 			continue
 		}
+
 		k := strings.TrimSpace(part[:eqIdx])
 		v := strings.TrimSpace(part[eqIdx+1:])
 		v = strings.Trim(v, `"`)
 		result[k] = v
 	}
+
 	return result
 }
