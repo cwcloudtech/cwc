@@ -43,16 +43,19 @@ func fetchAndParseMetrics(filterName string) ([]MetricSample, error) {
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		if line == "" || strings.HasPrefix(line, "#") {
+		if utils.IsBlank(line) || strings.HasPrefix(line, "#") {
 			continue
 		}
+
 		sample, ok := parseMetricLine(line)
 		if !ok {
 			continue
 		}
-		if filterName != "" && sample.Name != filterName {
+
+		if utils.IsNotBlank(filterName) && sample.Name != filterName {
 			continue
 		}
+
 		samples = append(samples, sample)
 	}
 
@@ -94,12 +97,11 @@ func parseMetricLine(line string) (MetricSample, bool) {
 
 func parsePrometheusLabels(s string) map[string]string {
 	result := map[string]string{}
-	s = strings.TrimSpace(s)
 	if utils.IsBlank(s) {
 		return result
 	}
 
-	parts := strings.Split(s, ",")
+	parts := strings.Split(strings.TrimSpace(s), ",")
 	for _, part := range parts {
 		part = strings.TrimSpace(part)
 		eqIdx := strings.Index(part, "=")
