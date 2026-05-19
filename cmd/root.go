@@ -15,6 +15,7 @@ import (
 	"cwc/cmd/iot"
 	"cwc/cmd/kubernetes"
 	"cwc/cmd/login"
+	"cwc/cmd/metrics"
 	"cwc/cmd/monitor"
 	"cwc/cmd/project"
 	"cwc/cmd/provider"
@@ -81,6 +82,7 @@ func init() {
 	rootCmd.AddCommand(kubernetes.KubernetesCmd)
 	rootCmd.AddCommand(bootstrap.BootstrapCmd)
 	rootCmd.AddCommand(monitor.MonitorCmd)
+	rootCmd.AddCommand(metrics.MetricsCmd)
 	rootCmd.AddCommand(contactform.ContactFormCmd)
 	rootCmd.AddCommand(storage.StorageCmd)
 }
