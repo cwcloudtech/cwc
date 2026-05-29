@@ -140,7 +140,7 @@ func GetDefaultKubeConfigPath() string {
 }
 
 func GetDefaultFormat() string {
-	return GetConfigValue("format", "")
+	return GetConfigValue("format", "pretty")
 }
 
 func IsPrettyFormatExpected(pretty *bool) bool {
