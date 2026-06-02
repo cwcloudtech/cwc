@@ -132,31 +132,6 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindClus
 	log.Println("Helm chart installation completed successfully.")
 }
 
-func HandleBootstrapWithConfig(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, openshift bool, tempConfig *RepoConfig) {
-	cleanup := HandleTemporaryConfig(tempConfig)
-	defer cleanup()
-
-	username := ""
-	password := ""
-	if tempConfig.RepoURL != env.REPO_URL {
-		username = tempConfig.Username
-		password = tempConfig.Password
-	}
-
-	if err := CloneRepo(tempConfig.RepoURL, env.DIRECTORY, tempConfig.Branch, keepDir, username, password); err != nil {
-		log.Printf("Error cloning repository: %v", err)
-		return
-	}
-
-	log.Println("Starting Helm chart installation...")
-
-	if err := runHelmInstall(releaseName, env.DIRECTORY, nameSpace, openshift); err != nil {
-		log.Fatalf("Error running helm command: %v", err)
-	}
-
-	log.Println("Helm chart installation completed successfully.")
-}
-
 func runDeleteNS(nameSpace string, recreateNs bool, openshift bool) error {
 	if !recreateNs {
 		return nil
