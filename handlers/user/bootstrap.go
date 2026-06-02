@@ -96,7 +96,7 @@ func SaveRepoConfig(config *RepoConfig) {
 	}
 }
 
-func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool, openshift bool) {
+func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindCluster string, otherValues []string, flagVerbose bool, keepDir bool, recreateNs bool, openshift bool) {
 	config := GetRepoConfig()
 	repoURL := config.RepoURL
 	directory := env.DIRECTORY
@@ -108,6 +108,10 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, otherVal
 	}
 
 	log.Println("Starting Helm chart installation...")
+
+	if err := runKindRecreateCluster(kindCluster); err != nil {
+		log.Fatalf("Error running kind command: %v", err)
+	}
 
 	if err := runHelmDependancyUpdate(directory, keepDir); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
@@ -214,6 +218,43 @@ func runHelmDependancyUpdate(directory string, keepDir bool) error {
 	helmDepUdpate.Stderr = os.Stderr
 
 	return helmDepUdpate.Run()
+}
+
+func runKindRecreateCluster(clusterName string) error {
+	if utils.IsBlank(clusterName) {
+		return nil
+	}
+
+	kindCommand := "kind"
+	kindArgs := []string{
+		"delete",
+		"cluster",
+		"--name", clusterName,
+	}
+
+	log.Printf("Executing kind command: %s %s", kindCommand, strings.Join(kindArgs, " "))
+
+	kindDeleteCluster := exec.Command(kindCommand, kindArgs...)
+	kindDeleteCluster.Stdout = os.Stdout
+	kindDeleteCluster.Stderr = os.Stderr
+
+	if err := kindDeleteCluster.Run(); err != nil {
+		log.Printf("error deleting kind cluster: %v", err)
+	}
+
+	kindArgs = []string{
+		"create",
+		"cluster",
+		"--name", clusterName,
+	}
+
+	log.Printf("Executing kind command: %s %s", kindCommand, strings.Join(kindArgs, " "))
+
+	kindCreateCluster := exec.Command(kindCommand, kindArgs...)
+	kindCreateCluster.Stdout = os.Stdout
+	kindCreateCluster.Stderr = os.Stderr
+
+	return kindCreateCluster.Run()
 }
 
 func runHelmInstall(releaseName string, directory string, nameSpace string, openshift bool) error {

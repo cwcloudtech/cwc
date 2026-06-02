@@ -8,11 +8,13 @@ import (
 	"cwc/handlers/user"
 	"cwc/utils"
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
 var (
 	flagVerbose  bool
+	kindCluster  string
 	nameSpace    string
 	otherValues  []string
 	releaseName  string
@@ -30,7 +32,7 @@ var BootstrapCmd = &cobra.Command{
 	Short: "CWCloud installation on Kubernetes",
 	Long:  `CWCloud installation on Kubernetes.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleBootstrap(cmd, releaseName, nameSpace, otherValues, flagVerbose, keepDir, recreateNs, openshift)
+		user.HandleBootstrap(cmd, releaseName, nameSpace, kindCluster, otherValues, flagVerbose, keepDir, recreateNs, openshift)
 	},
 }
 
@@ -38,6 +40,7 @@ func init() {
 	BootstrapCmd.DisableFlagsInUseLine = true
 	BootstrapCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
 	BootstrapCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
+	BootstrapCmd.Flags().StringVarP(&kindCluster, "kind-cluster", "c", "", "Kind cluster name (optional)")
 	BootstrapCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	BootstrapCmd.Flags().BoolVarP(&recreateNs, "recreate-ns", "d", false, "Recreate the namespace")
 	BootstrapCmd.Flags().BoolVarP(&openshift, "openshift", "o", false, "Use openshift cli instead of kubectl")
@@ -129,6 +132,7 @@ func init() {
 	configureCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
 	configureCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	configureCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)`)
+	configureCmd.Flags().StringVarP(&kindCluster, "kind-cluster", "c", "", "Kind cluster name (optional)")
 
 	// Configure subcommand flags
 	configureCmd.Flags().StringVarP(&tempRepoURL, "repo-url", "u", "", "Temporary repository URL")
