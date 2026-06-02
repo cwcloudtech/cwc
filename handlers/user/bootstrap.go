@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"syscall"
 
 	"cwc/utils"
 
@@ -253,7 +252,7 @@ func runHelmInstall(releaseName string, directory string, nameSpace string, open
 	helmInstallation := exec.Command(helmCommand, helmArgs...)
 	helmInstallation.Stdout = os.Stdout
 	helmInstallation.Stderr = os.Stderr
-	helmInstallation.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	helmInstallation.SysProcAttr = helmInstallSysProcAttr()
 
 	if err := helmInstallation.Start(); err != nil {
 		return err
