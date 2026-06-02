@@ -38,7 +38,7 @@ var BootstrapCmd = &cobra.Command{
 
 func init() {
 	BootstrapCmd.DisableFlagsInUseLine = true
-	BootstrapCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
+	BootstrapCmd.Flags().StringVarP(&releaseName, "release", "r", "cwcloud", "Release name for deployment (default: cwcloud)")
 	BootstrapCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
 	BootstrapCmd.Flags().StringVarP(&kindCluster, "kind-cluster", "c", "", "Kind cluster name (optional)")
 	BootstrapCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
@@ -128,7 +128,7 @@ func init() {
 		},
 	}
 
-	configureCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
+	configureCmd.Flags().StringVarP(&releaseName, "release", "r", "cwcloud", "Release name for deployment (default: cwcloud)")
 	configureCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
 	configureCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	configureCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)`)

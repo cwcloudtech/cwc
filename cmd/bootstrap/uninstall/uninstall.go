@@ -24,7 +24,7 @@ var UninstallCmd = &cobra.Command{
 
 func init() {
 	UninstallCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for uninstalling deployment (default: cwcloud)")
-	UninstallCmd.Flags().StringVarP(&releaseName, "release", "r", "release-0.1.0", "Release name for deployment (default: release-0.1.0)")
+	UninstallCmd.Flags().StringVarP(&releaseName, "release", "r", "cwcloud", "Release name for deployment (default: cwcloud)")
 	UninstallCmd.Flags().BoolVarP(&force, "force", "f", false, "Force remove every resources on the namespace")
 	UninstallCmd.Flags().BoolVarP(&openshift, "openshift", "o", false, "Use openshift cli instead of kubectl")
 }
