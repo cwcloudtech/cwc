@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"syscall"
 
 	"cwc/utils"
 
@@ -129,7 +130,7 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindClus
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
-	log.Println("Helm chart installation completed successfully.")
+	log.Println("Helm chart installation started in background.")
 }
 
 func runDeleteNS(nameSpace string, recreateNs bool, openshift bool) error {
@@ -252,8 +253,15 @@ func runHelmInstall(releaseName string, directory string, nameSpace string, open
 	helmInstallation := exec.Command(helmCommand, helmArgs...)
 	helmInstallation.Stdout = os.Stdout
 	helmInstallation.Stderr = os.Stderr
+	helmInstallation.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 
-	return helmInstallation.Run()
+	if err := helmInstallation.Start(); err != nil {
+		return err
+	}
+
+	log.Printf("Helm install is running in background with PID %d", helmInstallation.Process.Pid)
+
+	return helmInstallation.Process.Release()
 }
 
 func CloneRepo(repoURL, directory, branch string, keepDir bool, username, password string) error {
