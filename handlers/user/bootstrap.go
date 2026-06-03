@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -20,6 +21,9 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/spf13/cobra"
 )
+
+var keyValuePattern = regexp.MustCompile(`^[^=]+=[^=]+$`)
+var yamlFilePattern = regexp.MustCompile(`(?i)^.+\.ya?ml$`)
 
 type RepoConfig struct {
 	RepoURL  string
@@ -115,7 +119,7 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindClus
 		log.Printf("Not able to create the namespace: %s, error: %v", nameSpace, err)
 	}
 
-	if err := runHelmInstall(releaseName, directory, nameSpace, openshift); err != nil {
+	if err := runHelmInstall(releaseName, directory, nameSpace, otherValues, openshift); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
@@ -226,7 +230,7 @@ func runKindRecreateCluster(clusterName string) error {
 	return kindCreateCluster.Run()
 }
 
-func runHelmInstall(releaseName string, directory string, nameSpace string, openshift bool) error {
+func runHelmInstall(releaseName string, directory string, nameSpace string, otherValues []string, openshift bool) error {
 	helmCommand := "helm"
 	helmArgs := utils.If(openshift, []string{
 		"install",
@@ -240,6 +244,19 @@ func runHelmInstall(releaseName string, directory string, nameSpace string, open
 		directory,
 		"--namespace", nameSpace,
 	})
+
+	for _, value := range otherValues {
+		trimmedValue := strings.TrimSpace(value)
+
+		switch {
+		case keyValuePattern.MatchString(trimmedValue):
+			helmArgs = append(helmArgs, "--set", trimmedValue)
+		case yamlFilePattern.MatchString(trimmedValue):
+			helmArgs = append(helmArgs, "-f", trimmedValue)
+		default:
+			return fmt.Errorf("invalid --value %q: expected key=value or .yaml/.yml file", value)
+		}
+	}
 
 	log.Printf("Executing helm command: %s %s", helmCommand, strings.Join(helmArgs, " "))
 
