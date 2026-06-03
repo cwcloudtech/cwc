@@ -459,8 +459,8 @@ func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool) {
 		port           int
 		targetPort     int
 	}{
-		{serviceName: "api", port: 8000, targetPort: 8000},
-		{serviceName: "ui", port: 3000, targetPort: 3000},
+		{serviceName: "cwcloud-api", port: 8000, targetPort: 8000},
+		{serviceName: "cwcloud-ui", port: 3000, targetPort: 3000},
 	}
 
 	for _, cfg := range portForwardConfigs {
@@ -479,7 +479,7 @@ func runPortForward(nameSpace string, service string, port int, targetPort int, 
 		"-n",
 		nameSpace,
 		"port-forward",
-		"svc/cwcloud-" + service,
+		"svc/" + service,
 		"" + strconv.Itoa(targetPort) + ":" + strconv.Itoa(port),
 	}
 
