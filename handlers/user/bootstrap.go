@@ -47,27 +47,6 @@ func GetRepoConfig() RepoConfig {
 	}
 }
 
-func HandleTemporaryConfig(tempConfig *RepoConfig) (cleanup func()) {
-	if tempConfig == nil {
-		return func() {}
-	}
-
-	originalConfig := GetRepoConfig()
-
-	if utils.IsNotBlank(tempConfig.RepoURL) {
-		env.REPO_URL = tempConfig.RepoURL
-	}
-
-	if utils.IsNotBlank(tempConfig.Branch) {
-		env.BRANCH = tempConfig.Branch
-	}
-
-	return func() {
-		env.REPO_URL = originalConfig.RepoURL
-		env.BRANCH = originalConfig.Branch
-	}
-}
-
 func (c *RepoConfig) SetRepoURL(url string) {
 	config.UpdateFileKeyValue("config", "repo_url", url)
 	env.REPO_URL = url
