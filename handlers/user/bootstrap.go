@@ -452,20 +452,27 @@ func runDeleteAll(nameSpace string, force bool, openshift bool) error {
 }
 
 func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool) {
-	log.Println("Starting tunnel on CWCloud...")
+	log.Println("Starting tunnels...")
 
-	if err := runPortForward(nameSpace, "api", 8000, openshift); err != nil {
-		log.Fatalf("Error running kubectl: %v", err)
+	portForwardConfigs := []struct {
+		serviceName    string
+		port           int
+		targetPort     int
+	}{
+		{serviceName: "api", port: 8000, targetPort: 8000},
+		{serviceName: "ui", port: 3000, targetPort: 3000},
 	}
 
-	if err := runPortForward(nameSpace, "ui", 3000, openshift); err != nil {
-		log.Fatalf("Error running kubectl: %v", err)
-	}
+	for _, cfg := range portForwardConfigs {
+		if err := runPortForward(nameSpace, cfg.serviceName, cfg.port, cfg.targetPort, openshift); err != nil {
+			log.Fatalf("Error running kubectl: %v", err)
+		}
 
-	log.Println("Now you can go here: http://localhost:3000")
+		log.Printf("Going to %s: http://localhost:%d", cfg.serviceName, cfg.targetPort)
+	}
 }
 
-func runPortForward(nameSpace string, service string, port int, openshift bool) error {
+func runPortForward(nameSpace string, service string, port int, targetPort int, openshift bool) error {
 	kubectlCommand := utils.If(openshift, "oc", "kubectl")
 
 	kubectlArgs := []string{
@@ -473,7 +480,7 @@ func runPortForward(nameSpace string, service string, port int, openshift bool) 
 		nameSpace,
 		"port-forward",
 		"svc/cwcloud-" + service,
-		"" + strconv.Itoa(port) + ":" + strconv.Itoa(port),
+		"" + strconv.Itoa(targetPort) + ":" + strconv.Itoa(port),
 	}
 
 	log.Printf("Executing %s command: %s %s", kubectlCommand, kubectlCommand, strings.Join(kubectlArgs, " "))
