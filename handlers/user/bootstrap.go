@@ -1,12 +1,15 @@
 package user
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"cwc/config"
 	"cwc/env"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -86,6 +89,14 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindClus
 		return
 	}
 
+	password, err := replaceVariablesInValues(directory, nameSpace)
+	if err != nil || utils.IsBlank(password) {
+		log.Printf("Error updating values.yaml: %v", err)
+		return
+	} else {
+		log.Printf("Generated random password for tenant: %s", password)
+	}
+
 	log.Println("Starting Helm chart installation...")
 
 	if err := runKindRecreateCluster(kindCluster); err != nil {
@@ -106,6 +117,10 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindClus
 
 	if err := runHelmInstall(releaseName, directory, nameSpace, openshift); err != nil {
 		log.Fatalf("Error running helm command: %v", err)
+	}
+
+	if err := runGitClean(directory, config); err != nil {
+		log.Printf("Error running git clean commands: %v", err)
 	}
 
 	log.Println("Helm chart installation started in background.")
@@ -275,6 +290,106 @@ func CloneRepo(repoURL, directory, branch string, keepDir bool, username, passwo
 
 	fmt.Println("Repository cloned successfully.")
 	return nil
+}
+
+func runGitClean(directory string, config RepoConfig) error {
+	gitCommand := "git"
+
+	commandArgs := [][]string{{"add", "."}, {"stash"}, {"stash", "clear"}, {"reset", "--hard", "origin/" + config.Branch}}
+
+	for _, args := range commandArgs {
+		log.Printf("Executing git command: %s %s", gitCommand, strings.Join(args, " "))
+		gitCmd := exec.Command(gitCommand, args...)
+		gitCmd.Dir = directory
+		gitCmd.Stdout = os.Stdout
+		gitCmd.Stderr = os.Stderr
+		if err := gitCmd.Run(); err != nil {
+			return fmt.Errorf("failed to execute git command %v: %w", args, err)
+		}
+	}
+
+	return nil
+}
+
+func generateRandomPassword(length int) (string, error) {
+	if length <= 0 {
+		return "", fmt.Errorf("password length must be greater than 0")
+	}
+
+	byteLen := (length*3 + 3) / 4
+	randomBytes := make([]byte, byteLen)
+	if _, err := rand.Read(randomBytes); err != nil {
+		return "", fmt.Errorf("failed to generate random bytes: %w", err)
+	}
+
+	return base64.RawURLEncoding.EncodeToString(randomBytes)[:length], nil
+}
+
+func replaceVariablesInValues(chartDirectory string, nameSpace string) (string, error) {
+	patterns := []string{
+		"values.yaml",
+		"values.yml",
+		"values-*.yaml",
+		"values-*.yml",
+		"values.*.yaml",
+		"values.*.yml",
+	}
+
+	valuesFilePaths := make(map[string]struct{})
+	for _, pattern := range patterns {
+		matchedPaths, err := filepath.Glob(filepath.Join(chartDirectory, pattern))
+		if err != nil {
+			return "", fmt.Errorf("invalid values file pattern %q: %w", pattern, err)
+		}
+
+		for _, matchedPath := range matchedPaths {
+			fileInfo, err := os.Stat(matchedPath)
+			if err != nil {
+				return "", fmt.Errorf("failed to stat values file %q: %w", matchedPath, err)
+			}
+
+			if !fileInfo.Mode().IsRegular() {
+				continue
+			}
+
+			valuesFilePaths[matchedPath] = struct{}{}
+		}
+	}
+
+	if len(valuesFilePaths) == 0 {
+		return "", fmt.Errorf("no values files found in %q", chartDirectory)
+	}
+
+	password, err := generateRandomPassword(20)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate password: %w", err)
+	}
+
+	for valuesFilePath := range valuesFilePaths {
+		content, err := os.ReadFile(valuesFilePath)
+		if err != nil {
+			return "", fmt.Errorf("failed to read values file %q: %w", valuesFilePath, err)
+		}
+
+		replacedContent := strings.ReplaceAll(string(content), "${{tenant-name}}", nameSpace)
+		replacedContent = strings.ReplaceAll(replacedContent, "${{namespace}}", nameSpace)
+		replacedContent = strings.ReplaceAll(replacedContent, "${{tenant-password}}", password)
+		replacedContent = strings.ReplaceAll(replacedContent, "${{password}}", password)
+		if replacedContent == string(content) {
+			continue
+		}
+
+		fileInfo, err := os.Stat(valuesFilePath)
+		if err != nil {
+			return password, fmt.Errorf("failed to stat values file %q: %w", valuesFilePath, err)
+		}
+
+		if err := os.WriteFile(valuesFilePath, []byte(replacedContent), fileInfo.Mode()); err != nil {
+			return password, fmt.Errorf("failed to update values file %q: %w", valuesFilePath, err)
+		}
+	}
+
+	return password, nil
 }
 
 func HandleUninstall(cmd *cobra.Command, releaseName string, nameSpace string, force bool, openshift bool) {
