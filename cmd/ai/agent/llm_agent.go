@@ -321,9 +321,12 @@ func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversation
 		return nil, fmt.Errorf("at least one user message is required")
 	}
 
-	if err := agent.initializeMCPClient(ctx); err != nil {
+	mcpInstructions, err := agent.initializeMCPClient(ctx)
+	if err != nil {
 		return nil, fmt.Errorf("failed to initialize MCP client: %w", err)
 	}
+
+	effectiveMessages := prependSystemInstruction(messages, mcpInstructions)
 
 	toolsResp, err := agent.client.ListTools(ctx, nil)
 	if err != nil {
@@ -421,13 +424,13 @@ func (agent *LLMAgent) ProcessConversationWithUsage(messages []AgentConversation
 	var result *ConversationResult
 	switch agent.provider {
 	case "anthropic":
-		result, err = agent.runAnthropic(ctx, messages, maxTokens, claudeTools)
+		result, err = agent.runAnthropic(ctx, effectiveMessages, maxTokens, claudeTools)
 	case "google":
-		result, err = agent.runGemini(ctx, messages, maxTokens, geminiTools)
+		result, err = agent.runGemini(ctx, effectiveMessages, maxTokens, geminiTools)
 	case "mistral":
-		result, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
+		result, err = agent.runOpenAI(ctx, effectiveMessages, maxTokens, openAITools)
 	default:
-		result, err = agent.runOpenAI(ctx, messages, maxTokens, openAITools)
+		result, err = agent.runOpenAI(ctx, effectiveMessages, maxTokens, openAITools)
 	}
 
 	if err == nil && utils.IsNotEmpty(result) && utils.IsNotBlank(result.Response) {
@@ -450,6 +453,24 @@ func latestUserMessage(messages []AgentConversationMessage) string {
 	}
 
 	return ""
+}
+
+func prependSystemInstruction(messages []AgentConversationMessage, instruction string) []AgentConversationMessage {
+	trimmed := strings.TrimSpace(instruction)
+	if utils.IsBlank(trimmed) {
+		return messages
+	}
+
+	for _, message := range messages {
+		if strings.EqualFold(strings.TrimSpace(message.Role), "system") && strings.TrimSpace(message.Message) == trimmed {
+			return messages
+		}
+	}
+
+	effective := make([]AgentConversationMessage, 0, len(messages)+1)
+	effective = append(effective, AgentConversationMessage{Role: "system", Message: trimmed})
+	effective = append(effective, messages...)
+	return effective
 }
 
 func (agent *LLMAgent) buildDynamicRunCommandSchema(ctx context.Context) map[string]interface{} {
@@ -551,7 +572,7 @@ func selectPreferredToolsForPrompt[T any](
 		return tools
 	}
 
-	normalizedPrompt := strings.ToLower(prompt)
+	normalizedPrompt := normalizePromptForScoring(prompt)
 	replacer := strings.NewReplacer("-", " ", "_", " ", "/", " ", ",", " ", ".", " ", ":", " ", ";", " ")
 	normalizedPrompt = replacer.Replace(normalizedPrompt)
 	promptTokens := map[string]bool{}
@@ -567,6 +588,9 @@ func selectPreferredToolsForPrompt[T any](
 		"run_cwc_command":      true,
 	}
 
+	restartIntent := promptTokens["restart"] || promptTokens["reboot"] || promptTokens["redemarre"] || promptTokens["redemarrer"]
+	adminIntent := promptTokens["admin"] || promptTokens["administrator"] || promptTokens["administrateur"] || promptTokens["administration"]
+
 	type scoredTool struct {
 		tool  T
 		score int
@@ -576,7 +600,7 @@ func selectPreferredToolsForPrompt[T any](
 	for _, tool := range tools {
 		toolName := nameFn(tool)
 		name := strings.ToLower(toolName)
-		desc := strings.ToLower(descriptionFn(tool))
+		desc := normalizePromptForScoring(descriptionFn(tool))
 		score := 0
 
 		if essential[strings.ToLower(toolName)] {
@@ -600,6 +624,19 @@ func selectPreferredToolsForPrompt[T any](
 			}
 		}
 
+		if strings.Contains(name, "_admin_") && !adminIntent {
+			score -= 12
+		}
+
+		if restartIntent {
+			if strings.Contains(name, "_restart") || strings.Contains(name, "_reboot") {
+				score += 24
+			}
+			if strings.Contains(name, "_refresh") {
+				score -= 8
+			}
+		}
+
 		scored = append(scored, scoredTool{tool: tool, score: score})
 	}
 
@@ -616,6 +653,28 @@ func selectPreferredToolsForPrompt[T any](
 	}
 
 	return selected
+}
+
+func normalizePromptForScoring(input string) string {
+	normalized := strings.ToLower(input)
+	replacer := strings.NewReplacer(
+		"é", "e",
+		"è", "e",
+		"ê", "e",
+		"ë", "e",
+		"à", "a",
+		"â", "a",
+		"ä", "a",
+		"î", "i",
+		"ï", "i",
+		"ô", "o",
+		"ö", "o",
+		"ù", "u",
+		"û", "u",
+		"ü", "u",
+		"ç", "c",
+	)
+	return replacer.Replace(normalized)
 }
 
 func sanitizeGeminiSchema(value interface{}) interface{} {
@@ -830,7 +889,7 @@ func (agent *LLMAgent) runOpenAI(ctx context.Context, messages []AgentConversati
 		}
 
 		role := strings.ToLower(strings.TrimSpace(input.Role))
-		if utils.ContainsValue(role, []string{"system", "assistant", "user", "tool"}) {
+		if !utils.ContainsValue(role, []string{"system", "assistant", "user", "tool"}) {
 			role = "user"
 		}
 
@@ -931,14 +990,14 @@ func (agent *LLMAgent) callGemini(ctx context.Context, req GeminiGenerateContent
 	return &response, nil
 }
 
-func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
+func (agent *LLMAgent) initializeMCPClient(ctx context.Context) (string, error) {
 	parsedURL, err := url.Parse(agent.serverURL)
 	if err != nil {
-		return fmt.Errorf("invalid server URL: %w", err)
+		return "", fmt.Errorf("invalid server URL: %w", err)
 	}
 
 	if utils.IsBlank(parsedURL.Scheme) || utils.IsBlank(parsedURL.Host) {
-		return fmt.Errorf("server URL must include scheme and host, e.g. http://127.0.0.1:8080/mcp")
+		return "", fmt.Errorf("server URL must include scheme and host, e.g. http://127.0.0.1:8080/mcp")
 	}
 
 	endpoint := parsedURL.Path
@@ -950,8 +1009,16 @@ func (agent *LLMAgent) initializeMCPClient(ctx context.Context) error {
 	transport := mcp_http_transport.NewHTTPClientTransport(endpoint).WithBaseURL(baseURL)
 	agent.client = mcp_golang.NewClient(transport)
 
-	_, err = agent.client.Initialize(ctx)
-	return err
+	initializeResp, err := agent.client.Initialize(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	if initializeResp == nil || initializeResp.Instructions == nil {
+		return "", nil
+	}
+
+	return strings.TrimSpace(*initializeResp.Instructions), nil
 }
 
 // callClaude calls the Claude API

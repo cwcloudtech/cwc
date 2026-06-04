@@ -178,6 +178,7 @@ var McpCmd = &cobra.Command{
 				fmt.Sprintf("%s. Base command: cwc %s", desc, strings.Join(fullPath, " ")),
 				func(arguments dynamicCommandArgs) (*mcp_golang.ToolResponse, error) {
 					cliArgs := append(append([]string{}, fullPath...), arguments.Args...)
+					cliArgs = normalizeImplicitResourceFlag(cliArgs)
 					result, runErr := runCLI(executable, cliArgs)
 					if runErr != nil {
 						return nil, fmt.Errorf("%s", result)
@@ -241,6 +242,7 @@ var McpCmd = &cobra.Command{
 				}
 
 				cliArgs = append([]string{commandName}, commandArgs...)
+				cliArgs = normalizeImplicitResourceFlag(cliArgs)
 
 				result, err := runCLI(executable, cliArgs)
 				if err != nil {
@@ -280,6 +282,138 @@ func runCLI(executable string, cliArgs []string) (string, error) {
 		return result, err
 	}
 	return result, nil
+}
+
+func normalizeImplicitResourceFlag(cliArgs []string) []string {
+	if len(cliArgs) < 3 {
+		return cliArgs
+	}
+
+	resourceIndex := 0
+	if strings.EqualFold(strings.TrimSpace(cliArgs[0]), "admin") {
+		if len(cliArgs) < 4 {
+			return cliArgs
+		}
+		resourceIndex = 1
+	}
+
+	resource := strings.ToLower(strings.TrimSpace(cliArgs[resourceIndex]))
+	action := strings.ToLower(strings.TrimSpace(cliArgs[resourceIndex+1]))
+
+	type resourceRule struct {
+		shortFlag string
+		longFlags map[string]bool
+		actions   map[string]bool
+	}
+
+	rules := map[string]resourceRule{
+		"instance": {
+			shortFlag: "-i",
+			longFlags: map[string]bool{"--instance": true},
+			actions: map[string]bool{
+				"restart": true,
+				"reboot":  true,
+				"update":  true,
+				"delete":  true,
+				"refresh": true,
+			},
+		},
+		"project": {
+			shortFlag: "-p",
+			longFlags: map[string]bool{"--id": true, "--project": true},
+			actions: map[string]bool{
+				"delete": true,
+				"ls":     true,
+				"list":   true,
+				"show":   true,
+			},
+		},
+		"bucket": {
+			shortFlag: "-b",
+			longFlags: map[string]bool{"--bucket": true},
+			actions: map[string]bool{
+				"delete":   true,
+				"renew":    true,
+				"transfer": true,
+				"ls":       true,
+				"list":     true,
+				"show":     true,
+			},
+		},
+		"registry": {
+			shortFlag: "-r",
+			longFlags: map[string]bool{"--registry": true},
+			actions: map[string]bool{
+				"delete":   true,
+				"renew":    true,
+				"transfer": true,
+				"ls":       true,
+				"list":     true,
+				"show":     true,
+			},
+		},
+	}
+
+	resourceAliases := map[string]string{
+		"instances":  "instance",
+		"machine":    "instance",
+		"machines":   "instance",
+		"projects":   "project",
+		"buckets":    "bucket",
+		"registries": "registry",
+	}
+	if canonical, ok := resourceAliases[resource]; ok {
+		resource = canonical
+	}
+
+	rule, exists := rules[resource]
+	if !exists || !rule.actions[action] {
+		return cliArgs
+	}
+
+	for _, arg := range cliArgs {
+		trimmed := strings.TrimSpace(arg)
+		if trimmed == rule.shortFlag {
+			return cliArgs
+		}
+		if rule.longFlags[trimmed] {
+			return cliArgs
+		}
+	}
+
+	tail := cliArgs[resourceIndex+2:]
+	if len(tail) == 0 {
+		return cliArgs
+	}
+
+	valueIndex := -1
+	for i, candidate := range tail {
+		trimmed := strings.TrimSpace(candidate)
+		if utils.IsBlank(trimmed) || strings.HasPrefix(trimmed, "-") {
+			continue
+		}
+		valueIndex = i
+		break
+	}
+
+	if valueIndex < 0 {
+		return cliArgs
+	}
+
+	value := strings.TrimSpace(tail[valueIndex])
+	if utils.IsBlank(value) || strings.HasPrefix(value, "-") {
+		return cliArgs
+	}
+
+	normalizedTail := make([]string, 0, len(tail)+1)
+	normalizedTail = append(normalizedTail, tail[:valueIndex]...)
+	normalizedTail = append(normalizedTail, rule.shortFlag, value)
+	normalizedTail = append(normalizedTail, tail[valueIndex+1:]...)
+
+	normalized := make([]string, 0, len(cliArgs)+1)
+	normalized = append(normalized, cliArgs[:resourceIndex+2]...)
+	normalized = append(normalized, normalizedTail...)
+	return normalized
 }
 
 func discoverCWCCommands(executable string) ([]commandSpec, error) {
