@@ -5,6 +5,7 @@ import (
 	"cwc/cmd/admin/instance/delete"
 	"cwc/cmd/admin/instance/ls"
 	"cwc/cmd/admin/instance/refresh"
+	"cwc/cmd/admin/instance/restart"
 	"cwc/cmd/admin/instance/update"
 
 	"github.com/spf13/cobra"
@@ -29,4 +30,5 @@ func init() {
 	InstanceCmd.AddCommand(create.CreateCmd)
 	InstanceCmd.AddCommand(delete.DeleteCmd)
 	InstanceCmd.AddCommand(refresh.RefreshCmd)
+	InstanceCmd.AddCommand(restart.RestartCmd)
 }
