@@ -1,6 +1,7 @@
 package mcp
 
 import (
+	_ "embed"
 	"cwc/utils"
 	"fmt"
 	"os"
@@ -19,6 +20,9 @@ var (
 	endpoint   string
 	listenAddr string
 )
+
+//go:embed instructions.md
+var embeddedInstructions string
 
 type runCwcCommandArgs struct {
 	Command string   `json:"command" jsonschema:"required,description=The cwc command to run without the leading cwc binary name"`
@@ -81,7 +85,7 @@ var McpCmd = &cobra.Command{
 			transport,
 			mcp_golang.WithName("cwc-mcp-server"),
 			mcp_golang.WithVersion("0.1.0"),
-			mcp_golang.WithInstructions("Use list_cwc_commands/get_cwc_command_help to discover commands. Prefer dynamic tools named cwc_<command_path> for direct command execution."),
+			mcp_golang.WithInstructions(strings.TrimSpace(embeddedInstructions)),
 		)
 
 		err = server.RegisterTool(
