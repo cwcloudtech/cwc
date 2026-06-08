@@ -20,6 +20,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 )
 
 var keyValuePattern = regexp.MustCompile(`^[^=]+=[^=]+$`)
@@ -30,6 +31,16 @@ type RepoConfig struct {
 	Branch   string
 	Username string
 	Password string
+}
+
+type PortForwardConfig struct {
+	Name       string `yaml:"name"`
+	Port       int    `yaml:"port"`
+	TargetPort int    `yaml:"targetPort"`
+}
+
+type PfwConfigFile struct {
+	PfwConfigs []PortForwardConfig `yaml:"pfwConfigs"`
 }
 
 func GetRepoConfig() RepoConfig {
@@ -468,25 +479,53 @@ func runDeleteAll(nameSpace string, force bool, openshift bool) error {
 	return kubectlDeleteAll.Run()
 }
 
-func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool) {
+func HandlePortForward(cmd *cobra.Command, nameSpace string, openshift bool, configPath string) {
 	log.Println("Starting tunnels...")
 
-	portForwardConfigs := []struct {
-		serviceName    string
-		port           int
-		targetPort     int
-	}{
-		{serviceName: "cwcloud-api", port: 8000, targetPort: 8000},
-		{serviceName: "cwcloud-ui", port: 3000, targetPort: 3000},
+	portForwardConfigs, err := loadPortForwardConfigs(configPath)
+	if err != nil {
+		log.Fatalf("Error loading pfw config %q: %v", configPath, err)
 	}
 
+	log.Printf("Loaded %d port-forward entries from %s", len(portForwardConfigs), configPath)
+
 	for _, cfg := range portForwardConfigs {
-		if err := runPortForward(nameSpace, cfg.serviceName, cfg.port, cfg.targetPort, openshift); err != nil {
+		if err := runPortForward(nameSpace, cfg.Name, cfg.Port, cfg.TargetPort, openshift); err != nil {
 			log.Fatalf("Error running kubectl: %v", err)
 		}
 
-		log.Printf("Going to %s: http://localhost:%d", cfg.serviceName, cfg.targetPort)
+		log.Printf("Going to %s: http://localhost:%d", cfg.Name, cfg.TargetPort)
 	}
+}
+
+func loadPortForwardConfigs(configPath string) ([]PortForwardConfig, error) {
+	content, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var config PfwConfigFile
+	if err := yaml.Unmarshal(content, &config); err != nil {
+		return nil, err
+	}
+
+	if len(config.PfwConfigs) == 0 {
+		return nil, fmt.Errorf("no pfwConfigs entries found")
+	}
+
+	for i, cfg := range config.PfwConfigs {
+		if utils.IsBlank(cfg.Name) {
+			return nil, fmt.Errorf("pfwConfigs[%d].name is required", i)
+		}
+		if cfg.Port <= 0 {
+			return nil, fmt.Errorf("pfwConfigs[%d].port must be greater than 0", i)
+		}
+		if cfg.TargetPort <= 0 {
+			return nil, fmt.Errorf("pfwConfigs[%d].targetPort must be greater than 0", i)
+		}
+	}
+
+	return config.PfwConfigs, nil
 }
 
 func runPortForward(nameSpace string, service string, port int, targetPort int, openshift bool) error {

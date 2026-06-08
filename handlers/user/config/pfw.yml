@@ -1,0 +1,8 @@
+---
+pfwConfigs:
+  - name: "cwcloud-api"
+    port: 8000
+    targetPort: 8000
+  - name: "cwcloud-ui"
+    port: 3000
+    targetPort: 3000
