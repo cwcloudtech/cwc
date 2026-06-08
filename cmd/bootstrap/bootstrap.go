@@ -17,6 +17,7 @@ var (
 	kindCluster  string
 	nameSpace    string
 	otherValues  []string
+	directory    string
 	releaseName  string
 	keepDir      bool
 	recreateNs   bool
@@ -32,7 +33,7 @@ var BootstrapCmd = &cobra.Command{
 	Short: "CWCloud installation on Kubernetes",
 	Long:  `CWCloud installation on Kubernetes.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		user.HandleBootstrap(cmd, releaseName, nameSpace, kindCluster, otherValues, flagVerbose, keepDir, recreateNs, openshift)
+		user.HandleBootstrap(cmd, releaseName, nameSpace, kindCluster, otherValues, directory, flagVerbose, keepDir, recreateNs, openshift)
 	},
 }
 
@@ -41,6 +42,7 @@ func init() {
 	BootstrapCmd.Flags().StringVarP(&releaseName, "release", "r", "cwcloud", "Release name for deployment (default: cwcloud)")
 	BootstrapCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
 	BootstrapCmd.Flags().StringVarP(&kindCluster, "kind-cluster", "c", "", "Kind cluster name (optional)")
+	BootstrapCmd.Flags().StringVar(&directory, "directory", config.GetDefaultHelmDirectory(), "Local directory for the Helm chart repository")
 	BootstrapCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	BootstrapCmd.Flags().BoolVarP(&recreateNs, "recreate-ns", "d", false, "Recreate the namespace")
 	BootstrapCmd.Flags().BoolVarP(&openshift, "openshift", "o", false, "Use openshift cli instead of kubectl")

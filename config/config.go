@@ -159,6 +159,10 @@ func GetRepoBranch() string {
 	return GetConfigValue("repo_branch", env.BRANCH)
 }
 
+func GetDefaultHelmDirectory() string {
+	return GetConfigValue("default_helm_dir", env.DIRECTORY)
+}
+
 func SetValueToKeyInFile(file string, key string, value string) {
 	dirname, err := os.UserHomeDir()
 	utils.ExitIfError(err)
