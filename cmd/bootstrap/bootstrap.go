@@ -45,6 +45,7 @@ func init() {
 	BootstrapCmd.Flags().BoolVarP(&recreateNs, "recreate-ns", "d", false, "Recreate the namespace")
 	BootstrapCmd.Flags().BoolVarP(&openshift, "openshift", "o", false, "Use openshift cli instead of kubectl")
 	BootstrapCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)`)
+	BootstrapCmd.Flags().StringArrayVar(&otherValues, "values", []string{}, `Alias of --value`)
 
 	configureCmd := &cobra.Command{
 		Use:   "configure",
@@ -132,6 +133,7 @@ func init() {
 	configureCmd.Flags().StringVarP(&nameSpace, "namespace", "n", "cwcloud", "Namespace to use for deployment (default: cwcloud)")
 	configureCmd.Flags().BoolVarP(&keepDir, "keep-dir", "k", false, "Keep the local helm directory")
 	configureCmd.Flags().StringArrayVarP(&otherValues, "value", "p", []string{}, `Values to override other configurations (e.g. --value key=value --value key2=value2)`)
+	configureCmd.Flags().StringArrayVar(&otherValues, "values", []string{}, `Alias of --value. Values to override other configurations (e.g. --values key=value --values key2=value2)`)
 	configureCmd.Flags().StringVarP(&kindCluster, "kind-cluster", "c", "", "Kind cluster name (optional)")
 
 	// Configure subcommand flags
