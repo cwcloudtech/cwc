@@ -96,12 +96,14 @@ func SaveRepoConfig(config *RepoConfig) {
 func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindCluster string, otherValues []string, directory string, flagVerbose bool, keepDir bool, recreateNs bool, openshift bool) {
 	conf := GetRepoConfig()
 	repoURL := conf.RepoURL
+	useExternalDirectory := cmd != nil && cmd.Flags().Changed("directory")
 	if utils.IsBlank(directory) {
 		directory = config.GetDefaultHelmDirectory()
 	}
 	branch := conf.Branch
 
-	if err := CloneRepo(repoURL, directory, branch, keepDir, env.REPO_USERNAME, env.REPO_PASSWORD); err != nil {
+	cloneKeepDir := keepDir || useExternalDirectory
+	if err := CloneRepo(repoURL, directory, branch, cloneKeepDir, env.REPO_USERNAME, env.REPO_PASSWORD); err != nil {
 		log.Printf("Error cloning repository: %v", err)
 		return
 	}
@@ -136,7 +138,9 @@ func HandleBootstrap(cmd *cobra.Command, releaseName, nameSpace string, kindClus
 		log.Fatalf("Error running helm command: %v", err)
 	}
 
-	if err := runGitClean(directory, conf); err != nil {
+	if useExternalDirectory {
+		log.Printf("Skipping git clean for externally provided directory: %s", directory)
+	} else if err := runGitClean(directory, conf); err != nil {
 		log.Printf("Error running git clean commands: %v", err)
 	}
 
