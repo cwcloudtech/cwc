@@ -58,7 +58,7 @@ func NewLLMAgent(serverURL string, modelName string, provider string) *LLMAgent 
 	case "mistral":
 		baseURL = config.GetMistralBaseURL()
 		apiKey = config.GetMistralAPIKey()
-		defaultModel = "open-mistral-7b"
+		defaultModel = "mistral-small-latest"
 	default:
 		baseURL = config.GetOpenAIBaseURL()
 		apiKey = config.GetOpenAIAPIKey()
