@@ -7,6 +7,7 @@ toolchain go1.22.4
 require (
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/metoro-io/mcp-golang v0.16.1
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -47,7 +48,6 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/apimachinery v0.30.2 // indirect
 	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
