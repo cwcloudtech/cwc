@@ -8,6 +8,8 @@ import (
 	"net/mail"
 	"os"
 	"reflect"
+	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -24,6 +26,27 @@ func IsNotBlank(str string) bool {
 
 func IsBlank(str string) bool {
 	return !IsNotBlank(str)
+}
+
+// IsTrue return whether str is not a false value.
+// False values are: false, no, off, ko, 0, and empty string.
+func IsTrue(str string) bool {
+	if IsBlank(str) {
+		return false
+	}
+
+	normalized := strings.TrimSpace(strings.ToLower(str))
+
+	falseValues := []string{"false", "ko", "no", "off", "0"}
+	if slices.Contains(falseValues, normalized) {
+		return false
+	}
+
+	if num, err := strconv.ParseFloat(normalized, 64); err == nil {
+		return num > 0
+	}
+
+	return true
 }
 
 func IsEmpty(value interface{}) bool {

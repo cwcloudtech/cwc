@@ -3,6 +3,7 @@ package config
 import (
 	"cwc/env"
 	"cwc/utils"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"log"
@@ -161,6 +162,19 @@ func GetRepoBranch() string {
 
 func GetDefaultHelmDirectory() string {
 	return GetConfigValue("default_helm_dir", env.DIRECTORY)
+}
+
+func GetCorsEnabled() bool {
+	return utils.IsTrue(GetConfigValue("cors_enabled", "false"))
+}
+
+func GetCorsAllowedOrigins() []string {
+	var origins []string
+	if err := json.Unmarshal([]byte(GetConfigValue("cors_allowed_origins", `["*"]`)), &origins); err != nil {
+		return []string{"*"}
+	}
+
+	return origins
 }
 
 func SetValueToKeyInFile(file string, key string, value string) {

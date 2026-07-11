@@ -99,9 +99,14 @@ var WebAgentCmd = &cobra.Command{
 			_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 		})
 
+		var handler http.Handler = mux
+		if config.GetCorsEnabled() {
+			handler = utils.CorsMiddleware(mux, config.GetCorsAllowedOrigins())
+		}
+
 		addr := fmt.Sprintf("%s:%d", listenAddr, listenPort)
 		fmt.Printf("Starting AI web-agent API on http://%s\n", addr)
-		return http.ListenAndServe(addr, mux)
+		return http.ListenAndServe(addr, handler)
 	},
 }
 
